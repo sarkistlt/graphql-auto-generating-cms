@@ -1,0 +1,58 @@
+.graphql-cms {
+  padding: 14px !important;
+
+  .SideMenuWrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    .SideMenu {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .mobile-nav {
+      text-align: center !important;
+    }
+  }
+
+  .View {
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    .form {
+      margin: 0 !important;
+    }
+
+    .btn-row {
+      text-align: right;
+      margin: 0;
+      padding: 14px;
+
+      .button {
+        padding: 11px !important;
+      }
+    }
+
+    .List {
+
+      tr {
+        td:last-child {
+          padding: 0 !important;
+          width: 134px !important;
+        }
+
+        .action-btn {
+          padding: 10px !important;
+          margin: 5px !important;
+        }
+      }
+
+      .add-btn {
+        height: 40px !important;
+        padding: 11px !important;
+        margin: 0 !important;
+      }
+    }
+  }
+}
