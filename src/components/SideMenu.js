@@ -4,32 +4,32 @@ import {Menu, Grid, Dropdown} from 'semantic-ui-react';
 export default class SideMenu extends Component {
     constructor(props) {
         super(props);
-        this.handleItemClick = ::this.handleItemClick;
+        this._handleItemClick = ::this._handleItemClick;
     }
 
     static propTypes = {
         items: PropTypes.array,
-        routeTo: PropTypes.func
+        _routeToList: PropTypes.func
     }
 
     state = {
-        activeItem: this.props.routeTo,
+        activeItem: this.props.items[0].typeName,
         items: this.props.items
     }
 
-    handleItemClick(e, {name}) {
+    _handleItemClick(e, {name}) {
         if (e.name) {
             this.setState({activeItem: e.name});
-            this.props.routeTo(e.name);
+            this.props._routeToList(e.name);
         } else {
             this.setState({activeItem: name});
-            this.props.routeTo(name);
+            this.props._routeToList(name);
         }
     }
 
     render() {
         const {activeItem, items} = this.state;
-        let {handleItemClick} = this;
+        let {_handleItemClick} = this;
 
         return (
             <Grid columns={1} className='SideMenuWrapper'>
@@ -37,10 +37,11 @@ export default class SideMenu extends Component {
                     {items.map((item, idx) =>
                         <Menu.Item
                             key={idx}
-                            name={item}
-                            active={activeItem === item}
-                            onClick={handleItemClick}>
-                            {item}
+                            name={item.typeName}
+                            id={item.typeName}
+                            active={activeItem === item.typeName}
+                            onClick={_handleItemClick}>
+                            {item.label}
                         </Menu.Item>
                     )}
                 </Menu>
@@ -50,8 +51,8 @@ export default class SideMenu extends Component {
                         {items.map((item, idx) =>
                             <Dropdown.Item
                                 key={idx}
-                                text={item}
-                                onClick={handleItemClick.bind(this, {name: item})}/>
+                                text={item.label}
+                                onClick={_handleItemClick.bind(this, {name: item.label})}/>
                         )}
                     </Dropdown.Menu>
                 </Dropdown>

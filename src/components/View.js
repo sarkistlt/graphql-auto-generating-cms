@@ -21,20 +21,23 @@ export default class View extends Component {
 
     componentWillReceiveProps() {
         this.setState({
-            data: this.props.data
+            fields: this.props.fields,
+            viewId: this.props.viewId,
+            currentRoute: this.props.currentRoute
         });
     }
 
     generateInputs(field, idx) {
-        let fieldName = Object.keys(field)[0],
-            fieldType = field[fieldName].toLowerCase();
+        let propName = Object.keys(field)[0];
         return (
             <Form.Field
                 key={idx}
-                label={fieldName}
-                control='input'
-                type={'text'}
-                placeholder={fieldName}/>
+                label={field[propName].label}
+                control={field[propName].inputControl}
+                type={field[propName].inputType}
+                id={propName}
+                disabled={field[propName].disabled}
+                placeholder={propName}/>
         );
     }
 
@@ -42,6 +45,8 @@ export default class View extends Component {
         const {Column} = Grid;
         const {fields, currentRoute, viewId} = this.state;
         let {generateInputs} = this;
+        let to = (fields.length / 2).toFixed(0);
+        let from = fields.length - to;
 
         return (
             <Segment color='black' className='View'>
@@ -52,12 +57,12 @@ export default class View extends Component {
                 </div>
                 <Grid as={Form}>
                     <Column computer={8} mobile={16}>
-                        {fields.slice(0, fields.length / 2).map((field, idx) =>
+                        {fields.slice(0, to).map((field, idx) =>
                             generateInputs(field, idx)
                         )}
                     </Column>
                     <Column computer={8} mobile={16}>
-                        {fields.slice(-fields.length / 2 - 1).map((field, idx) =>
+                        {fields.slice(-from).map((field, idx) =>
                             generateInputs(field, idx)
                         )}
                     </Column>

@@ -1,7 +1,7 @@
 {
   "name": "graphql-auto-generating-cms",
   "version": "0.0.1",
-  "description": "This module will use your existid graphQL schema to generate simple for use CMS in a couple minutes!",
+  "description": "This module will use your existed graphQL schema to generate simple for use CMS in a couple minutes!",
   "main": "lib/index.js",
   "scripts": {
     "pack": "webpack --watch"

@@ -9,7 +9,7 @@ export default class List extends Component {
     static propTypes = {
         currentRoute: PropTypes.string,
         fields: PropTypes.array,
-        routeToView: PropTypes.func
+        _routeToView: PropTypes.func
     }
 
     state = {
@@ -19,13 +19,14 @@ export default class List extends Component {
 
     componentWillReceiveProps() {
         this.setState({
-            data: this.props.data
+            fields: this.props.fields,
+            currentRoute: this.props.currentRoute
         });
     }
 
     render() {
         const {fields, currentRoute} = this.state;
-        let {routeToView} = this.props;
+        let {_routeToView} = this.props;
 
         return (
             <Segment color='black' className='View'>
@@ -47,7 +48,7 @@ export default class List extends Component {
                                         color='black'
                                         className='action-btn'
                                         id="id"
-                                        onClick={routeToView}>
+                                        onClick={_routeToView}>
                                     edit
                                 </Button>
                                 <Button type='submit' color='black' className='action-btn'>remove</Button>
@@ -61,7 +62,7 @@ export default class List extends Component {
                                         color='black'
                                         className='action-btn'
                                         id="id"
-                                        onClick={routeToView}>
+                                        onClick={_routeToView}>
                                     edit
                                 </Button>
                                 <Button type='submit' color='black' className='action-btn'>remove</Button>
@@ -75,7 +76,7 @@ export default class List extends Component {
                                         color='black'
                                         className='action-btn'
                                         id="id"
-                                        onClick={routeToView}>
+                                        onClick={_routeToView}>
                                     edit
                                 </Button>
                                 <Button type='submit' color='black' className='action-btn'>remove</Button>
