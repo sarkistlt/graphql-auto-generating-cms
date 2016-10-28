@@ -28,3 +28,5 @@ let config = {
         }
     };
     app.use('/graphql_cms_endpoint', middleware(config));
+    
+    <Route path='/cms' endpoint='/graphql_cms_endpoint' graphql='/graphql' components={Layout}/>

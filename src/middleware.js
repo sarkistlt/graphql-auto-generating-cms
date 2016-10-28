@@ -118,6 +118,7 @@ module.exports = function (config) {
                                 prop.name.value !== 'Query') {
                                 shape[methodTypeName].fields[prop.name.value] = {
                                     label: prop.name.value,
+                                    fieldType: prop.type.name.value,
                                     inputType: resolveInputType(prop.type.name.value),
                                     inputControl: resolveInputControl(prop.type.name.value),
                                     disabled: false,
