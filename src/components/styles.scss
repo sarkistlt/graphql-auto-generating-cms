@@ -1,12 +1,39 @@
+.dimmer {
+  background: #B33086 !important;
+}
+
 .graphql-cms {
   padding: 14px !important;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  font-weight: 300 !important;
 
   textarea {
     height: 185px !important;
   }
 
+  .button {
+    background: #B33086 !important;
+
+    &:hover, &:focus {
+      background: #BE4F98 !important;
+    }
+  }
+
+  .dimmer {
+    background: #B33086 !important;
+  }
+
+  .icon {
+    color: #B33086 !important;
+  }
+
+  .ui.inverted.pointing.menu .active.item:after {
+    background-color: #BE4F98 !important;
+  }
+
   .loading-block {
     height: 100% !important;
+    min-height: 100px !important;
   }
 
   .SideMenuWrapper {
@@ -14,6 +41,7 @@
     padding: 0 !important;
 
     .SideMenu {
+      background: #B33086 !important;
       margin: 0 !important;
       padding: 0 !important;
     }
@@ -27,6 +55,7 @@
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
+    border-top: 2px solid #B33086 !important;
 
     .form {
       margin: 0 !important;
@@ -44,10 +73,18 @@
 
     .List {
 
+      th {
+        color: #B33086 !important;
+      }
+
       tr {
+        td:first-child {
+          width: 20px !important;
+        }
+
         td:last-child {
           padding: 0 !important;
-          width: 134px !important;
+          width: 139px !important;
         }
 
         .action-btn {

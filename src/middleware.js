@@ -1,15 +1,29 @@
-function applyRules(og, so) {
-    for (var key in og) {
-        if (typeof (og[key]) === 'object') {
-            if (!so.hasOwnProperty(key)) {
-                so[key] = og[key];
+function applyRules(shape, rules) {
+    let response = rules ? rules : shape;
+    if (rules) {
+        for (var key in shape) {
+            if (typeof (shape[key]) === 'object') {
+                if (!response.hasOwnProperty(key)) {
+                    response[key] = shape[key];
+                }
+                applyRules(shape[key], response[key]);
+            } else if (!response[key] && typeof (response[key]) !== 'boolean') {
+                response[key] = shape[key];
             }
-            applyRules(og[key], so[key]);
-        } else if (!so[key] && typeof (so[key]) !== 'boolean') {
-            so[key] = og[key];
         }
     }
-    return so;
+    
+    for (let type in response) {
+        if (response.hasOwnProperty(type)) {
+            for (let key in response[type].resolvers) {
+                if (response[type].resolvers.hasOwnProperty(key) && !response[type].resolvers[key].allowed) {
+                    delete response[type].resolvers[key];
+                }
+            }
+        }
+    }
+
+    return response;
 }
 
 function resolveInputType(scalarType) {
@@ -42,6 +56,66 @@ function resolveInputControl(scalarType) {
     }
 }
 
+function getResolverName(typeName, method, rules) {
+    let resolverName = '';
+
+    if (rules &&
+        rules[typeName] &&
+        rules[typeName].resolvers &&
+        rules[typeName].resolvers[method] &&
+        rules[typeName].resolvers[method].resolver
+    ) {
+        resolverName = rules[typeName].resolvers[method].resolver;
+    } else {
+        resolverName = typeName + '_' + method;
+    }
+
+    return resolverName;
+}
+
+function findResolverArgs(typeName, method, array, rules) {
+    let args = {},
+        tmpObj = {};
+
+    if (rules &&
+        rules[typeName] &&
+        rules[typeName].resolvers &&
+        rules[typeName].resolvers[method] &&
+        rules[typeName].resolvers[method].resolver
+    ) {
+        tmpObj = array.find(function (obj) {
+            return obj.name.value === rules[typeName].resolvers[method].resolver;
+        });
+    } else {
+        tmpObj = array.find(function (obj) {
+            return obj.name.value === typeName + '_' + method;
+        });
+    }
+    if (tmpObj && tmpObj.arguments) {
+        tmpObj.arguments.forEach(argObj => args[argObj.name.value] = argObj.type.name.value);
+    }
+    return args;
+}
+
+function checkMethodPermission(typeName, method, mutations, rules) {
+    let hasMethod = mutations.fields.find(function (obj) {
+        return obj.name.value === `${typeName}_${method}`;
+    }) ? true : false;
+
+    if (hasMethod &&
+        rules &&
+        rules[typeName] &&
+        rules[typeName].resolvers &&
+        rules[typeName].resolvers[method] &&
+        (rules[typeName].resolvers[method].allowed ||
+        typeof (rules[typeName].resolvers[method].allowed) === 'boolean')
+    ) {
+        hasMethod = rules[typeName].resolvers[method].allowed;
+    }
+
+    return hasMethod;
+}
+
 module.exports = function (config) {
     var {parse} = require('graphql');
     var schema = config.schema ? parse(config.schema) : false;
@@ -70,8 +144,9 @@ module.exports = function (config) {
                     method.type.type.name.value ?
                         method.type.type.name.value : false;
 
-                if (methodTypeName && Mutations.fields.find(function (obj) {
-                        return obj.type.name.value === methodTypeName;
+                if (methodTypeName &&
+                    Mutations.fields.find(function (obj) {
+                        return obj.name.value.split('_')[0] === methodTypeName;
                     }) &&
                     (!exclude || !exclude.find(function (type) {
                         return type === methodTypeName;
@@ -82,26 +157,42 @@ module.exports = function (config) {
 
                     shape[methodTypeName] = {
                         label: methodTypeName,
+                        listHeader: {
+                            id: [],
+                            title: []
+                        },
                         resolvers: {
                             find: {
-                                resolver: methodTypeName + '_find',
-                                allowed: true
-                            },
-                            get: {
-                                resolver: methodTypeName + '_get',
+                                resolver: getResolverName(methodTypeName, 'find', rules),
+                                args: {
+                                    query: findResolverArgs(methodTypeName, 'find', Queries.fields, rules),
+                                    mutation: findResolverArgs(methodTypeName, 'find', Mutations.fields, rules)
+                                },
                                 allowed: true
                             },
                             create: {
-                                resolver: methodTypeName + '_create',
-                                allowed: true
+                                resolver: getResolverName(methodTypeName, 'create', rules),
+                                args: {
+                                    query: findResolverArgs(methodTypeName, 'create', Queries.fields, rules),
+                                    mutation: findResolverArgs(methodTypeName, 'create', Mutations.fields, rules)
+                                },
+                                allowed: checkMethodPermission(methodTypeName, 'create', Mutations, rules)
                             },
                             update: {
-                                resolver: methodTypeName + '_update',
-                                allowed: true
+                                resolver: getResolverName(methodTypeName, 'update', rules),
+                                args: {
+                                    query: findResolverArgs(methodTypeName, 'update', Queries.fields, rules),
+                                    mutation: findResolverArgs(methodTypeName, 'update', Mutations.fields, rules)
+                                },
+                                allowed: checkMethodPermission(methodTypeName, 'update', Mutations, rules)
                             },
                             remove: {
-                                resolver: methodTypeName + '_remove',
-                                allowed: true
+                                resolver: getResolverName(methodTypeName, 'remove', rules),
+                                args: {
+                                    query: findResolverArgs(methodTypeName, 'remove', Queries.fields, rules),
+                                    mutation: findResolverArgs(methodTypeName, 'remove', Mutations.fields, rules)
+                                },
+                                allowed: checkMethodPermission(methodTypeName, 'remove', Mutations, rules)
                             }
                         },
                         fields: {}
@@ -116,12 +207,19 @@ module.exports = function (config) {
                             prop.type.name.value) {
                             if (prop.name.value !== 'Mutation' &&
                                 prop.name.value !== 'Query') {
+                                if (!shape[methodTypeName].listHeader.id[0] &&
+                                    (prop.name.value === 'id' || prop.name.value === '_id')) {
+                                    shape[methodTypeName].listHeader.id.push(prop.name.value);
+                                }
+                                if (!shape[methodTypeName].listHeader.title[0]) {
+                                    shape[methodTypeName].listHeader.title.push(methodTypeObject.fields[1].name.value);
+                                }
                                 shape[methodTypeName].fields[prop.name.value] = {
                                     label: prop.name.value,
                                     fieldType: prop.type.name.value,
                                     inputType: resolveInputType(prop.type.name.value),
                                     inputControl: resolveInputControl(prop.type.name.value),
-                                    disabled: false,
+                                    disabled: !shape[methodTypeName].resolvers.update.args.mutation[prop.name.value],
                                     exclude: false
                                 };
                             }
@@ -129,11 +227,7 @@ module.exports = function (config) {
                     });
                 }
             });
-            if (rules) {
-                res.send(applyRules(shape, rules));
-            } else {
-                res.send(shape);
-            }
+            res.send(applyRules(shape, rules));
         }
     };
 };

@@ -1,70 +1,66 @@
 import React, {PropTypes, Component} from 'react';
-import {Segment, Grid, Form, Button, Loader} from 'semantic-ui-react';
+import {Segment, Grid, Form, Button} from 'semantic-ui-react';
 
 export default class View extends Component {
     constructor(props) {
         super(props);
-        this.getViewData = ::this.getViewData;
         this.generateInputs = ::this.generateInputs;
     }
 
     static propTypes = {
-        currentRoute: PropTypes.string,
-        viewId: PropTypes.string,
+        schema: PropTypes.object,
+        query: PropTypes.func,
+        setState: PropTypes.func,
+        data: PropTypes.object,
         fields: PropTypes.array,
-        find: PropTypes.func,
-        get: PropTypes.func,
-        create: PropTypes.func,
         update: PropTypes.func,
-        remove: PropTypes.func
+        remove: PropTypes.func,
+        _routeToAdd: PropTypes.func
     }
 
     state = {
+        schema: this.props.schema,
         fields: this.props.fields,
-        viewId: this.props.viewId,
-        currentRoute: this.props.currentRoute,
-        view: false
-    }
-
-    componentDidMount() {
-        this.getViewData();
+        data: this.props.data
     }
 
     componentWillReceiveProps() {
         this.setState({
-            fields: this.props.fields,
-            viewId: this.props.viewId,
-            currentRoute: this.props.currentRoute,
-            view: false
-        }, () => this.getViewData());
+            schema: this.props.schema,
+            fields: this.props.schema.fields,
+            data: this.props.data
+        });
     }
 
-    getViewData() {
-        let resolver = 'getCoupons',
-            variables = {
-                values: {id: this.state.viewId},
-                types: {id: 'Int'}
-            },
-            request = '';
-
-        this.state.fields.forEach(prop => request += `${Object.keys(prop)[0]} `);
-        this.props.get('query', request, resolver, variables)
-            .then(res => this.setState({view: res}))
-            .catch(err => console.log(`error: ${err}`));
+    getDateValue(arg) {
+        let date = new Date(arg),
+            y = date.getFullYear(),
+            m = (date.getMonth() + 1).toString().length === 2 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`,
+            d = date.getDate().toString().length === 2 ? date.getDate() : `0${date.getDate()}`;
+        return `${y}-${m}-${d}`;
     }
 
     generateInputs(field, idx) {
         let propName = Object.keys(field)[0],
             value = '',
-            checked = '';
+            checked = '',
+            dateInput = false;
 
-        if ((this.state.view.data.getCoupons[0][propName] ||
-        typeof (this.state.view.data.getCoupons[0][propName]) === 'boolean') &&
-        field[propName].inputType !== 'file') {
-            value = this.state.view.data.getCoupons[0][propName];
+        if ((this.state.data[propName] ||
+            typeof (this.state.data[propName]) === 'boolean') &&
+            field[propName].inputType !== 'file') {
+            value = this.state.data[propName];
         }
         if (field[propName].inputType === 'checkbox') {
-            checked = this.state.view.data.getCoupons[0][propName];
+            checked = this.state.data[propName];
+        }
+
+        if (propName === 'createdAt' ||
+            propName === 'updatedAt' ||
+            propName === 'deletedAt' ||
+            field[propName].inputType === 'date') {
+            dateInput = 'date';
+            value = this.getDateValue(value);
         }
 
         return (
@@ -72,7 +68,7 @@ export default class View extends Component {
                 key={idx}
                 label={field[propName].label}
                 control={field[propName].inputControl}
-                type={field[propName].inputType}
+                type={dateInput || field[propName].inputType}
                 id={propName}
                 defaultValue={value}
                 defaultChecked={checked}
@@ -83,42 +79,44 @@ export default class View extends Component {
 
     render() {
         const {Column} = Grid;
-        const {fields, view} = this.state;
-        let {generateInputs} = this;
-        let to = (fields.length / 2).toFixed(0);
-        let from = fields.length - to;
+        const {fields, schema} = this.state;
+        let {update, remove, _routeToAdd} = this.props,
+            {generateInputs} = this,
+            to = (fields.length / 2).toFixed(0),
+            from = fields.length - to;
 
-        console.log(view);
-        if (!view) {
-            return (
-                <Segment className='loading-block'>
-                    <div className='ui active dimmer'>
-                        <Loader content='Loading'/>
-                    </div>
-                </Segment>
-            );
-        } else {
-            return (
-                <Segment color='black' className='View'>
-                    <div className='btn-row'>
-                        <Button type='submit' color='black'>save</Button>
-                        <Button type='submit' color='black'>remove</Button>
-                        <Button type='submit' color='black'>add new</Button>
-                    </div>
-                    <Grid as={Form}>
-                        <Column computer={8} mobile={16}>
-                            {fields.slice(0, to).map((field, idx) =>
-                                generateInputs(field, idx)
-                            )}
-                        </Column>
-                        <Column computer={8} mobile={16}>
-                            {fields.slice(-from).map((field, idx) =>
-                                generateInputs(field, idx)
-                            )}
-                        </Column>
-                    </Grid>
-                </Segment>
-            );
-        }
+        return (
+            <Segment color='black' className='View'>
+                <div className='btn-row'>
+                    <Button type='submit' color='black'
+                            onClick={!schema.resolvers.update ? null : update}
+                            disabled={!schema.resolvers.update}>
+                        save
+                    </Button>
+                    <Button type='submit' color='black'
+                            onClick={!schema.resolvers.remove ? null : remove}
+                            disabled={!schema.resolvers.remove}>
+                        remove
+                    </Button>
+                    <Button type='submit' color='black'
+                            onClick={_routeToAdd}
+                            disabled={!schema.resolvers.create}>
+                        add new
+                    </Button>
+                </div>
+                <Grid as={Form}>
+                    <Column computer={8} mobile={16}>
+                        {fields.slice(0, to).map((field, idx) =>
+                            generateInputs(field, idx)
+                        )}
+                    </Column>
+                    <Column computer={8} mobile={16}>
+                        {fields.slice(-from).map((field, idx) =>
+                            generateInputs(field, idx)
+                        )}
+                    </Column>
+                </Grid>
+            </Segment>
+        );
     }
 }

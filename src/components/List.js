@@ -1,115 +1,102 @@
 import React, {PropTypes, Component} from 'react';
-import {Segment, Icon, Menu, Table, Button, Loader} from 'semantic-ui-react';
+import {Segment, Icon, Menu, Table, Button} from 'semantic-ui-react';
 
 export default class List extends Component {
     constructor(props) {
         super(props);
-        this.getList = ::this.getList;
     }
 
     static propTypes = {
-        currentRoute: PropTypes.string,
-        fields: PropTypes.array,
+        schema: PropTypes.object,
         _routeToView: PropTypes.func,
-        find: PropTypes.func,
-        get: PropTypes.func,
-        create: PropTypes.func,
-        update: PropTypes.func,
-        remove: PropTypes.func
+        setState: PropTypes.func,
+        query: PropTypes.func,
+        data: PropTypes.array,
+        remove: PropTypes.func,
+        _routeToAdd: PropTypes.func
     }
 
     state = {
-        fields: this.props.fields,
-        currentRoute: this.props.currentRoute,
-        list: false
-    }
-
-    componentDidMount() {
-        this.getList();
+        schema: this.props.schema,
+        data: this.props.data
     }
 
     componentWillReceiveProps() {
         this.setState({
-            fields: this.props.fields,
-            currentRoute: this.props.currentRoute,
-            list: false
-        }, () => this.getList());
+            schema: this.props.schema,
+            data: this.props.data
+        });
     }
 
-    getList() {
-        let resolver = 'getCoupons',
-            /*variables = {
-             values: {id: 4},
-             types: {id: 'Int'}
-             },*/
-            request = 'id description ';
-
-        this.props.find('query', request, resolver)
-            .then(res => this.setState({list: res}))
-            .catch(err => console.log(`error: ${err}`));
+    headerToString(obj, arr) {
+        let string = '';
+        arr.forEach(prop => obj[prop] ? string += `${obj[prop]} ` : null);
+        return string;
     }
 
     render() {
-        const {list, fields, currentRoute} = this.state;
-        let {_routeToView} = this.props;
+        const {data, schema} = this.state;
+        let {_routeToView, remove, _routeToAdd} = this.props,
+            header = schema.listHeader,
+            {headerToString} = this;
 
-        if (!list) {
-            return (
-                <Segment className='loading-block'>
-                    <div className='ui active dimmer'>
-                        <Loader content='Loading'/>
-                    </div>
-                </Segment>
-            );
-        } else {
-            return (
-                <Segment color='black' className='View'>
-                    <Table celled className='List'>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell>ID</Table.HeaderCell>
-                                <Table.HeaderCell>TITLE</Table.HeaderCell>
-                                <Table.HeaderCell>ACTION</Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {list.data.getCoupons.map(obj =>
-                                <Table.Row key={obj.id}>
-                                    <Table.Cell>{obj.id}</Table.Cell>
-                                    <Table.Cell>{obj.description}</Table.Cell>
-                                    <Table.Cell>
-                                        <Button type='submit'
-                                                color='black'
-                                                className='action-btn'
-                                                id={obj.id}
-                                                onClick={_routeToView}>
-                                            edit
-                                        </Button>
-                                        <Button type='submit' color='black' className='action-btn'>remove</Button>
-                                    </Table.Cell>
-                                </Table.Row>
-                            )}
-                        </Table.Body>
-                        <Table.Footer>
-                            <Table.Row>
-                                <Table.HeaderCell colSpan='3'>
+        return (
+            <Segment color='black' className='View'>
+                <Table celled className='List'>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>#/ID</Table.HeaderCell>
+                            <Table.HeaderCell>TITLE</Table.HeaderCell>
+                            <Table.HeaderCell>ACTION</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {data.map((obj, idx) =>
+                            <Table.Row key={idx}>
+                                <Table.Cell>{headerToString(obj, header.id)}</Table.Cell>
+                                <Table.Cell>{headerToString(obj, header.title)}</Table.Cell>
+                                <Table.Cell>
                                     <Button type='submit'
                                             color='black'
-                                            className='add-btn'>add new</Button>
-                                    <Menu floated='right' pagination>
-                                        <Menu.Item as='a' icon>
-                                            <Icon name='left chevron'/>
-                                        </Menu.Item>
-                                        <Menu.Item as='a' icon>
-                                            <Icon name='right chevron'/>
-                                        </Menu.Item>
-                                    </Menu>
-                                </Table.HeaderCell>
+                                            className='action-btn'
+                                            id={obj._id ? obj._id : obj.id}
+                                            onClick={_routeToView}>
+                                        view
+                                    </Button>
+                                    <Button type='submit'
+                                            color='black'
+                                            className='action-btn'
+                                            onClick={!schema.resolvers.remove ? null : remove}
+                                            disabled={!schema.resolvers.remove}>
+                                        remove
+                                    </Button>
+                                </Table.Cell>
                             </Table.Row>
-                        </Table.Footer>
-                    </Table>
-                </Segment>
-            );
-        }
+                        )}
+                    </Table.Body>
+                    <Table.Footer>
+                        <Table.Row>
+                            <Table.HeaderCell colSpan='3'>
+                                <Button type='submit'
+                                        color='black'
+                                        className='add-btn'
+                                        onClick={_routeToAdd}
+                                        disabled={!schema.resolvers.create}>
+                                    add new
+                                </Button>
+                                <Menu floated='right' pagination>
+                                    <Menu.Item as='a' icon>
+                                        <Icon name='left chevron'/>
+                                    </Menu.Item>
+                                    <Menu.Item as='a' icon>
+                                        <Icon name='right chevron'/>
+                                    </Menu.Item>
+                                </Menu>
+                            </Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Footer>
+                </Table>
+            </Segment>
+        );
     }
 }

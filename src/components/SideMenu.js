@@ -4,11 +4,12 @@ import {Menu, Grid, Dropdown} from 'semantic-ui-react';
 export default class SideMenu extends Component {
     constructor(props) {
         super(props);
-        this._handleItemClick = ::this._handleItemClick;
+        this._handleMenuClick = ::this._handleMenuClick;
     }
 
     static propTypes = {
         items: PropTypes.array,
+        setState: PropTypes.func,
         _routeToList: PropTypes.func
     }
 
@@ -17,7 +18,7 @@ export default class SideMenu extends Component {
         items: this.props.items
     }
 
-    _handleItemClick(e, {name}) {
+    _handleMenuClick(e, {name}) {
         if (e.name) {
             this.setState({activeItem: e.name});
             this.props._routeToList(e.name);
@@ -29,7 +30,7 @@ export default class SideMenu extends Component {
 
     render() {
         const {activeItem, items} = this.state;
-        let {_handleItemClick} = this;
+        let {_handleMenuClick} = this;
 
         return (
             <Grid columns={1} className='SideMenuWrapper'>
@@ -40,7 +41,7 @@ export default class SideMenu extends Component {
                             name={item.typeName}
                             id={item.typeName}
                             active={activeItem === item.typeName}
-                            onClick={_handleItemClick}>
+                            onClick={_handleMenuClick}>
                             {item.label}
                         </Menu.Item>
                     )}
@@ -52,7 +53,7 @@ export default class SideMenu extends Component {
                             <Dropdown.Item
                                 key={idx}
                                 text={item.label}
-                                onClick={_handleItemClick.bind(this, {name: item.label})}/>
+                                onClick={_handleMenuClick.bind(this, {name: item.label})}/>
                         )}
                     </Dropdown.Menu>
                 </Dropdown>
