@@ -89,6 +89,11 @@ export default class View extends Component {
             <Segment color='black' className='View'>
                 <div className='btn-row'>
                     <Button type='submit' color='black'
+                            onClick={_routeToAdd}
+                            disabled={!schema.resolvers.create}>
+                        add new
+                    </Button>
+                    <Button type='submit' color='black'
                             onClick={!schema.resolvers.update ? null : update}
                             disabled={!schema.resolvers.update}>
                         save
@@ -97,11 +102,6 @@ export default class View extends Component {
                             onClick={!schema.resolvers.remove ? null : remove}
                             disabled={!schema.resolvers.remove}>
                         remove
-                    </Button>
-                    <Button type='submit' color='black'
-                            onClick={_routeToAdd}
-                            disabled={!schema.resolvers.create}>
-                        add new
                     </Button>
                 </div>
                 <Grid as={Form}>
