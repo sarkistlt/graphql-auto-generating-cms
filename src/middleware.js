@@ -27,7 +27,7 @@ function applyRules(shape, rules) {
 }
 
 function resolveInputType(scalarType) {
-    switch (scalarType) {
+    switch (scalarType || scalarType.slice(0, -1)) {
     case 'Int':
         return 'number';
     case 'Float':
@@ -42,7 +42,7 @@ function resolveInputType(scalarType) {
 }
 
 function resolveInputControl(scalarType) {
-    switch (scalarType) {
+    switch (scalarType || scalarType.slice(0, -1)) {
     case 'Int':
         return 'input';
     case 'Float':
@@ -92,7 +92,10 @@ function findResolverArgs(typeName, method, array, rules) {
         });
     }
     if (tmpObj && tmpObj.arguments) {
-        tmpObj.arguments.forEach(argObj => args[argObj.name.value] = argObj.type.name.value);
+        tmpObj.arguments.forEach(argObj => {
+            let type = argObj.type.kind === 'NonNullType' ? `${argObj.type.type.name.value}!` : argObj.type.name.value;
+            args[argObj.name.value] = type;
+        });
     }
     return args;
 }
@@ -214,6 +217,7 @@ module.exports = function (config) {
                                 if (!shape[methodTypeName].listHeader.title[0]) {
                                     shape[methodTypeName].listHeader.title.push(methodTypeObject.fields[1].name.value);
                                 }
+
                                 shape[methodTypeName].fields[prop.name.value] = {
                                     label: prop.name.value,
                                     fieldType: prop.type.name.value,

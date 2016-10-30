@@ -20,15 +20,22 @@ export default class Layout extends Component {
         this._routeToList = ::this._routeToList;
         this._routeToView = ::this._routeToView;
         this._previewsPage = ::this._previewsPage;
-        this.getCurrentViewFields = ::this.getCurrentViewFields;
+        this.validateFields = ::this.validateFields;
         this._collectFieldsData = ::this._collectFieldsData;
+        this._handleNewMenuClick = ::this._handleNewMenuClick;
+        this.getCurrentViewFields = ::this.getCurrentViewFields;
     }
 
     static propTypes = {
-        route: PropTypes.object
+        route: PropTypes.shape({
+            graphql: PropTypes.string,
+            endpoint: PropTypes.string,
+            newMenuItems: PropTypes.array
+        })
     }
 
     state = {
+        newMenuItemSecret: false,
         viewData: false,
         listData: false,
         schema: false,
@@ -39,7 +46,7 @@ export default class Layout extends Component {
         currentItemId: false,
         limit: 50,
         offset: 0,
-        lasPage: false
+        lastPage: false
     }
 
     componentDidMount() {
@@ -117,11 +124,12 @@ export default class Layout extends Component {
                 id = this.state.currentItemId,
                 req = id ? id.split(':')[0] : '',
                 fields = this.state.fields,
-                data = this._collectFieldsData(fields, id);
+                data = this._collectFieldsData(fields, id, 'update');
 
-            if (!id) {
+            if (!id && data) {
+                data = this._collectFieldsData(fields, id, 'create');
                 this.create(data);
-            } else {
+            } else if (data) {
                 if (schema.resolvers.update) {
                     this.query('mutation', req, resolver, data)
                         .then(this.showSuccessMs)
@@ -172,7 +180,7 @@ export default class Layout extends Component {
             {offset, limit} = this.state,
             data = {
                 values: {offset: offset, limit: limit},
-                types: {offset: 'Int', limit: 'Int'}
+                types: {offset: 'Int!', limit: 'Int!'}
             },
             req = `${h.id.join(' ')} ${h.title.join(' ')}`;
         this.query('query', req, resolver, data)
@@ -180,8 +188,8 @@ export default class Layout extends Component {
                 res.errors ? console.log(res) : null;
                 this.setState({
                     listData: res,
-                    lasPage: res.data[resolver].length < 50
-                });
+                    lastPage: res.data[resolver].length < 50
+                }, this.forceUpdate);
             })
             .catch(err => console.log(`error: ${err}`));
     }
@@ -239,12 +247,18 @@ export default class Layout extends Component {
                         menuItems.push({label: res[type].label, typeName: type});
                     }
                 }
+
                 this.setState({
                     schema: res,
-                    SideMenuItems: menuItems
+                    SideMenuItems: menuItems,
+                    newMenuItemSecret: this.props.route.newMenuItems ? this.props.route.newMenuItems[0].secret : false
                 }, () => {
-                    let prop = this.state.SideMenuItems[0].typeName;
-                    this.getCurrentViewFields(this.state.schema[prop], prop);
+                    if (!this.state.newMenuItemSecret) {
+                        let prop = this.state.SideMenuItems[0].typeName;
+                        this.getCurrentViewFields(this.state.schema[prop], prop);
+                    } else {
+                        this.forceUpdate();
+                    }
                 });
             })
             .catch(err => console.log(err));
@@ -268,24 +282,43 @@ export default class Layout extends Component {
         }, 3000);
     }
 
+    validateFields(data) {
+        let response = false;
+
+        for (let arg in data.types) {
+            if (data.types.hasOwnProperty(arg) && data.types[arg].slice(-1) === '!') {
+                response = typeof (data.values[arg]) !== 'boolean' ? !!data.values[arg] : false;
+                if (!response) {
+                    this.showErrorMs();
+                    document.getElementById(arg).classList.add('error');
+                    document.getElementById(arg).parentNode.classList.add('error');
+                    document.getElementById(arg).placeholder = 'FIELD IS REQUIRED!';
+                } else {
+                    document.getElementById(arg).classList.remove('error');
+                    document.getElementById(arg).parentNode.classList.remove('error');
+                    document.getElementById(arg).placeholder = arg;
+                }
+            }
+        }
+
+        return response;
+    }
+
     _nextPage() {
-        let {offset, limit, lasPage} = this.state;
-        if(!lasPage) {
-            console.log('_nextPage');
+        let {offset, lastPage} = this.state;
+
+        if (!lastPage) {
             this.setState({
-                offset: offset + 50,
-                limit: limit + 50
+                offset: offset + 50
             }, this.getListData);
         }
     }
 
     _previewsPage() {
-        let {offset, limit} = this.state;
+        let {offset} = this.state;
         if (offset) {
-            console.log('_previewsPage');
             this.setState({
-                offset: offset - 50,
-                limit: limit - 50
+                offset: offset - 50
             }, this.getListData);
         }
     }
@@ -294,6 +327,7 @@ export default class Layout extends Component {
         if (this.state.currentPathSchema.resolvers.create) {
             this.setState({
                 viewMode: true,
+                viewData: false,
                 currentItemId: false
             }, this.forceUpdate);
         }
@@ -302,6 +336,7 @@ export default class Layout extends Component {
     _routeToList(path) {
         this.setState({
             currentPathName: path,
+            newMenuItemSecret: false,
             viewData: false,
             viewMode: false,
             listData: false,
@@ -318,11 +353,12 @@ export default class Layout extends Component {
         this.getViewData(e.target.id);
     }
 
-    _collectFieldsData(fields, id) {
-        let data = {values: {}, types: {}};
+    _collectFieldsData(fields, id, action) {
+        let schema = this.state.currentPathSchema,
+            data = {values: {}, types: {}};
 
         function getCurrentFieldData(id, type) {
-            switch (type) {
+            switch (type || type.slice(0, -1)) {
             case 'Int':
                 return document.getElementById(id).value;
             case 'Float':
@@ -336,35 +372,68 @@ export default class Layout extends Component {
             }
         }
 
+        function getCurrentFieldMutationType(propName, schema, type, action) {
+            let response = type;
+            if (schema.resolvers.create.args.mutation[propName] && action === 'create') {
+                response = schema.resolvers.create.args.mutation[propName];
+            } else if (schema.resolvers.update.args.mutation[propName] && action === 'update') {
+                response = schema.resolvers.update.args.mutation[propName];
+            }
+            return response;
+        }
+
         fields.forEach(fieldObj => {
-            let propName = Object.keys(fieldObj)[0];
+            let propName = Object.keys(fieldObj)[0],
+                type = fieldObj[propName].fieldType;
+
             if (!fieldObj[propName].disabled) {
                 if (propName !== 'id' && propName !== '_id' && propName !== 'offset' && propName !== 'limit') {
-                    data.values[propName] = getCurrentFieldData(propName, fieldObj[propName].fieldType);
-                    data.types[propName] = fieldObj[propName].fieldType;
+                    data.values[propName] = getCurrentFieldData(propName, type);
+                    data.types[propName] = getCurrentFieldMutationType(propName, schema, type, action);
                 } else if (id) {
                     if (!data.values[id.split(':')[0]]) {
                         data.values[id.split(':')[0]] = id.split(':')[1];
                         data.types[id.split(':')[0]] = id.split(':')[2];
                     } else {
-                        data.values[propName] = getCurrentFieldData(propName, fieldObj[propName].fieldType);
-                        data.types[propName] = fieldObj[propName].fieldType;
+                        data.values[propName] = getCurrentFieldData(propName, type);
+                        data.types[propName] = getCurrentFieldMutationType(propName, schema, type, action);
                     }
                 }
             }
         });
-        return data;
+        if (this.validateFields(data)) {
+            return data;
+        }
+    }
+
+    _handleNewMenuClick(label) {
+        this.setState({
+            newMenuItemSecret: label,
+            viewData: false,
+            listData: false,
+            currentPathSchema: false,
+            currentPathName: false,
+            viewMode: false,
+            currentItemId: false,
+            limit: 50,
+            offset: 0,
+            lastPage: false
+        }, this.forceUpdate);
     }
 
     render() {
         const {Column} = Grid;
         const {
-            schema, currentPathSchema, fields, viewData, offset, lasPage,
-            listData, SideMenuItems, viewMode, currentItemId
+            schema, currentPathSchema, fields, viewData, offset, lastPage,
+            listData, SideMenuItems, viewMode, currentItemId, newMenuItemSecret
         } = this.state;
-        let {_routeToList, _routeToView, _routeToAdd, _addNewItem,
-            _nextPage, _previewsPage, query, update, remove} = this;
-        if (!schema || !currentPathSchema) {
+        let {
+                _routeToList, _routeToView, _routeToAdd, _addNewItem,
+                _nextPage, _previewsPage, query, update, remove, _handleNewMenuClick
+            } = this,
+            newMenuItems = this.props.route.newMenuItems;
+
+        if (!schema) {
             return (
                 <Segment className='loading-block'>
                     <div className='ui active dimmer'>
@@ -373,14 +442,21 @@ export default class Layout extends Component {
                 </Segment>
             );
         } else {
-            let resolverForList = currentPathSchema.resolvers.find.resolver;
-
+            let resolverForList = false,
+                NewMenuView = false;
+            if (newMenuItemSecret) {
+                NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret).view.component;
+            } else {
+                resolverForList = currentPathSchema.resolvers.find.resolver;
+            }
             return (
                 <Grid className='graphql-cms'>
                     <Column computer={3} mobile={16}>
                         <SideMenu
                             setState={this.setState}
+                            newMenuItems={newMenuItems}
                             items={SideMenuItems}
+                            _handleNewMenuClick={_handleNewMenuClick}
                             _routeToList={_routeToList}
                         />
                     </Column>
@@ -407,16 +483,21 @@ export default class Layout extends Component {
                                     schema={currentPathSchema}
                                 />) :
                             (!listData ?
-                                <Segment className='loading-block'>
-                                    <div className='ui active dimmer'>
-                                        <Loader content='Loading'/>
-                                    </div>
-                                </Segment> :
+                                (!newMenuItemSecret ?
+                                    <Segment className='loading-block'>
+                                        <div className='ui active dimmer'>
+                                            <Loader content='Loading'/>
+                                        </div>
+                                    </Segment> :
+
+                                    <Segment color='black' className='View'>
+                                        <NewMenuView/>
+                                    </Segment>) :
                                 <List
                                     query={query}
                                     remove={remove}
                                     offset={offset}
-                                    lasPage={lasPage}
+                                    lastPage={lastPage}
                                     _nextPage={_nextPage}
                                     _previewsPage={_previewsPage}
                                     _addNewItem={_addNewItem}

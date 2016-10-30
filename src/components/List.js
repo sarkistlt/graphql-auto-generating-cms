@@ -16,14 +16,14 @@ export default class List extends Component {
         _nextPage: PropTypes.func,
         _previewsPage: PropTypes.func,
         offset: PropTypes.number,
-        lasPage: PropTypes.bool
+        lastPage: PropTypes.bool
     }
 
     state = {
         schema: this.props.schema,
         data: this.props.data,
         offset: this.props.offset,
-        lasPage: this.props.lasPage
+        lastPage: this.props.lastPage
     }
 
     componentWillReceiveProps() {
@@ -31,7 +31,7 @@ export default class List extends Component {
             schema: this.props.schema,
             data: this.props.data,
             offset: this.props.offset,
-            limit: this.props.limit
+            lastPage: this.props.lastPage
         });
     }
 
@@ -42,7 +42,7 @@ export default class List extends Component {
     }
 
     render() {
-        const {data, schema, offset, lasPage} = this.state;
+        const {data, schema, offset, lastPage} = this.state;
         let {_routeToView, remove, _addNewItem, _nextPage, _previewsPage} = this.props,
             header = schema.listHeader,
             {headerToString} = this,
@@ -100,11 +100,11 @@ export default class List extends Component {
                                     add new
                                 </Button>
                                 <Menu floated='right' pagination>
-                                    <Menu.Item as='a' icon onClick={_nextPage}>
+                                    <Menu.Item as='a' icon onClick={_previewsPage}>
                                         <Icon name='left chevron' disabled={!offset}/>
                                     </Menu.Item>
-                                    <Menu.Item as='a' icon onClick={_previewsPage}>
-                                        <Icon name='right chevron' disabled={lasPage}/>
+                                    <Menu.Item as='a' icon onClick={_nextPage}>
+                                        <Icon name='right chevron' disabled={lastPage}/>
                                     </Menu.Item>
                                 </Menu>
                             </Table.HeaderCell>
