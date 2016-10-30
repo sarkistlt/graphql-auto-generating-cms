@@ -12,6 +12,28 @@
     font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
     font-weight: 300 !important;
 
+    .message {
+      position: fixed;
+      z-index: 1;
+      width: 250px;
+      text-align: center;
+      top: 4px;
+      left: calc(50vw - 125px);
+      transition: all 0.3s;
+    }
+
+    #ms-success {
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.3s, opacity 0.3s linear;
+    }
+
+    #ms-error {
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.3s, opacity 0.3s linear;
+    }
+
     textarea {
       height: 185px !important;
     }

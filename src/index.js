@@ -1,5 +1,5 @@
 import React, {PropTypes, Component} from 'react';
-import {Grid, Loader, Segment} from 'semantic-ui-react';
+import {Grid, Loader, Segment, Message} from 'semantic-ui-react';
 import SideMenu from './components/SideMenu';
 import View from './components/View';
 import List from './components/List';
@@ -18,6 +18,7 @@ export default class Layout extends Component {
         this._routeToList = ::this._routeToList;
         this._routeToView = ::this._routeToView;
         this.getCurrentViewFields = ::this.getCurrentViewFields;
+        this._collectFieldsData = ::this._collectFieldsData;
     }
 
     static propTypes = {
@@ -31,7 +32,8 @@ export default class Layout extends Component {
         currentPathSchema: false,
         currentPathName: false,
         SideMenuItems: false,
-        viewMode: false
+        viewMode: false,
+        currentItemId: false
     }
 
     componentDidMount() {
@@ -63,7 +65,7 @@ export default class Layout extends Component {
                 for (let key in variables.types) {
                     if (variables.types.hasOwnProperty(key)) {
                         varTypes += `$${[key]}: ${variables.types[key]} `;
-                        varForRequest += `${[key]}: $${[key]}`;
+                        varForRequest += `${[key]}: $${[key]} `;
                     }
                 }
                 xhr.send(JSON.stringify({
@@ -74,50 +76,77 @@ export default class Layout extends Component {
         });
     }
 
-    create(data) {
+    create() {
         console.log('create');
         let schema = this.state.currentPathSchema,
-            type = schema.typeName,
             resolver = schema.resolvers.create.resolver,
-            req = '';
+            req = '',
+            fields = this.state.fields,
+            id = this.state.currentItemId,
+            data = this._collectFieldsData(fields, id);
+
         schema.fields.forEach(prop => req += `${Object.keys(prop)[0]} `);
         if (!data) {
             console.log('data wasn\'t provided');
         } else {
             if (schema.resolvers.create) {
-                this.query(type, req, resolver);
+                this.query('mutation', req, resolver)
+                    .then(this.showSuccessMs)
+                    .catch(err => {
+                        this.showErrorMs();
+                        console.log(`create error: ${err}`);
+                    });
             }
         }
     }
 
-    update(data, id) {
-        console.log('update');
+    update() {
         let schema = this.state.currentPathSchema,
-            type = schema.typeName,
             resolver = schema.resolvers.update.resolver,
-            req = Object.keys(schema.fields[0])[0];
+            id = this.state.currentItemId,
+            req = id.split(':')[0],
+            fields = this.state.fields,
+            data = this._collectFieldsData(fields, id);
 
         if (!id) {
             this.create(data);
         } else {
             if (schema.resolvers.update) {
-                this.query(type, req, resolver, data);
+                this.query('mutation', req, resolver, data)
+                    .then(this.showSuccessMs)
+                    .catch(err => {
+                        this.showErrorMs();
+                        console.log(`update error: ${err}`);
+                    });
             }
         }
     }
 
-    remove(id) {
-        console.log('remove');
-        let schema = this.state.currentPathSchema,
-            type = schema.typeName,
+    remove(e) {
+        let id = e.target.id,
+            schema = this.state.currentPathSchema,
+            currentList = this.state.currentPathName,
             resolver = schema.resolvers.remove.resolver,
-            req = Object.keys(schema.fields[0])[0];
+            req = id.split(':')[0],
+            data = {values: {}, types: {}};
+
+        data.values[id.split(':')[0]] = id.split(':')[1];
+        data.types[id.split(':')[0]] = id.split(':')[2];
 
         if (!id) {
             console.log('id wasn\'t provided');
         } else {
             if (schema.resolvers.remove) {
-                this.query(type, req, resolver);
+                this.query('mutation', req, resolver, data)
+                    .then(() => {
+                        this.forceUpdate();
+                        this.showSuccessMs();
+                        this._routeToList(currentList);
+                    })
+                    .catch(err => {
+                        this.showErrorMs();
+                        console.log(`remove error: ${err}`);
+                    });
             }
         }
     }
@@ -149,12 +178,12 @@ export default class Layout extends Component {
         }
 
         let variables = {
-            values: {[queryId]: id},
+            values: {[queryId]: id.split(':')[1]},
             types: {[queryId]: queryArgs[queryId]}
         };
         this.state.fields.forEach(prop => request += `${Object.keys(prop)[0]} `);
         this.query('query', request, resolver, variables)
-            .then(res => this.setState({viewData: res, viewMode: true}))
+            .then(res => this.setState({viewData: res, viewMode: true, currentItemId: id}))
             .catch(err => console.log(`error: ${err}`));
     }
 
@@ -169,7 +198,7 @@ export default class Layout extends Component {
         }
         this.setState({
             currentPathSchema: {
-                typeName: currentRout,
+                typeName: currentRout[0],
                 label: obj.label,
                 resolvers: obj.resolvers,
                 fields: array,
@@ -200,13 +229,32 @@ export default class Layout extends Component {
             .catch(err => console.log(err));
     }
 
+    showErrorMs() {
+        document.getElementById('ms-error').style.visibility = 'visible';
+        document.getElementById('ms-error').style.opacity = 1;
+        setTimeout(() => {
+            document.getElementById('ms-error').style.visibility = 'hidden';
+            document.getElementById('ms-error').style.opacity = 0;
+        }, 3000);
+    }
+
+    showSuccessMs() {
+        document.getElementById('ms-success').style.visibility = 'visible';
+        document.getElementById('ms-success').style.opacity = 1;
+        setTimeout(() => {
+            document.getElementById('ms-success').style.visibility = 'hidden';
+            document.getElementById('ms-success').style.opacity = 0;
+        }, 3000);
+    }
+
     _routeToList(path) {
         this.setState({
             currentPathName: path,
             viewData: false,
             viewMode: false,
             listData: false,
-            currentPathSchema: false
+            currentPathSchema: false,
+            currentItemId: false
         }, () => {
             this.getCurrentViewFields(this.state.schema[this.state.currentPathName], [this.state.currentPathName]);
         });
@@ -220,9 +268,50 @@ export default class Layout extends Component {
         this.getViewData(e.target.id);
     }
 
+    _collectFieldsData(fields, id) {
+        let data = {values: {}, types: {}};
+
+        function getCurrentFieldData(id, type) {
+            switch (type) {
+            case 'Int':
+                return document.getElementById(id).value;
+            case 'Float':
+                return document.getElementById(id).value;
+            case 'Boolean':
+                return document.getElementById(id).checked;
+            case 'String':
+                return document.getElementById(id).value;
+            default:
+                return document.getElementById(id).value;
+            }
+        }
+
+        fields.forEach(fieldObj => {
+            let propName = Object.keys(fieldObj)[0];
+            if (!fieldObj[propName].disabled) {
+                if (propName !== 'id' && propName !== '_id') {
+                    data.values[propName] = getCurrentFieldData(propName, fieldObj[propName].fieldType);
+                    data.types[propName] = fieldObj[propName].fieldType;
+                } else if (id) {
+                    if (!data.values[id.split(':')[0]]) {
+                        data.values[id.split(':')[0]] = id.split(':')[1];
+                        data.types[id.split(':')[0]] = id.split(':')[2];
+                    } else {
+                        data.values[propName] = getCurrentFieldData(propName, fieldObj[propName].fieldType);
+                        data.types[propName] = fieldObj[propName].fieldType;
+                    }
+                }
+            }
+        });
+        return data;
+    }
+
     render() {
         const {Column} = Grid;
-        const {schema, currentPathSchema, fields, viewData, listData, SideMenuItems, viewMode} = this.state;
+        const {
+            schema, currentPathSchema, fields, viewData,
+            listData, SideMenuItems, viewMode, currentItemId
+        } = this.state;
         let {_routeToList, _routeToView, _routeToAdd, query, update, remove} = this;
         if (!schema || !currentPathSchema) {
             return (
@@ -244,6 +333,8 @@ export default class Layout extends Component {
                             _routeToList={_routeToList}
                         />
                     </Column>
+                    <Message color='green' id='ms-success'>Success!</Message>
+                    <Message color='red' id='ms-error'>Error!</Message>
                     <Column computer={13} mobile={16}>
                         {viewMode ?
                             (!viewData ?
@@ -253,13 +344,13 @@ export default class Layout extends Component {
                                     </div>
                                 </Segment> :
                                 <View
-                                    setState={this.setState}
                                     query={query}
                                     data={viewData.data[resolverForList][0] ?
                                         viewData.data[resolverForList][0] : viewData.data[resolverForList]}
                                     fields={fields}
                                     update={update}
                                     remove={remove}
+                                    currentItemId={currentItemId}
                                     _routeToAdd={_routeToAdd}
                                     schema={currentPathSchema}
                                 />) :
@@ -270,7 +361,6 @@ export default class Layout extends Component {
                                     </div>
                                 </Segment> :
                                 <List
-                                    setState={this.setState}
                                     query={query}
                                     remove={remove}
                                     _routeToView={_routeToView}

@@ -10,25 +10,27 @@ export default class View extends Component {
     static propTypes = {
         schema: PropTypes.object,
         query: PropTypes.func,
-        setState: PropTypes.func,
         data: PropTypes.object,
         fields: PropTypes.array,
         update: PropTypes.func,
         remove: PropTypes.func,
-        _routeToAdd: PropTypes.func
+        _routeToAdd: PropTypes.func,
+        currentItemId: PropTypes.string
     }
 
     state = {
         schema: this.props.schema,
         fields: this.props.fields,
-        data: this.props.data
+        data: this.props.data,
+        currentItemId: this.props.currentItemId
     }
 
     componentWillReceiveProps() {
         this.setState({
             schema: this.props.schema,
             fields: this.props.schema.fields,
-            data: this.props.data
+            data: this.props.data,
+            currentItemId: this.props.currentItemId
         });
     }
 
@@ -72,14 +74,14 @@ export default class View extends Component {
                 id={propName}
                 defaultValue={value}
                 defaultChecked={checked}
-                disabled={field[propName].disabled}
+                disabled={propName === '_id' || propName === 'id' ? true : field[propName].disabled}
                 placeholder={propName}/>
         );
     }
 
     render() {
         const {Column} = Grid;
-        const {fields, schema} = this.state;
+        const {fields, schema, currentItemId} = this.state;
         let {update, remove, _routeToAdd} = this.props,
             {generateInputs} = this,
             to = (fields.length / 2).toFixed(0),
@@ -99,6 +101,7 @@ export default class View extends Component {
                         save
                     </Button>
                     <Button type='submit' color='black'
+                            id={currentItemId}
                             onClick={!schema.resolvers.remove ? null : remove}
                             disabled={!schema.resolvers.remove}>
                         remove

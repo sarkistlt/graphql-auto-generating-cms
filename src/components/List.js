@@ -9,7 +9,6 @@ export default class List extends Component {
     static propTypes = {
         schema: PropTypes.object,
         _routeToView: PropTypes.func,
-        setState: PropTypes.func,
         query: PropTypes.func,
         data: PropTypes.array,
         remove: PropTypes.func,
@@ -38,7 +37,14 @@ export default class List extends Component {
         const {data, schema} = this.state;
         let {_routeToView, remove, _routeToAdd} = this.props,
             header = schema.listHeader,
-            {headerToString} = this;
+            {headerToString} = this,
+            idType = '';
+
+            schema.fields.find(obj => {
+                if (Object.keys(obj)[0] === Object.keys(data[0])[0]) {
+                    idType = obj[Object.keys(obj)[0]].fieldType;
+                }
+            });
 
         return (
             <Segment color='black' className='View'>
@@ -59,13 +65,14 @@ export default class List extends Component {
                                     <Button type='submit'
                                             color='black'
                                             className='action-btn'
-                                            id={obj._id ? obj._id : obj.id}
+                                            id={obj._id ? `_id:${obj._id}:${idType}` : `id:${obj.id}:${idType}`}
                                             onClick={_routeToView}>
                                         view
                                     </Button>
                                     <Button type='submit'
                                             color='black'
                                             className='action-btn'
+                                            id={obj._id ? `_id:${obj._id}:${idType}` : `id:${obj.id}:${idType}`}
                                             onClick={!schema.resolvers.remove ? null : remove}
                                             disabled={!schema.resolvers.remove}>
                                         remove
