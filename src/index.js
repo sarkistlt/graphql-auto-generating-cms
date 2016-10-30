@@ -13,6 +13,7 @@ export default class Layout extends Component {
         this.update = ::this.update;
         this.remove = ::this.remove;
         this.initCMS = ::this.initCMS;
+        this._addNewItem = ::this._addNewItem;
         this.getListData = ::this.getListData;
         this.getViewData = ::this.getViewData;
         this._routeToList = ::this._routeToList;
@@ -76,77 +77,85 @@ export default class Layout extends Component {
         });
     }
 
-    create() {
-        console.log('create');
-        let schema = this.state.currentPathSchema,
-            resolver = schema.resolvers.create.resolver,
-            req = '',
-            fields = this.state.fields,
-            id = this.state.currentItemId,
-            data = this._collectFieldsData(fields, id);
+    create(data) {
+        if (this.state.currentPathSchema.resolvers.create) {
+            let schema = this.state.currentPathSchema,
+                currentList = this.state.currentPathName,
+                resolver = schema.resolvers.create.resolver,
+                req = '';
 
-        schema.fields.forEach(prop => req += `${Object.keys(prop)[0]} `);
-        if (!data) {
-            console.log('data wasn\'t provided');
-        } else {
-            if (schema.resolvers.create) {
-                this.query('mutation', req, resolver)
-                    .then(this.showSuccessMs)
-                    .catch(err => {
-                        this.showErrorMs();
-                        console.log(`create error: ${err}`);
-                    });
+            schema.fields.forEach(prop => req += `${Object.keys(prop)[0]} `);
+
+            if (!data) {
+                console.log('data wasn\'t provided');
+            } else {
+                if (schema.resolvers.create) {
+                    this.query('mutation', req, resolver, data)
+                        .then(() => {
+                            this.forceUpdate();
+                            this.showSuccessMs();
+                            this._routeToList(currentList);
+                        })
+                        .catch(err => {
+                            this.showErrorMs();
+                            console.log(`create error: ${err}`);
+                        });
+                }
             }
         }
     }
 
     update() {
-        let schema = this.state.currentPathSchema,
-            resolver = schema.resolvers.update.resolver,
-            id = this.state.currentItemId,
-            req = id.split(':')[0],
-            fields = this.state.fields,
-            data = this._collectFieldsData(fields, id);
+        if (this.state.currentPathSchema.resolvers.update) {
+            let schema = this.state.currentPathSchema,
+                resolver = schema.resolvers.update.resolver,
+                id = this.state.currentItemId,
+                req = id ? id.split(':')[0] : '',
+                fields = this.state.fields,
+                data = this._collectFieldsData(fields, id);
 
-        if (!id) {
-            this.create(data);
-        } else {
-            if (schema.resolvers.update) {
-                this.query('mutation', req, resolver, data)
-                    .then(this.showSuccessMs)
-                    .catch(err => {
-                        this.showErrorMs();
-                        console.log(`update error: ${err}`);
-                    });
+            if (!id) {
+                this.create(data);
+            } else {
+                if (schema.resolvers.update) {
+                    this.query('mutation', req, resolver, data)
+                        .then(this.showSuccessMs)
+                        .catch(err => {
+                            this.showErrorMs();
+                            console.log(`update error: ${err}`);
+                        });
+                }
             }
         }
     }
 
     remove(e) {
-        let id = e.target.id,
-            schema = this.state.currentPathSchema,
-            currentList = this.state.currentPathName,
-            resolver = schema.resolvers.remove.resolver,
-            req = id.split(':')[0],
-            data = {values: {}, types: {}};
+        if (this.state.currentPathSchema.resolvers.remove) {
+            let id = e.target.id,
+                schema = this.state.currentPathSchema,
+                currentList = this.state.currentPathName,
+                resolver = schema.resolvers.remove.resolver,
+                req = id.split(':')[0],
+                data = {values: {}, types: {}};
 
-        data.values[id.split(':')[0]] = id.split(':')[1];
-        data.types[id.split(':')[0]] = id.split(':')[2];
+            data.values[id.split(':')[0]] = id.split(':')[1];
+            data.types[id.split(':')[0]] = id.split(':')[2];
 
-        if (!id) {
-            console.log('id wasn\'t provided');
-        } else {
-            if (schema.resolvers.remove) {
-                this.query('mutation', req, resolver, data)
-                    .then(() => {
-                        this.forceUpdate();
-                        this.showSuccessMs();
-                        this._routeToList(currentList);
-                    })
-                    .catch(err => {
-                        this.showErrorMs();
-                        console.log(`remove error: ${err}`);
-                    });
+            if (!id) {
+                console.log('id wasn\'t provided');
+            } else {
+                if (schema.resolvers.remove) {
+                    this.query('mutation', req, resolver, data)
+                        .then(() => {
+                            this.forceUpdate();
+                            this.showSuccessMs();
+                            this._routeToList(currentList);
+                        })
+                        .catch(err => {
+                            this.showErrorMs();
+                            console.log(`remove error: ${err}`);
+                        });
+                }
             }
         }
     }
@@ -247,6 +256,15 @@ export default class Layout extends Component {
         }, 3000);
     }
 
+    _addNewItem() {
+        if (this.state.currentPathSchema.resolvers.create) {
+            this.setState({
+                viewMode: true,
+                currentItemId: false
+            }, this.forceUpdate);
+        }
+    }
+
     _routeToList(path) {
         this.setState({
             currentPathName: path,
@@ -261,10 +279,6 @@ export default class Layout extends Component {
     }
 
     _routeToView(e) {
-        this.getViewData(e.target.id);
-    }
-
-    _routeToAdd(e) {
         this.getViewData(e.target.id);
     }
 
@@ -312,7 +326,7 @@ export default class Layout extends Component {
             schema, currentPathSchema, fields, viewData,
             listData, SideMenuItems, viewMode, currentItemId
         } = this.state;
-        let {_routeToList, _routeToView, _routeToAdd, query, update, remove} = this;
+        let {_routeToList, _routeToView, _routeToAdd, _addNewItem, query, update, remove} = this;
         if (!schema || !currentPathSchema) {
             return (
                 <Segment className='loading-block'>
@@ -337,7 +351,7 @@ export default class Layout extends Component {
                     <Message color='red' id='ms-error'>Error!</Message>
                     <Column computer={13} mobile={16}>
                         {viewMode ?
-                            (!viewData ?
+                            (!viewData && currentItemId ?
                                 <Segment className='loading-block'>
                                     <div className='ui active dimmer'>
                                         <Loader content='Loading'/>
@@ -345,12 +359,13 @@ export default class Layout extends Component {
                                 </Segment> :
                                 <View
                                     query={query}
-                                    data={viewData.data[resolverForList][0] ?
+                                    data={!viewData ? false : viewData.data[resolverForList][0] ?
                                         viewData.data[resolverForList][0] : viewData.data[resolverForList]}
                                     fields={fields}
                                     update={update}
                                     remove={remove}
                                     currentItemId={currentItemId}
+                                    _addNewItem={_addNewItem}
                                     _routeToAdd={_routeToAdd}
                                     schema={currentPathSchema}
                                 />) :
@@ -363,6 +378,7 @@ export default class Layout extends Component {
                                 <List
                                     query={query}
                                     remove={remove}
+                                    _addNewItem={_addNewItem}
                                     _routeToView={_routeToView}
                                     data={listData.data[resolverForList]}
                                     schema={currentPathSchema}

@@ -12,7 +12,7 @@ export default class List extends Component {
         query: PropTypes.func,
         data: PropTypes.array,
         remove: PropTypes.func,
-        _routeToAdd: PropTypes.func
+        _addNewItem: PropTypes.func
     }
 
     state = {
@@ -35,7 +35,7 @@ export default class List extends Component {
 
     render() {
         const {data, schema} = this.state;
-        let {_routeToView, remove, _routeToAdd} = this.props,
+        let {_routeToView, remove, _addNewItem} = this.props,
             header = schema.listHeader,
             {headerToString} = this,
             idType = '';
@@ -87,7 +87,7 @@ export default class List extends Component {
                                 <Button type='submit'
                                         color='black'
                                         className='add-btn'
-                                        onClick={_routeToAdd}
+                                        onClick={_addNewItem}
                                         disabled={!schema.resolvers.create}>
                                     add new
                                 </Button>

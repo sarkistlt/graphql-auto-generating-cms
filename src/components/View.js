@@ -10,12 +10,18 @@ export default class View extends Component {
     static propTypes = {
         schema: PropTypes.object,
         query: PropTypes.func,
-        data: PropTypes.object,
+        data: PropTypes.oneOfType([
+            PropTypes.object,
+            PropTypes.boolean
+        ]),
         fields: PropTypes.array,
         update: PropTypes.func,
         remove: PropTypes.func,
-        _routeToAdd: PropTypes.func,
-        currentItemId: PropTypes.string
+        currentItemId: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.boolean
+        ]),
+        _addNewItem: PropTypes.func
     }
 
     state = {
@@ -46,15 +52,20 @@ export default class View extends Component {
         let propName = Object.keys(field)[0],
             value = '',
             checked = '',
-            dateInput = false;
+            dateInput = false,
+            data = this.state.data;
 
-        if ((this.state.data[propName] ||
-            typeof (this.state.data[propName]) === 'boolean') &&
+        if (data && (data[propName] ||
+            typeof (data[propName]) === 'boolean') &&
             field[propName].inputType !== 'file') {
-            value = this.state.data[propName];
+            value = data[propName];
+        } else {
+            value = '';
         }
-        if (field[propName].inputType === 'checkbox') {
-            checked = this.state.data[propName];
+        if (data && field[propName].inputType === 'checkbox') {
+            checked = !data ? false : data[propName];
+        } else {
+            checked = false;
         }
 
         if (propName === 'createdAt' ||
@@ -62,27 +73,29 @@ export default class View extends Component {
             propName === 'deletedAt' ||
             field[propName].inputType === 'date') {
             dateInput = 'date';
-            value = this.getDateValue(value);
+            value = !data ? '' : this.getDateValue(value);
         }
 
-        return (
-            <Form.Field
-                key={idx}
-                label={field[propName].label}
-                control={field[propName].inputControl}
-                type={dateInput || field[propName].inputType}
-                id={propName}
-                defaultValue={value}
-                defaultChecked={checked}
-                disabled={propName === '_id' || propName === 'id' ? true : field[propName].disabled}
-                placeholder={propName}/>
-        );
+        if (data || (propName !== 'id' && propName !== '_id')) {
+            return (
+                <Form.Field
+                    key={idx}
+                    label={field[propName].label}
+                    control={field[propName].inputControl}
+                    type={dateInput || field[propName].inputType}
+                    id={propName}
+                    defaultValue={value}
+                    defaultChecked={checked}
+                    disabled={!data ? false : propName === '_id' || propName === 'id' ? true : field[propName].disabled}
+                    placeholder={propName}/>
+            );
+        }
     }
 
     render() {
         const {Column} = Grid;
         const {fields, schema, currentItemId} = this.state;
-        let {update, remove, _routeToAdd} = this.props,
+        let {update, remove, _addNewItem} = this.props,
             {generateInputs} = this,
             to = (fields.length / 2).toFixed(0),
             from = fields.length - to;
@@ -90,11 +103,12 @@ export default class View extends Component {
         return (
             <Segment color='black' className='View'>
                 <div className='btn-row'>
+                    {currentItemId ?
                     <Button type='submit' color='black'
-                            onClick={_routeToAdd}
+                            onClick={_addNewItem}
                             disabled={!schema.resolvers.create}>
                         add new
-                    </Button>
+                    </Button> : null}
                     <Button type='submit' color='black'
                             onClick={!schema.resolvers.update ? null : update}
                             disabled={!schema.resolvers.update}>
