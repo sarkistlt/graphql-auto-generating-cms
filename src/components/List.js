@@ -12,18 +12,26 @@ export default class List extends Component {
         query: PropTypes.func,
         data: PropTypes.array,
         remove: PropTypes.func,
-        _addNewItem: PropTypes.func
+        _addNewItem: PropTypes.func,
+        _nextPage: PropTypes.func,
+        _previewsPage: PropTypes.func,
+        offset: PropTypes.number,
+        lasPage: PropTypes.bool
     }
 
     state = {
         schema: this.props.schema,
-        data: this.props.data
+        data: this.props.data,
+        offset: this.props.offset,
+        lasPage: this.props.lasPage
     }
 
     componentWillReceiveProps() {
         this.setState({
             schema: this.props.schema,
-            data: this.props.data
+            data: this.props.data,
+            offset: this.props.offset,
+            limit: this.props.limit
         });
     }
 
@@ -34,17 +42,17 @@ export default class List extends Component {
     }
 
     render() {
-        const {data, schema} = this.state;
-        let {_routeToView, remove, _addNewItem} = this.props,
+        const {data, schema, offset, lasPage} = this.state;
+        let {_routeToView, remove, _addNewItem, _nextPage, _previewsPage} = this.props,
             header = schema.listHeader,
             {headerToString} = this,
             idType = '';
 
-            schema.fields.find(obj => {
-                if (Object.keys(obj)[0] === Object.keys(data[0])[0]) {
-                    idType = obj[Object.keys(obj)[0]].fieldType;
-                }
-            });
+        schema.fields.find(obj => {
+            if (Object.keys(obj)[0] === Object.keys(data[0])[0]) {
+                idType = obj[Object.keys(obj)[0]].fieldType;
+            }
+        });
 
         return (
             <Segment color='black' className='View'>
@@ -92,11 +100,11 @@ export default class List extends Component {
                                     add new
                                 </Button>
                                 <Menu floated='right' pagination>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='left chevron'/>
+                                    <Menu.Item as='a' icon onClick={_nextPage}>
+                                        <Icon name='left chevron' disabled={!offset}/>
                                     </Menu.Item>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='right chevron'/>
+                                    <Menu.Item as='a' icon onClick={_previewsPage}>
+                                        <Icon name='right chevron' disabled={lasPage}/>
                                     </Menu.Item>
                                 </Menu>
                             </Table.HeaderCell>

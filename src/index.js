@@ -13,11 +13,13 @@ export default class Layout extends Component {
         this.update = ::this.update;
         this.remove = ::this.remove;
         this.initCMS = ::this.initCMS;
+        this._nextPage = ::this._nextPage;
         this._addNewItem = ::this._addNewItem;
         this.getListData = ::this.getListData;
         this.getViewData = ::this.getViewData;
         this._routeToList = ::this._routeToList;
         this._routeToView = ::this._routeToView;
+        this._previewsPage = ::this._previewsPage;
         this.getCurrentViewFields = ::this.getCurrentViewFields;
         this._collectFieldsData = ::this._collectFieldsData;
     }
@@ -34,7 +36,10 @@ export default class Layout extends Component {
         currentPathName: false,
         SideMenuItems: false,
         viewMode: false,
-        currentItemId: false
+        currentItemId: false,
+        limit: 50,
+        offset: 0,
+        lasPage: false
     }
 
     componentDidMount() {
@@ -164,12 +169,19 @@ export default class Layout extends Component {
         let d = this.state.currentPathSchema,
             h = this.state.currentPathSchema.listHeader,
             resolver = d.resolvers.find.resolver,
+            {offset, limit} = this.state,
+            data = {
+                values: {offset: offset, limit: limit},
+                types: {offset: 'Int', limit: 'Int'}
+            },
             req = `${h.id.join(' ')} ${h.title.join(' ')}`;
-
-        this.query('query', req, resolver)
+        this.query('query', req, resolver, data)
             .then(res => {
                 res.errors ? console.log(res) : null;
-                this.setState({listData: res});
+                this.setState({
+                    listData: res,
+                    lasPage: res.data[resolver].length < 50
+                });
             })
             .catch(err => console.log(`error: ${err}`));
     }
@@ -256,6 +268,28 @@ export default class Layout extends Component {
         }, 3000);
     }
 
+    _nextPage() {
+        let {offset, limit, lasPage} = this.state;
+        if(!lasPage) {
+            console.log('_nextPage');
+            this.setState({
+                offset: offset + 50,
+                limit: limit + 50
+            }, this.getListData);
+        }
+    }
+
+    _previewsPage() {
+        let {offset, limit} = this.state;
+        if (offset) {
+            console.log('_previewsPage');
+            this.setState({
+                offset: offset - 50,
+                limit: limit - 50
+            }, this.getListData);
+        }
+    }
+
     _addNewItem() {
         if (this.state.currentPathSchema.resolvers.create) {
             this.setState({
@@ -272,7 +306,9 @@ export default class Layout extends Component {
             viewMode: false,
             listData: false,
             currentPathSchema: false,
-            currentItemId: false
+            currentItemId: false,
+            limit: 50,
+            offset: 0
         }, () => {
             this.getCurrentViewFields(this.state.schema[this.state.currentPathName], [this.state.currentPathName]);
         });
@@ -303,7 +339,7 @@ export default class Layout extends Component {
         fields.forEach(fieldObj => {
             let propName = Object.keys(fieldObj)[0];
             if (!fieldObj[propName].disabled) {
-                if (propName !== 'id' && propName !== '_id') {
+                if (propName !== 'id' && propName !== '_id' && propName !== 'offset' && propName !== 'limit') {
                     data.values[propName] = getCurrentFieldData(propName, fieldObj[propName].fieldType);
                     data.types[propName] = fieldObj[propName].fieldType;
                 } else if (id) {
@@ -323,10 +359,11 @@ export default class Layout extends Component {
     render() {
         const {Column} = Grid;
         const {
-            schema, currentPathSchema, fields, viewData,
+            schema, currentPathSchema, fields, viewData, offset, lasPage,
             listData, SideMenuItems, viewMode, currentItemId
         } = this.state;
-        let {_routeToList, _routeToView, _routeToAdd, _addNewItem, query, update, remove} = this;
+        let {_routeToList, _routeToView, _routeToAdd, _addNewItem,
+            _nextPage, _previewsPage, query, update, remove} = this;
         if (!schema || !currentPathSchema) {
             return (
                 <Segment className='loading-block'>
@@ -378,6 +415,10 @@ export default class Layout extends Component {
                                 <List
                                     query={query}
                                     remove={remove}
+                                    offset={offset}
+                                    lasPage={lasPage}
+                                    _nextPage={_nextPage}
+                                    _previewsPage={_previewsPage}
                                     _addNewItem={_addNewItem}
                                     _routeToView={_routeToView}
                                     data={listData.data[resolverForList]}

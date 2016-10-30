@@ -76,7 +76,7 @@ export default class View extends Component {
             value = !data ? '' : this.getDateValue(value);
         }
 
-        if (data || (propName !== 'id' && propName !== '_id')) {
+        if (data || (propName !== 'id' && propName !== '_id' && propName !== 'offset' && propName !== 'limit')) {
             return (
                 <Form.Field
                     key={idx}
