@@ -69,11 +69,11 @@ export default class SideMenu extends Component {
                             {item.label}
                         </Menu.Item>
                     )}
-                    <Menu.Item href='https://github.com/sarkistlt/graphql-auto-generating-cms' target='_blink'>
+                    <Menu.Item className='github'
+                        href='https://github.com/sarkistlt/graphql-auto-generating-cms' target='_blink'>
                         <Button
                             inverted
                             content='GitHub'
-                            className='github'
                             icon='github'/>
                     </Menu.Item>
                 </Menu>

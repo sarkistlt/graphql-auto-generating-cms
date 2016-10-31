@@ -13,10 +13,18 @@
     font-weight: 300 !important;
 
     .github {
-      color: white !important;
-      width: 100% !important;
-      i {
+      padding: 5px !important;
+      .button {
+        text-align: center !important;
         color: white !important;
+        padding: 5px !important;
+        width: 100% !important;
+        i {
+          margin: 0 5px 0 0 !important;
+          padding: 0 !important;
+          width: 10px !important;
+          color: white !important;
+        }
       }
     }
 
