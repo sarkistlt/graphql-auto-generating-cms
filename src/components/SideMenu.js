@@ -1,5 +1,5 @@
 import React, {PropTypes, Component} from 'react';
-import {Menu, Grid, Dropdown} from 'semantic-ui-react';
+import {Menu, Grid, Dropdown, Button} from 'semantic-ui-react';
 
 export default class SideMenu extends Component {
     constructor(props) {
@@ -69,6 +69,13 @@ export default class SideMenu extends Component {
                             {item.label}
                         </Menu.Item>
                     )}
+                    <Menu.Item href='https://github.com/sarkistlt/graphql-auto-generating-cms' target='_blink'>
+                        <Button
+                            inverted
+                            content='GitHub'
+                            className='github'
+                            icon='github'/>
+                    </Menu.Item>
                 </Menu>
                 <Dropdown as={Grid.Column} text='NAVIGATION MENU' floating labeled button
                           className='icon mobile-nav' only='tablet mobile'>

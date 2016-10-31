@@ -12,6 +12,14 @@
     font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
     font-weight: 300 !important;
 
+    .github {
+      color: white !important;
+      width: 100% !important;
+      i {
+        color: white !important;
+      }
+    }
+
     .message {
       position: fixed;
       z-index: 1;
