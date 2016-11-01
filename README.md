@@ -68,7 +68,6 @@ export default (
 Or as child component:
 ~~~js
 <GraphqlCMS
-   path='/graphql-cms'
    endpoint='/graphql_cms_endpoint'
    graphql='/graphql'
 />
