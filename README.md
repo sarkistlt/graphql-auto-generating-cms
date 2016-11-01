@@ -213,7 +213,7 @@ let customPages = [
 
 ##Example
 You can find simple example in [example](https://github.com/sarkistlt/graphql-auto-generating-cms/tree/master/example) folder in the root of repository.
-
+![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/Screen%20Shot%202016-10-31%20at%2010.26.10%20AM.png)
 
 
 
