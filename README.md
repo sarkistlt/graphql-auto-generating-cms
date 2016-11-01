@@ -1,7 +1,7 @@
 ![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/Screen-Shot-2016-10-31-at-10.33.13-AM.png)
 This package will build a fully-functional CMS by just using your printed GraphQL schema without any changes in your existed code or architecture.
 
-We don't have yet documentation so it's highly recommended you first read this article [[Auto generating CMS based on your GraphQL schema.](https://www.google.com)] to understand how this package works.
+We don't have yet documentation so it's highly recommended you first read this article [[Auto generating CMS based on your GraphQL schema.](https://medium.com/@sarkis.tlt/auto-generating-cms-based-on-your-graphql-schema-5eaa6b07987b#.7lk3gbz0b)] to understand how this package works.
 On this page we'll just shortly go through the main stuff.
 
 1. [Common requirements](#common-requirements)
@@ -37,7 +37,7 @@ On your server side, in example below we specify endpoint for client side: ```/g
 ~~~js 
 …
 import express from 'express';
-import graphqlCMS from 'graphql-auto-generating-cms/middleware';
+import graphqlCMS from 'graphql-auto-generating-cms/lib/middleware';
 import schema from '../schema';
 const printSchema = require('graphql/utilities/schemaPrinter').printSchema;
 let app = express();
