@@ -31,7 +31,10 @@ export default class Layout extends Component {
             graphql: PropTypes.string,
             endpoint: PropTypes.string,
             newMenuItems: PropTypes.array
-        })
+        }),
+        graphql: PropTypes.string,
+        endpoint: PropTypes.string,
+        newMenuItems: PropTypes.array
     }
 
     state = {
@@ -59,9 +62,10 @@ export default class Layout extends Component {
 
     query(type, request, resolver, variables) {
         return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
+            let xhr = new XMLHttpRequest(),
+                graphql = this.props.route.graphql ? this.props.route.graphql : this.props.graphql;
             xhr.responseType = 'json';
-            xhr.open('POST', this.props.route.graphql);
+            xhr.open('POST', graphql);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader('Accept', 'application/json');
             xhr.onload = () => {
@@ -238,10 +242,13 @@ export default class Layout extends Component {
     }
 
     initCMS() {
-        fetch(this.props.route.endpoint, {method: 'GET'})
+        let endpoint = this.props.route.endpoint ? this.props.route.endpoint : this.props.endpoint;
+        fetch(endpoint, {method: 'GET'})
             .then(json => json.json())
             .then(res => {
-                let menuItems = [];
+                let menuItems = [],
+                    newMenuItems = this.props.route.newMenuItems ?
+                        this.props.route.newMenuItems : this.props.newMenuItems;
                 for (let type in res) {
                     if (res.hasOwnProperty(type)) {
                         menuItems.push({label: res[type].label, typeName: type});
@@ -251,7 +258,7 @@ export default class Layout extends Component {
                 this.setState({
                     schema: res,
                     SideMenuItems: menuItems,
-                    newMenuItemSecret: this.props.route.newMenuItems ? this.props.route.newMenuItems[0].secret : false
+                    newMenuItemSecret: newMenuItems ? newMenuItems[0].secret : false
                 }, () => {
                     if (!this.state.newMenuItemSecret) {
                         let prop = this.state.SideMenuItems[0].typeName;
@@ -431,7 +438,7 @@ export default class Layout extends Component {
                 _routeToList, _routeToView, _routeToAdd, _addNewItem,
                 _nextPage, _previewsPage, query, update, remove, _handleNewMenuClick
             } = this,
-            newMenuItems = this.props.route.newMenuItems;
+            newMenuItems = this.props.route.newMenuItems ? this.props.route.newMenuItems : this.props.newMenuItems;
 
         if (!schema) {
             return (
@@ -449,6 +456,7 @@ export default class Layout extends Component {
             } else {
                 resolverForList = currentPathSchema.resolvers.find.resolver;
             }
+            
             return (
                 <Grid className='graphql-cms'>
                     <Column computer={3} mobile={16}>
