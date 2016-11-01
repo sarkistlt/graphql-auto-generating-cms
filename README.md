@@ -51,7 +51,7 @@ app.listen(port)
 On your client side as separate route:
 ~~~js
 ...
-import graphqlCMS from 'graphql-auto-generating-cms';
+import GraphqlCMS from 'graphql-auto-generating-cms';
 
 export default (
     <Router onUpdate={() => window.scrollTo(0, 0)} history={browserHistory}>
