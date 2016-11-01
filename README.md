@@ -1,3 +1,4 @@
+![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/Screen-Shot-2016-10-31-at-10.33.13-AM.png)
 This package will build a fully-functional CMS by just using your printed GraphQL schema without any changes in your existed code or architecture.
 
 We don't have yet documentation so it's highly recommended you first read this article [[Auto generating CMS based on your GraphQL schema.](https://www.google.com)] to understand how this package works.
