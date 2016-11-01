@@ -56,7 +56,7 @@ app.listen(port)
 On your client side as separate route:
 ~~~js
 ...
-import graphqlCMS from 'graphql-auto-generating-cms;
+import graphqlCMS from 'graphql-auto-generating-cms';
 
 export default (
     <Router onUpdate={() => window.scrollTo(0, 0)} history={browserHistory}>
@@ -73,7 +73,7 @@ export default (
 Or as child component:
 ~~~js
 <GraphqlCMS
-   path=’/graphql-cms’'
+   path='/graphql-cms'
    endpoint='/graphql_cms_endpoint'
    graphql='/graphql'
 />
@@ -188,7 +188,7 @@ let config = {
 You can provide custom components to as CMS menu point. On your client side you have to provide one more property “newMenuItems”:
 ~~~js
 <Route
-   path=’/graphql-cms’'
+   path='/graphql-cms'
    endpoint='/graphql_cms_endpoint'
    graphql='/graphql'
    newMenuItems={customPages}
