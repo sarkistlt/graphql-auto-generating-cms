@@ -17,12 +17,6 @@ npm i -S graphql-auto-generating-cms
 ~~~
 
 ##Common requirements
-You have to use following babel presets:
-- ```Babel-preset-es2015```
-- ```Babel-preset-react```
-- ```Babel-preset-stage-0```
-- ```Babel-preset-stage-1```
-
 All Query methods has to have the following arguments for pagination and to query one specific item:
 - ```offset: Int```
 - ```limit: Int```
