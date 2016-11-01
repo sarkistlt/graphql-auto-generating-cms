@@ -61,7 +61,7 @@ import graphqlCMS from 'graphql-auto-generating-cms';
 export default (
     <Router onUpdate={() => window.scrollTo(0, 0)} history={browserHistory}>
         <Route
-           path=’/graphql-cms’'
+           path='/graphql-cms'
            endpoint='/graphql_cms_endpoint'
            graphql='/graphql'
            components={GraphqlCMS}
@@ -211,7 +211,7 @@ let customPages = [
 ~~~
 
 ##Example
-You can find simple example in ```example``` folder in the root of repository.
+You can find simple example in [example](https://github.com/sarkistlt/graphql-auto-generating-cms/tree/master/example) folder in the root of repository.
 
 
 
