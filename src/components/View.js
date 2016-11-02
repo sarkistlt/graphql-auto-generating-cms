@@ -58,7 +58,10 @@ export default class View extends Component {
 
         function isDate(val) {
             var d = new Date(val);
-            return !isNaN(d.valueOf()) && typeof (val) !== 'boolean' && typeof (val) !== 'number';
+            return !isNaN(d.valueOf()) &&
+                typeof (val) !== 'boolean' &&
+                typeof (val) !== 'number' &&
+                typeof (+val) !== 'number';
         }
 
         if (data && (data[propName] ||
