@@ -53,12 +53,21 @@ export default class View extends Component {
             value = '',
             checked = '',
             dateInput = false,
-            data = this.state.data;
+            data = this.state.data,
+            control = field[propName].inputControl;
+
+        function isDate(val) {
+            var d = new Date(val);
+            return !isNaN(d.valueOf()) && typeof (val) !== 'boolean' && typeof (val) !== 'number';
+        }
 
         if (data && (data[propName] ||
             typeof (data[propName]) === 'boolean') &&
             field[propName].inputType !== 'file') {
             value = data[propName];
+            if (value.length > 100) {
+                control = 'textarea';
+            }
         } else {
             value = '';
         }
@@ -68,7 +77,8 @@ export default class View extends Component {
             checked = false;
         }
 
-        if (propName === 'createdAt' ||
+        if (isDate(value) ||
+            propName === 'createdAt' ||
             propName === 'updatedAt' ||
             propName === 'deletedAt' ||
             field[propName].inputType === 'date') {
@@ -76,13 +86,15 @@ export default class View extends Component {
             value = !data ? '' : this.getDateValue(value);
         }
 
+        let type = dateInput || field[propName].inputType;
+
         if (data || (propName !== 'id' && propName !== '_id' && propName !== 'offset' && propName !== 'limit')) {
             return (
                 <Form.Field
                     key={idx}
                     label={field[propName].label}
-                    control={field[propName].inputControl}
-                    type={dateInput || field[propName].inputType}
+                    control={control}
+                    type={type}
                     id={propName}
                     defaultValue={value}
                     defaultChecked={checked}
@@ -104,11 +116,11 @@ export default class View extends Component {
             <Segment color='black' className='View'>
                 <div className='btn-row'>
                     {currentItemId ?
-                    <Button type='submit' color='black'
-                            onClick={_addNewItem}
-                            disabled={!schema.resolvers.create}>
-                        add new
-                    </Button> : null}
+                        <Button type='submit' color='black'
+                                onClick={_addNewItem}
+                                disabled={!schema.resolvers.create}>
+                            add new
+                        </Button> : null}
                     <Button type='submit' color='black'
                             onClick={!schema.resolvers.update ? null : update}
                             disabled={!schema.resolvers.update}>

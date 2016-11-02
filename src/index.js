@@ -3,7 +3,7 @@ import {Grid, Loader, Segment, Message} from 'semantic-ui-react';
 import SideMenu from './components/SideMenu';
 import View from './components/View';
 import List from './components/List';
-import './components/styles.css';
+import './components/styles.scss';
 
 export default class Layout extends Component {
     constructor(props) {
