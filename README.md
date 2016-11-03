@@ -1,6 +1,15 @@
 ![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/Screen-Shot-2016-10-31-at-10.33.13-AM.png)
 This package will build a fully-functional CMS by just using your printed GraphQL schema without any changes in your existed code or architecture.
 
+**Currently I’m working on new version of module, so Star project on GitHub to be up to date.**
+**What will new version support:**
+* **Nested properties in graphQL Type, any depth**
+* **graphQLList support**
+* **Routing**
+* **File uploading**
+
+**So with new release auto-generated CMS will handle 90% of your needs from CMS, just by providing printed GraphQL schema!**
+
 We don't have yet documentation so it's highly recommended you first read this article [[Auto generating CMS based on your GraphQL schema.](https://medium.com/@sarkis.tlt/auto-generating-cms-based-on-your-graphql-schema-5eaa6b07987b#.7lk3gbz0b)] to understand how this package works.
 On this page we'll just shortly go through the main stuff.
 
@@ -208,5 +217,6 @@ let customPages = [
 You can find simple example in [example](https://github.com/sarkistlt/graphql-auto-generating-cms/tree/master/example) folder in the root of repository.
 ![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/Screen%20Shot%202016-10-31%20at%2010.26.10%20AM.png)
 
-
+# License
+MIT
 
