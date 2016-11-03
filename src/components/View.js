@@ -48,6 +48,19 @@ export default class View extends Component {
         return `${y}-${m}-${d}`;
     }
 
+    checkOnEnterIfTextarea(e) {
+        if (e.target.nodeName === 'INPUT' && e.target.value.length > 100) {
+            let textarea = document.createElement('textarea');
+            textarea.id = e.target.id;
+            textarea.placeholder = e.target.placeholder;
+            textarea.innerText = e.target.value;
+
+            e.target.parentNode.insertBefore(textarea, e.target);
+            e.target.parentNode.removeChild(e.target);
+            document.getElementById(textarea.id).focus();
+        }
+    }
+
     generateInputs(field, idx) {
         let propName = Object.keys(field)[0],
             value = '',
@@ -101,6 +114,7 @@ export default class View extends Component {
                     id={propName}
                     defaultValue={value}
                     defaultChecked={checked}
+                    onInput={this.checkOnEnterIfTextarea}
                     disabled={!data ? false : propName === '_id' || propName === 'id' ? true : field[propName].disabled}
                     placeholder={propName}/>
             );
