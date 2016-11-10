@@ -11,7 +11,7 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 
 **TODO**
 * **Routing with ability to turn it off**
-* **Fix npm build process issue**
+* **Fix npm build process for React component**
 
 **So with new release auto-generated CMS will handle 90% of your needs from CMS, just by providing printed GraphQL schema!**
 
@@ -23,7 +23,7 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 ~~~sh
 npm i -S graphql-auto-generating-cms
 ~~~
-**If you are having some visual issue or bugs, instead of ```npm```, manually use source code from ```./src``` in repository, to import React component on client side.**
+**If CMS doesn't work correct or you have any error massage in console after bundling your project, instead of ```npm```, directly use source code from ```./src``` or ```./lib``` folder in repository, to import React component on client side.**
 
 **if you use React component from source code, you need to install following babel presets:**
 * **babel-preset-es2015**
@@ -32,7 +32,7 @@ npm i -S graphql-auto-generating-cms
 * **babel-preset-stage-1**
 
 ##Example
-You can find simple example in [example](https://github.com/sarkistlt/graphql-auto-generating-cms/tree/master/example) folder in the root of repository.
+You can find simple [example here](https://github.com/sarkistlt/graphql-auto-generating-cms/tree/master/example) of usage.
 ![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/screenshots/Screen%20Shot%202016-10-31%20at%2010.26.10%20AM.png)
 
 # License
