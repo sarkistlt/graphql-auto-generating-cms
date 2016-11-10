@@ -5,9 +5,9 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 
 
 **What is new:**
-* **Support of nested properties in graphQL Type, any depth**
-* **Support of graphQLList support**
-* **Support of File uploading**
+* **Support of nested fields in a graphQL Type, any depth**
+* **GraphQLList support**
+* **File uploading support**
 
 **TODO**
 * **Routing with ability to turn it off**
