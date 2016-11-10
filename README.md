@@ -5,12 +5,12 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 
 
 **What is new:**
-* **Support of nested fields in a graphQL Type, any depth**
-* **GraphQLList support**
-* **File uploading support**
+* Support of nested fields in a graphQL Type, any depth
+* GraphQLList support
+* File uploading support
 
-**TODO**
-* **Fix npm build process for React component**
+**TODO:**
+* Fix npm build process for React component
 
 **[Documantation](https://sarkistlt.gitbooks.io/graphql-cms/content/)**
 
@@ -20,9 +20,9 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 ~~~sh
 npm i -S graphql-auto-generating-cms
 ~~~
-**If CMS doesn't work correct or you have any error massages in console after bundling your project, instead of ```npm```, directly use source code from ```./src``` or ```./lib``` folder in repository, to import React component on client side.**
+> **If CMS doesn't work correct or you have any error massages in console after bundling your project, instead of ```npm```, directly use source code from ```./src``` or ```./lib``` folder in repository, to import React component on client side.**
 
-**if you use React component from source code, you need to install following babel presets:**
+> **if you use React component from source code, you need to install following babel presets:**
 * **babel-preset-es2015**
 * **babel-preset-react**
 * **babel-preset-stage-0**
