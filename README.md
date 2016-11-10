@@ -22,6 +22,7 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 ~~~sh
 npm i -S graphql-auto-generating-cms
 ~~~
+**If you having some visual issue or bugs, instead of ```npm```, manually use source code from ```./src```.**
 
 ##Example
 You can find simple example in [example](https://github.com/sarkistlt/graphql-auto-generating-cms/tree/master/example) folder in the root of repository.

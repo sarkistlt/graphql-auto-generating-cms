@@ -108,7 +108,7 @@ class View extends Component {
             let p = document.getElementById(`${propName}-p`),
                 uploadRoot = this.fixPath(this.props.schema.uploadRoot),
                 uploadPath = this.props.schema.uploadPath ? this.fixPath(this.props.schema.uploadPath) : '';
-            
+
             this.setState({popupImgLink: `${uploadRoot}${uploadPath}/${p.innerText}`});
         } else {
             this.setState({popupImgLink: false});
