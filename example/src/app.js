@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {render} from 'react-dom';
 import {Router, Route} from 'react-router';
+import GraphqlCMS from 'graphql-auto-generating-cms';
 
 class CustomPage extends Component {
     render() {
