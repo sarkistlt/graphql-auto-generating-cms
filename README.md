@@ -13,6 +13,7 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 * **Routing with ability to turn it off**
 
 **So with new release auto-generated CMS will handle 90% of your needs from CMS, just by providing printed GraphQL schema!**
+
 **[Documantation](https://sarkistlt.gitbooks.io/graphql-cms/content/)**
 
 [Auto generating CMS based on your GraphQL schema.](https://medium.com/@sarkis.tlt/auto-generating-cms-based-on-your-graphql-schema-5eaa6b07987b#.7lk3gbz0b) [v1]
