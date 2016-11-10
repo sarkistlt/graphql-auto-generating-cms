@@ -8,12 +8,6 @@ gulp.task('scss', () => {
         .pipe(gulp.dest('./lib/components'));
 });
 
-gulp.task('build:component:Layout', () => {
-    return gulp.src('./src/index.js')
-        .pipe(babel({presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true}))
-        .pipe(gulp.dest('./lib'));
-});
-
 gulp.task('build:component:SideMenu', () => {
     return gulp.src('./src/components/SideMenu.js')
         .pipe(babel({presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true}))
@@ -30,6 +24,12 @@ gulp.task('build:component:View', () => {
     return gulp.src('./src/components/View.js')
         .pipe(babel({presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true}))
         .pipe(gulp.dest('./lib/components'));
+});
+
+gulp.task('build:component:Layout', () => {
+    return gulp.src('./src/index.js')
+        .pipe(babel({presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true}))
+        .pipe(gulp.dest('./lib'));
 });
 
 gulp.task('build:middleware', () => {

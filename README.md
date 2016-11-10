@@ -1,4 +1,4 @@
-![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/Screen-Shot-2016-10-31-at-10.33.13-AM.png)
+![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/screenshots/Screen-Shot-2016-10-31-at-10.33.13-AM.png)
 This package will build a fully-functional CMS by just using your printed GraphQL schema without any changes in your existed code or architecture.
 
 **New release [v2] is available!**
@@ -25,7 +25,7 @@ npm i -S graphql-auto-generating-cms
 
 ##Example
 You can find simple example in [example](https://github.com/sarkistlt/graphql-auto-generating-cms/tree/master/example) folder in the root of repository.
-![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/Screen%20Shot%202016-10-31%20at%2010.26.10%20AM.png)
+![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/screenshots/Screen%20Shot%202016-10-31%20at%2010.26.10%20AM.png)
 
 # License
 MIT
