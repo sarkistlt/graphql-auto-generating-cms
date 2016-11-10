@@ -1,7 +1,7 @@
 import React, {PropTypes, Component} from 'react';
 import {Segment, Grid, Form, Button, Divider, Icon, Popup, Dropdown, Modal} from 'semantic-ui-react';
 
-class View extends Component {
+export default class View extends Component {
     constructor(props) {
         super(props);
         this.getOptionsForModal = ::this.getOptionsForModal;
@@ -12,6 +12,26 @@ class View extends Component {
         this.initStatesForSelector = ::this.initStatesForSelector;
 
         this.initStatesForSelector(this.props.fields);
+    }
+
+    static propTypes = {
+        schema: PropTypes.object,
+        query: PropTypes.func,
+        data: PropTypes.oneOfType([
+            PropTypes.object,
+            PropTypes.boolean
+        ]),
+        fields: PropTypes.array,
+        update: PropTypes.func,
+        _collectFieldsData: PropTypes.func,
+        getRequestString: PropTypes.func,
+        remove: PropTypes.func,
+        currentItemId: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.boolean
+        ]),
+        _uploadImage: PropTypes.func,
+        _addNewItem: PropTypes.func
     }
 
     state = {
@@ -381,25 +401,3 @@ class View extends Component {
         );
     }
 }
-
-View.propTypes = {
-    schema: PropTypes.object,
-    query: PropTypes.func,
-    data: PropTypes.oneOfType([
-        PropTypes.object,
-        PropTypes.boolean
-    ]),
-    fields: PropTypes.array,
-    update: PropTypes.func,
-    _collectFieldsData: PropTypes.func,
-    getRequestString: PropTypes.func,
-    remove: PropTypes.func,
-    currentItemId: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.boolean
-    ]),
-    _uploadImage: PropTypes.func,
-    _addNewItem: PropTypes.func
-};
-
-export default View;

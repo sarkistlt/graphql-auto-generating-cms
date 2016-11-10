@@ -5,7 +5,7 @@ import View from './components/View';
 import List from './components/List';
 import './components/styles.css';
 
-class Layout extends Component {
+export default class Layout extends Component {
     constructor(props) {
         super(props);
         this.query = ::this.query;
@@ -27,6 +27,17 @@ class Layout extends Component {
         this._collectFieldsData = ::this._collectFieldsData;
         this._handleNewMenuClick = ::this._handleNewMenuClick;
         this.getCurrentViewFields = ::this.getCurrentViewFields;
+    }
+
+    static propTypes = {
+        route: PropTypes.shape({
+            graphql: PropTypes.string,
+            endpoint: PropTypes.string,
+            newMenuItems: PropTypes.array
+        }),
+        graphql: PropTypes.string,
+        endpoint: PropTypes.string,
+        newMenuItems: PropTypes.array
     }
 
     state = {
@@ -656,16 +667,3 @@ class Layout extends Component {
         }
     }
 }
-
-Layout.propTypes = {
-    route: PropTypes.shape({
-        graphql: PropTypes.string,
-        endpoint: PropTypes.string,
-        newMenuItems: PropTypes.array
-    }),
-    graphql: PropTypes.string,
-    endpoint: PropTypes.string,
-    newMenuItems: PropTypes.array
-};
-
-export default Layout;

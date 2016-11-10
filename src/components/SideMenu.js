@@ -1,11 +1,19 @@
 import React, {PropTypes, Component} from 'react';
 import {Menu, Grid, Dropdown, Button} from 'semantic-ui-react';
 
-class SideMenu extends Component {
+export default class SideMenu extends Component {
     constructor(props) {
         super(props);
         this._handleMenuClick = ::this._handleMenuClick;
         this._handleNewMenuClick = ::this._handleNewMenuClick;
+    }
+
+    static propTypes = {
+        items: PropTypes.array,
+        setState: PropTypes.func,
+        _routeToList: PropTypes.func,
+        newMenuItems: PropTypes.array,
+        _handleNewMenuClick: PropTypes.func
     }
 
     state = {
@@ -84,13 +92,3 @@ class SideMenu extends Component {
         );
     }
 }
-
-SideMenu.propTypes = {
-    items: PropTypes.array,
-    setState: PropTypes.func,
-    _routeToList: PropTypes.func,
-    newMenuItems: PropTypes.array,
-    _handleNewMenuClick: PropTypes.func
-};
-
-export default SideMenu;
