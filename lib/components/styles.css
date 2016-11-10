@@ -8,6 +8,19 @@
   padding: 14px !important;
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   font-weight: 300 !important; }
+  .graphql-cms label {
+    color: black !important; }
+  .graphql-cms .file-form {
+    margin: 0 0 14px 0;
+    padding: 0; }
+    .graphql-cms .file-form .file-form-btn {
+      margin: 0 !important;
+      color: white !important; }
+      .graphql-cms .file-form .file-form-btn i {
+        color: white !important; }
+    .graphql-cms .file-form .file-name {
+      display: inline-block;
+      margin-left: 10px; }
   .graphql-cms .github {
     padding: 5px !important; }
     .graphql-cms .github .button {
@@ -20,6 +33,8 @@
         padding: 0 !important;
         width: 10px !important;
         color: white !important; }
+  .graphql-cms [type="file"] {
+    display: none; }
   .graphql-cms .message {
     position: fixed;
     z-index: 1;
@@ -70,6 +85,22 @@
     margin: 0 !important;
     padding: 0 !important;
     border-top: 2px solid #B33086 !important; }
+    .graphql-cms .View .selection {
+      margin-bottom: 14px !important; }
+    .graphql-cms .View .selector-add {
+      display: inline-block;
+      margin: 5px !important;
+      padding: 2px !important;
+      color: white !important; }
+      .graphql-cms .View .selector-add i {
+        color: white !important; }
+    .graphql-cms .View .nestedFields {
+      margin: 0 !important;
+      padding: 0 !important; }
+      .graphql-cms .View .nestedFields .nested-title {
+        color: black; }
+      .graphql-cms .View .nestedFields .divider {
+        text-transform: none !important; }
     .graphql-cms .View .form {
       margin: 0 !important; }
     .graphql-cms .View .btn-row {
@@ -93,4 +124,42 @@
       padding: 11px !important;
       margin: 0 !important; }
 
-/*# sourceMappingURL=styles.css.map */
+.graphql-cms_modal {
+  padding: 0 !important;
+  height: auto !important;
+  position: relative !important; }
+  .graphql-cms_modal .content {
+    margin: 0 !important;
+    padding: 14px !important; }
+  .graphql-cms_modal .content:before {
+    display: none !important; }
+  .graphql-cms_modal .selection {
+    margin-bottom: 14px !important; }
+  .graphql-cms_modal .selector-add {
+    display: inline-block;
+    margin: 5px !important;
+    padding: 2px !important;
+    color: white !important; }
+    .graphql-cms_modal .selector-add i {
+      color: white !important; }
+  .graphql-cms_modal .btn-row {
+    text-align: right;
+    width: 78px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: right; }
+    .graphql-cms_modal .btn-row .button {
+      padding: 3px 14px !important; }
+  .graphql-cms_modal .button {
+    display: inline-block;
+    margin: 5px !important;
+    padding: 2px !important; }
+  .graphql-cms_modal .nestedFields {
+    margin: 0 !important;
+    padding: 0 !important; }
+    .graphql-cms_modal .nestedFields .nested-title {
+      color: black; }
+    .graphql-cms_modal .nestedFields .divider {
+      text-transform: none !important; }
+  .graphql-cms_modal .form {
+    margin: 0 !important; }
