@@ -10,10 +10,7 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 * **File uploading support**
 
 **TODO**
-* **Routing with ability to turn it off**
 * **Fix npm build process for React component**
-
-**So with new release auto-generated CMS will handle 90% of your needs from CMS, just by providing printed GraphQL schema!**
 
 **[Documantation](https://sarkistlt.gitbooks.io/graphql-cms/content/)**
 
