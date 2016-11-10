@@ -1,6 +1,6 @@
 {
   "name": "graphql-auto-generating-cms",
-  "version": "1.2.13",
+  "version": "2.0.0",
   "description": "This module will use your existed graphQL schema to generate simple for use CMS in a couple minutes!",
   "main": "lib/index.js",
   "scripts": {
@@ -22,7 +22,8 @@
     "feathers",
     "auto generated",
     "auto cms",
-    "React"
+    "React",
+    "GraphQL CMS"
   ],
   "author": {
     "name": "Sarkis Arutiunian (sarkis.tlt@gmail.com)"
@@ -33,10 +34,13 @@
   },
   "homepage": "https://github.com/sarkistlt/graphql-auto-generating-cms#readme",
   "dependencies": {
+    "formidable": "^1.0.17",
+    "fs-extra": "^1.0.0",
     "graphql": "^0.7.2",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "semantic-ui-react": "^0.56.12"
+    "semantic-ui-react": "^0.56.12",
+    "util": "^0.10.3"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",

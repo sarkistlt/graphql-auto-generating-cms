@@ -1,3 +1,7 @@
+import formidable from 'formidable';
+import fs from 'fs-extra';
+import util from 'util';
+
 function applyRules(shape, rules) {
     let response = rules ? rules : shape;
     if (rules) {
@@ -12,11 +16,13 @@ function applyRules(shape, rules) {
             }
         }
     }
-    
+
     for (let type in response) {
         if (response.hasOwnProperty(type)) {
             for (let key in response[type].resolvers) {
-                if (response[type].resolvers.hasOwnProperty(key) && !response[type].resolvers[key].allowed) {
+                if (response[type].resolvers.hasOwnProperty(key) &&
+                    typeof (response[type].resolvers[key].allowed) === 'boolean' &&
+                    !response[type].resolvers[key].allowed) {
                     delete response[type].resolvers[key];
                 }
             }
@@ -119,16 +125,138 @@ function checkMethodPermission(typeName, method, mutations, rules) {
     return hasMethod;
 }
 
+function getListHeader(shape) {
+    for (var key in shape) {
+        if (shape.hasOwnProperty(key)) {
+            let id = Object.keys(shape[key].fields).find(key => key === 'id' || key === '_id'),
+                title = Object.keys(shape[key].fields)[1];
+            shape[key].listHeader = {id: [id], title: [title]};
+        }
+    }
+}
+
+function hasNestedFields(propType) {
+    switch (propType.toLowerCase()) {
+    case 'boolean':
+        return false;
+    case 'string':
+        return false;
+    case 'int':
+        return false;
+    case 'float':
+        return false;
+    case 'number':
+        return false;
+    default:
+        return true;
+    }
+}
+
+function getTypeListData(schema, propTypeName, rules) {
+    let Queries = schema.definitions.find(function (obj) {
+        return obj.name.value === 'Query';
+    }),
+        Mutations = schema.definitions.find(function (obj) {
+            return obj.name.value === 'Mutation';
+        });
+
+    return {
+        label: false,
+        propTypeName: propTypeName,
+        resolvers: {
+            find: {
+                resolver: getResolverName(propTypeName, 'find', rules),
+                args: findResolverArgs(propTypeName, 'find', Queries.fields, rules)
+            },
+            create: {
+                resolver: getResolverName(propTypeName, 'create', rules),
+                args: findResolverArgs(propTypeName, 'create', Mutations.fields, rules)
+            }
+        }
+    };
+}
+
+function isListOfType(typeValue) {
+    switch (typeValue) {
+    case 'Int':
+        return false;
+    case 'Float':
+        return false;
+    case 'Boolean':
+        return false;
+    case 'String':
+        return false;
+    default:
+        return true;
+    }
+}
+
+function getFields(schema, typeName, rules) {
+    var typeObject = schema.definitions.find(obj => obj.name.value === typeName),
+        result = {};
+
+    typeObject.fields.forEach(prop => {
+        if (prop && prop.type && prop.type.kind !== 'ListType') {
+            if (prop.name &&
+                prop.name.value &&
+                prop.type.name &&
+                prop.type.name.value) {
+                if (prop.name.value !== 'Mutation' &&
+                    prop.name.value !== 'Query') {
+                    result[prop.name.value] = {
+                        label: prop.name.value,
+                        fieldType: prop.type.name.value,
+                        inputType: hasNestedFields(prop.type.name.value) ?
+                            'String' : resolveInputType(prop.type.name.value),
+                        inputControl: resolveInputControl(prop.type.name.value),
+                        disabled: false,
+                        exclude: false,
+                        list: false,
+                        nestedFields: hasNestedFields(prop.type.name.value) ?
+                            getFields(schema, prop.type.name.value) : false
+                    };
+                }
+            }
+        } else if (prop &&
+            prop.type &&
+            prop.type.type &&
+            prop.type.type.name &&
+            prop.type.type.name.value &&
+            isListOfType(prop.type.type.name.value)) {
+            result[prop.name.value] = {
+                label: prop.name.value,
+                fieldType: prop.type.type.name.value,
+                inputType: false,
+                inputControl: 'selection',
+                disabled: false,
+                exclude: false,
+                list: getTypeListData(schema, prop.type.type.name.value, rules),
+                nestedFields: getFields(schema, prop.type.type.name.value)
+            };
+        }
+    });
+    return result;
+}
+
+function fixPath(string) {
+    let result = '';
+    string.slice(0, 1) === '/' || string.slice(0, 1) === '.' ? result = string : result = `/${string}`;
+    result.slice(-1) === '/' ? result = result.slice(0, -1) : null;
+    return result;
+}
+
 module.exports = function (config) {
     var {parse} = require('graphql');
     var schema = config.schema ? parse(config.schema) : false;
     var rules = config.rules ? config.rules : false;
     var exclude = config.exclude ? config.exclude : false;
+    var uploadRoot = config.uploadRoot ? fixPath(config.uploadRoot) : false;
 
     if (!schema) {
         console.log('you have to provide your PRINTED schema in config object "{schema: myPrintedSchema}"');
         return;
     }
+
     return function (req, res) {
         if (req.method.toLowerCase() === 'get') {
             var Mutations = schema.definitions.find(function (obj) {
@@ -154,84 +282,52 @@ module.exports = function (config) {
                     (!exclude || !exclude.find(function (type) {
                         return type === methodTypeName;
                     }))) {
-                    var methodTypeObject = schema.definitions.find(function (obj) {
-                        return obj.name.value === methodTypeName;
-                    });
 
                     shape[methodTypeName] = {
                         label: methodTypeName,
-                        listHeader: {
-                            id: [],
-                            title: []
-                        },
+                        listHeader: false,
+                        uploadRoot: uploadRoot,
                         resolvers: {
                             find: {
                                 resolver: getResolverName(methodTypeName, 'find', rules),
-                                args: {
-                                    query: findResolverArgs(methodTypeName, 'find', Queries.fields, rules),
-                                    mutation: findResolverArgs(methodTypeName, 'find', Mutations.fields, rules)
-                                },
+                                args: findResolverArgs(methodTypeName, 'find', Queries.fields, rules),
                                 allowed: true
                             },
                             create: {
                                 resolver: getResolverName(methodTypeName, 'create', rules),
-                                args: {
-                                    query: findResolverArgs(methodTypeName, 'create', Queries.fields, rules),
-                                    mutation: findResolverArgs(methodTypeName, 'create', Mutations.fields, rules)
-                                },
+                                args: findResolverArgs(methodTypeName, 'create', Mutations.fields, rules),
                                 allowed: checkMethodPermission(methodTypeName, 'create', Mutations, rules)
                             },
                             update: {
                                 resolver: getResolverName(methodTypeName, 'update', rules),
-                                args: {
-                                    query: findResolverArgs(methodTypeName, 'update', Queries.fields, rules),
-                                    mutation: findResolverArgs(methodTypeName, 'update', Mutations.fields, rules)
-                                },
+                                args: findResolverArgs(methodTypeName, 'update', Mutations.fields, rules),
                                 allowed: checkMethodPermission(methodTypeName, 'update', Mutations, rules)
                             },
                             remove: {
                                 resolver: getResolverName(methodTypeName, 'remove', rules),
-                                args: {
-                                    query: findResolverArgs(methodTypeName, 'remove', Queries.fields, rules),
-                                    mutation: findResolverArgs(methodTypeName, 'remove', Mutations.fields, rules)
-                                },
+                                args: findResolverArgs(methodTypeName, 'remove', Mutations.fields, rules),
                                 allowed: checkMethodPermission(methodTypeName, 'remove', Mutations, rules)
                             }
                         },
-                        fields: {}
+                        fields: getFields(schema, methodTypeName, rules)
                     };
-
-                    methodTypeObject.fields.forEach(function (prop) {
-                        if (prop &&
-                            prop.name &&
-                            prop.name.value &&
-                            prop.type &&
-                            prop.type.name &&
-                            prop.type.name.value) {
-                            if (prop.name.value !== 'Mutation' &&
-                                prop.name.value !== 'Query') {
-                                if (!shape[methodTypeName].listHeader.id[0] &&
-                                    (prop.name.value === 'id' || prop.name.value === '_id')) {
-                                    shape[methodTypeName].listHeader.id.push(prop.name.value);
-                                }
-                                if (!shape[methodTypeName].listHeader.title[0]) {
-                                    shape[methodTypeName].listHeader.title.push(methodTypeObject.fields[1].name.value);
-                                }
-
-                                shape[methodTypeName].fields[prop.name.value] = {
-                                    label: prop.name.value,
-                                    fieldType: prop.type.name.value,
-                                    inputType: resolveInputType(prop.type.name.value),
-                                    inputControl: resolveInputControl(prop.type.name.value),
-                                    disabled: !shape[methodTypeName].resolvers.update.args.mutation[prop.name.value],
-                                    exclude: false
-                                };
-                            }
-                        }
-                    });
                 }
             });
+
+            getListHeader(shape);
             res.send(applyRules(shape, rules));
+        } else if (req.method.toLowerCase() === 'post') {
+            var form = new formidable.IncomingForm();
+            form.parse(req, (err, fields, files) => {
+                res.end(util.inspect({fields: fields, files: files}));
+            });
+            form.on('error', err => console.error(err));
+            form.on('end', function () {
+                let tempPath = this.openedFiles[0].path;
+                let fileName = this.openedFiles[0].name.split(',')[0];
+                let folderPath = fixPath(this.openedFiles[0].name.split(',')[1]);
+                fs.copy(tempPath, `${uploadRoot}${folderPath}/${fileName}`, err => err ? console.error(err) : null);
+            });
         }
     };
 };

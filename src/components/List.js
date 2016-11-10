@@ -1,22 +1,9 @@
 import React, {PropTypes, Component} from 'react';
 import {Segment, Icon, Menu, Table, Button} from 'semantic-ui-react';
 
-export default class List extends Component {
+class List extends Component {
     constructor(props) {
         super(props);
-    }
-
-    static propTypes = {
-        schema: PropTypes.object,
-        _routeToView: PropTypes.func,
-        query: PropTypes.func,
-        data: PropTypes.array,
-        remove: PropTypes.func,
-        _addNewItem: PropTypes.func,
-        _nextPage: PropTypes.func,
-        _previewsPage: PropTypes.func,
-        offset: PropTypes.number,
-        lastPage: PropTypes.bool
     }
 
     state = {
@@ -115,3 +102,18 @@ export default class List extends Component {
         );
     }
 }
+
+List.propTypes = {
+    schema: PropTypes.object,
+    _routeToView: PropTypes.func,
+    query: PropTypes.func,
+    data: PropTypes.array,
+    remove: PropTypes.func,
+    _addNewItem: PropTypes.func,
+    _nextPage: PropTypes.func,
+    _previewsPage: PropTypes.func,
+    offset: PropTypes.number,
+    lastPage: PropTypes.bool
+};
+
+export default List;
