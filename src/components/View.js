@@ -98,12 +98,16 @@ export default class View extends Component {
     addSelectOption({label, fields}, e) {
         let propName = e.currentTarget.name,
             data = this.props._collectFieldsData(fields, false, false, propName),
-            newState = this.state[propName];
-
+            newState = this.state[propName],
+            newData = this.state[`${propName}Data`] ? this.state[`${propName}Data`] : [];
+//console.log(data, label, propName, {text: label ? data[label] : data[Object.keys(data)[1]], value: +newState.length});
         newState.push({text: label ? data[label] : data[Object.keys(data)[1]], value: +newState.length});
+        newData.push(data);
 
-        this[`${propName}Data`] = data;
-        this.setState({[propName]: newState}, () => {
+        this.setState({
+            [propName]: newState,
+            [`${propName}Data`]: newData
+        }, () => {
             document.querySelector('.modals').click();
         });
     }

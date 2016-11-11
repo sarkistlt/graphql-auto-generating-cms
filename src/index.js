@@ -402,7 +402,7 @@ export default class Layout extends Component {
         this.getViewData(e.target.id);
     }
 
-    _collectFieldsData(fields, id, action) {
+    _collectFieldsData(fields, id, action, prefix) {
         let schema = {...this.state.currentPathSchema},
             data = {values: {}, types: {}};
 
@@ -442,7 +442,7 @@ export default class Layout extends Component {
             nestedFields.forEach(field => {
                 if (!field.nestedFields) {
                     tmpData[Object.keys(field)[0]] =
-                        getCurrentFieldData(Object.keys(field)[0], field[Object.keys(field)[0]].fieldType, propName);
+                        getCurrentFieldData(Object.keys(field)[0], field[Object.keys(field)[0]].fieldType, propName, prefix);
                 } else {
                     let key = Object.keys(field)[0];
                     tmpData[key] = getNestedFieldsData(field[key].nestedFields, key);
@@ -453,9 +453,11 @@ export default class Layout extends Component {
         }
 
         function checkIfDisabled(field, propName) {
-            let method = action === 'update' ?
+            let method = action && action === 'update' ?
                 schema.resolvers.update.args : schema.resolvers.create.args;
-            return method[propName] ? field[propName].disabled : true;
+            let result = method[propName] ? field[propName].disabled : true;
+            prefix ? result = false : null;
+            return result;
         }
 
         if (!action) {
@@ -473,19 +475,18 @@ export default class Layout extends Component {
                         propName !== 'limit' &&
                         fieldObj[propName].inputType !== 'file' &&
                         fieldObj[propName].inputControl !== 'selection') {
-                        data[propName] = getCurrentFieldData(propName, type);
+                        data[propName] = getCurrentFieldData(propName, type, prefix);
                     } else if (fieldObj[propName].inputType === 'file') {
-                        data.values[propName] = getCurrentFieldData(propName, 'file');
+                        data.values[propName] = getCurrentFieldData(propName, 'file', prefix);
                         data.types[propName] = 'String';
-                    }  else if (fieldObj[propName].inputControl === 'selection') {
+                    } else if (fieldObj[propName].inputControl === 'selection') {
                         let ref = this.refs.View,
-                            selectValue = getCurrentFieldData(propName, 'selection'),
+                            selectValue = getCurrentFieldData(propName, 'selection', prefix),
                             valuesData = [];
 
                         for (let node of selectValue) {
                             valuesData.push(ref.state[`${propName}Data`][node.value]);
                         }
-
                         data[propName] = JSON.stringify(valuesData);
                     }
                 }
@@ -506,14 +507,14 @@ export default class Layout extends Component {
                         propName !== 'limit' &&
                         fieldObj[propName].inputType !== 'file' &&
                         fieldObj[propName].inputControl !== 'selection') {
-                        data.values[propName] = getCurrentFieldData(propName, type);
+                        data.values[propName] = getCurrentFieldData(propName, type, prefix);
                         data.types[propName] = getCurrentFieldMutationType(propName, schema, type, action);
                     } else if (fieldObj[propName].inputType === 'file') {
-                        data.values[propName] = getCurrentFieldData(propName, 'file');
+                        data.values[propName] = getCurrentFieldData(propName, 'file', prefix);
                         data.types[propName] = 'String';
                     } else if (fieldObj[propName].inputControl === 'selection') {
                         let ref = this.refs.View,
-                            selectValue = getCurrentFieldData(propName, 'selection'),
+                            selectValue = getCurrentFieldData(propName, 'selection', prefix),
                             valuesData = [];
 
                         for (let node of selectValue) {
