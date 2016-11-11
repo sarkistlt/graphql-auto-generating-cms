@@ -50,12 +50,12 @@ gulp.task('build:middleware', () => {
 });
 
 gulp.task('watch', () => {
-    gulp.watch('./src/**/*.scss', gulp.parallel('scss'));
-    gulp.watch('./src/**/*.js', gulp.parallel('build:component:SideMenu'));
-    gulp.watch('./src/**/*.js', gulp.parallel('build:component:List'));
-    gulp.watch('./src/**/*.js', gulp.parallel('build:component:View'));
-    gulp.watch('./src/**/*.js', gulp.parallel('build:component:Layout'));
-    gulp.watch('./src/**/*.js', gulp.parallel('build:middleware'));
+    gulp.watch('./src/components/styles.scss', gulp.parallel('scss'));
+    gulp.watch('./src/components/SideMenu.js', gulp.parallel('build:component:SideMenu'));
+    gulp.watch('./src/components/List.js', gulp.parallel('build:component:List'));
+    gulp.watch('./src/components/View.js', gulp.parallel('build:component:View'));
+    gulp.watch('./src/Layout.js', gulp.parallel('build:component:Layout'));
+    gulp.watch('./src/middleware.js', gulp.parallel('build:middleware'));
 });
 
 gulp.task('default', gulp.parallel(
