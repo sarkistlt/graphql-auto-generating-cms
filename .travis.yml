@@ -2,5 +2,6 @@ sudo: false
 language: node_js
 node_js:
     - "6.1"
-script:
-    - npm run coveralls
+before_script:
+  - npm install -g gulp
+script: gulp

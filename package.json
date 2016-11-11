@@ -1,12 +1,11 @@
 {
   "name": "graphql-auto-generating-cms",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "This module will use your existed graphQL schema to generate simple for use CMS in a couple minutes!",
   "main": "lib/index.js",
   "scripts": {
-    "build": "gulp scss && gulp build:component:SideMenu && gulp build:component:List && gulp build:component:View && gulp build:component:Layout && gulp build:middleware ",
-    "prepublish": "npm run build",
-    "watch": "gulp watch"
+    "build": "gulp",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -51,6 +50,7 @@
     "babel-preset-stage-0": "^6.16.0",
     "babel-preset-stage-1": "^6.16.0",
     "babelify": "^7.3.0",
+    "del": "^2.2.2",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-babel": "^6.1.2",
     "gulp-browserify": "^0.5.1",
