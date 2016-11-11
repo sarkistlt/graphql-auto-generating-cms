@@ -64,7 +64,6 @@ gulp.task('default', gulp.parallel(
     'build:component:List',
     'build:component:View',
     'build:component:Layout',
-    'build:middleware',
-    done => done()
+    'build:middleware'
 ));
 
