@@ -67,7 +67,7 @@ export default class Layout extends Component {
     query(type, request, resolver, variables) {
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest(),
-                graphql = this.props.route.graphql ? this.props.route.graphql : this.props.graphql;
+                graphql = this.props.graphql ? this.props.graphql : this.route.graphql;
             xhr.responseType = 'json';
             xhr.open('POST', graphql);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -282,13 +282,13 @@ export default class Layout extends Component {
     }
 
     initCMS() {
-        let endpoint = this.props.route.endpoint ? this.props.route.endpoint : this.props.endpoint;
+        let endpoint = this.props.endpoint ? this.props.endpoint : this.props.route.endpoint;
         fetch(endpoint, {method: 'GET'})
             .then(json => json.json())
             .then(res => {
                 let menuItems = [],
-                    newMenuItems = this.props.route.newMenuItems ?
-                        this.props.route.newMenuItems : this.props.newMenuItems;
+                    newMenuItems = this.props.newMenuItems ?
+                        this.props.newMenuItems : this.props.route.newMenuItems;
                 for (let type in res) {
                     if (res.hasOwnProperty(type)) {
                         menuItems.push({label: res[type].label, typeName: type});
@@ -583,7 +583,7 @@ export default class Layout extends Component {
                 _routeToList, _routeToView, _routeToAdd, _addNewItem, _uploadImage, getRequestString,
                 _nextPage, _previewsPage, query, update, remove, _handleNewMenuClick, _collectFieldsData
             } = this,
-            newMenuItems = this.props.route.newMenuItems ? this.props.route.newMenuItems : this.props.newMenuItems;
+            newMenuItems = this.props.newMenuItems ? this.props.newMenuItems : this.props.route.newMenuItems;
 
         if (!schema) {
             return (

@@ -14,7 +14,7 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 **TODO:**
 * Fix npm build process for React component
 
-**[Documantation](https://sarkistlt.gitbooks.io/graphql-cms/content/)**
+**[Documentation](https://sarkistlt.gitbooks.io/graphql-cms/content/)**
 
 [Auto generating CMS based on your GraphQL schema.](https://medium.com/@sarkis.tlt/auto-generating-cms-based-on-your-graphql-schema-5eaa6b07987b#.7lk3gbz0b) [v1]
 
