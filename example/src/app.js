@@ -1,4 +1,4 @@
-import GraphqlCMS from '../../lib';
+import GraphqlCMS from '../../src';
 import React from 'react';
 import {render} from 'react-dom';
 //import {Router, Route, browserHistory} from 'react-router';
@@ -6,13 +6,13 @@ import {render} from 'react-dom';
 class View extends React.Component {
     render() {
         return (
-            <div>newMenu</div>
+            <div>place for your custom solution</div>
         );
     }
 }
 
 let newItem = {
-    label: 'New Item',
+    label: 'Custom component',
     secret: 'newItem',
     view: {
         secret: 'newItem',

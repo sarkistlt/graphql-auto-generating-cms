@@ -52,7 +52,7 @@ let mutations = new GraphQLObjectType({
             type: coupon,
             description: 'update coupon',
             args: {
-                _id: {type: GraphQLInt},
+                _id: {type: GraphQLString},
                 couponCode: {type: GraphQLString},
                 description: {type: GraphQLString},
                 discountAmount: {type: GraphQLInt},
@@ -83,7 +83,12 @@ let mutations = new GraphQLObjectType({
             description: 'update customer',
             args: {
                 _id: {type: GraphQLString},
-                name: {type: GraphQLString},
+                firstName: {type: GraphQLString},
+                lastName: {type: GraphQLString},
+                email: {type: GraphQLString},
+                password: {type: GraphQLString},
+                info: {type: GraphQLString},
+                createdAt: {type: GraphQLString},
                 updatedAt: {type: GraphQLString}
             },
             resolve: (_, args) => Customer.update(args)
@@ -103,6 +108,7 @@ let mutations = new GraphQLObjectType({
                 ingredients: {type: GraphQLString},
                 createdAt: {type: GraphQLString},
                 updatedAt: {type: GraphQLString},
+                image: {type: GraphQLString},
                 isPublished: {type: GraphQLBoolean}
             },
             resolve: (_, args) => Product.create(args)
@@ -121,6 +127,7 @@ let mutations = new GraphQLObjectType({
                 categories: {type: GraphQLString},
                 ingredients: {type: GraphQLString},
                 updatedAt: {type: GraphQLString},
+                image: {type: GraphQLString},
                 isPublished: {type: GraphQLBoolean}
             },
             resolve: (_, args) => Product.update(args)

@@ -1,4 +1,4 @@
-import graphqlCMS from '../../lib/middleware';
+import graphqlCMS from '../../src/middleware';
 import graphQLHTTP from 'express-graphql';
 import schema from './schema';
 import webpack from 'webpack';
@@ -37,76 +37,21 @@ let CMSConfig = {
                 isPublished: {}
             }
         },
-        /*questionType: {
-            label: 'Questions',
-            listHeader: {
-                id: ['_id'],
-                title: ['question']
-            },
+        coupon: {
             fields: {
-                answers: {
-                    list: {
-                        label: 'title'
-                    }
-                }
-            }
-        },
-        productType: {
-            label: 'Products',
-            listHeader: {
-                id: ['_id'],
-                title: ['name']
-            },
-            fields: {
-                categories: {
-                    list: {
-                        label: 'name'
-                    }
-                },
-                ingredients: {
-                    list: {
-                        label: 'label'
-                    }
-                },
-                recommended: {
-                    list: {
-                        label: 'label'
-                    }
-                }
-            }
-        },
-        couponType: {
-            label: 'Coupons',
-            listHeader: {
-                id: ['id'],
-                title: ['description']
-            },
-            resolvers: {
-                find: {
-                    resolver: 'getCoupons'
-                },
-                update: {
-                    allowed: false
-                }
-            },
-            fields: {
-                isMassPromo: {
-                    label: 'is Mass Promo'
-                },
-                couponBatch_id: {
-                    label: 'Coupon Batch ID',
-                    inputControl: 'textarea',
-                    disabled: true,
-                    exclude: false
-                },
-                description: {
-                    inputType: 'file'
-                },
+                _id: {},
+                couponCode: {},
+                description: {},
+                discountAmount: {},
+                minimumAmount: {},
                 expirationDate: {
+                    label: 'expiration date',
                     inputType: 'date'
-                }
+                },
+                createdAt: {},
+                updatedAt: {}
             }
-        }*/
+        }
     }
 };
 

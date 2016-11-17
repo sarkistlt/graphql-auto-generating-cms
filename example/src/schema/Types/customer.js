@@ -4,7 +4,7 @@ let customer = new GraphQLObjectType({
     name: 'customer',
     description: 'Customer schema',
     fields: {
-        _id: {type: GraphQLInt},
+        _id: {type: GraphQLString},
         firstName: {type: GraphQLString},
         lastName: {type: GraphQLString},
         email: {type: GraphQLString},

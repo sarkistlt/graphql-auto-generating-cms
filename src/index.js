@@ -104,7 +104,11 @@ export default class Layout extends Component {
                 resolver = schema.resolvers.create.resolver,
                 req = '';
 
-            schema.fields.forEach(prop => req += `${Object.keys(prop)[0]} `);
+            schema.fields.forEach(prop => {
+                if (Object.keys(prop)[0] === '_id' || Object.keys(prop)[0] === 'id') {
+                    req += `${Object.keys(prop)[0]} `;
+                }
+            });
 
             if (!data) {
                 console.log('data wasn\'t provided');
@@ -601,7 +605,7 @@ export default class Layout extends Component {
             } else {
                 resolverForList = currentPathSchema.resolvers.find.resolver;
             }
-            
+
             return (
                 <Grid className='graphql-cms'>
                     <Column computer={3} mobile={16}>
