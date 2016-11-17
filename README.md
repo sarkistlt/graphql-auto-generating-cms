@@ -7,7 +7,7 @@ This package will build a fully-functional CMS by just using your printed GraphQ
 
 
 **What is new:**
-* [Example which you can run in one step on your local machine](/example/README.md)
+* [Example which you can run in one step on your local machine](/example/)
 * Support of nested fields in a graphQL Type, any depth
 * GraphQLList support
 * File uploading support
