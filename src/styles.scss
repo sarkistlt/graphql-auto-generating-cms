@@ -55,6 +55,10 @@
     display: none;
   }
 
+  [type="checkbox"] {
+    margin-top: 3px !important;
+  }
+
   .message {
     position: fixed;
     z-index: 1;
@@ -142,7 +146,8 @@
 
     .selector-add {
       display: inline-block;
-      margin: 5px !important;
+      float: right;
+      margin: 0 0 5px 10px !important;
       padding: 2px !important;
       color: white !important;
 
@@ -229,7 +234,8 @@
 
   .selector-add {
     display: inline-block;
-    margin: 5px !important;
+    float: right;
+    margin: 0 0 5px 10px !important;
     padding: 2px !important;
     color: white !important;
 

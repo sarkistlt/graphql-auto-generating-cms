@@ -36,10 +36,10 @@ Category.remove = (args) => {
     let query = {_id: args._id};
 
     return new Promise((resolve, reject) => {
-        categoryDb.remove(query, {}, (err, numRemoved) => err ? reject(err) : resolve({_id: numRemoved}));
+        categoryDb.remove(query, {}, err => err ? reject(err) : resolve(query));
     });
     /**
-     * resolve({_id: numRemoved}), because we have to
+     * resolve(query), because we have to
      * return some fields to graphQL which this Type has
      */
 };
