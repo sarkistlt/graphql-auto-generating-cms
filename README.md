@@ -5,7 +5,7 @@ GraphQL CMS will build a fully-functional CMS by just using your printed GraphQL
 
 **[Documentation](https://sarkistlt.gitbooks.io/graphql-cms/content/)**
 
-**[Example which you can run in one step on your local machine](/example/)**
+**[Example which you can run with one command on your local machine](/example/)**
 
 [Auto generating CMS based on your GraphQL schema](https://medium.com/@sarkis.tlt/auto-generating-cms-based-on-your-graphql-schema-5eaa6b07987b#.7lk3gbz0b) [medium.com]
 
