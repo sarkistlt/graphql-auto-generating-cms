@@ -601,7 +601,7 @@ export default class Layout extends Component {
             } else {
                 resolverForList = currentPathSchema.resolvers.find.resolver;
             }
-
+            
             return (
                 <Grid className='graphql-cms'>
                     <Column computer={3} mobile={16}>
@@ -646,7 +646,6 @@ export default class Layout extends Component {
                                             <Loader content='Loading'/>
                                         </div>
                                     </Segment> :
-
                                     <Segment color='black' className='View'>
                                         <NewMenuView/>
                                     </Segment>) :

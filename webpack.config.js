@@ -2,13 +2,13 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        app: [path.resolve(__dirname, './test/src/app.js')]
+        app: [path.resolve(__dirname, './example/src/app.js')]
     },
     resolve: {
         extensions: ['', '.js']
     },
     output: {
-        path: path.resolve(__dirname, './test/lib'),
+        path: path.resolve(__dirname, './example/lib'),
         filename: '[name].js',
         publicPath: 'http://localhost:7700/'
     },
@@ -28,5 +28,6 @@ module.exports = {
                 loaders: ['babel']
             }
         ]
-    }
+    },
+    plugins: []
 };

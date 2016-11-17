@@ -49,11 +49,10 @@ export default class List extends Component {
             idType = '';
 
         schema.fields.find(obj => {
-            if (Object.keys(obj)[0] === Object.keys(data[0])[0]) {
+            if (data[0] && Object.keys(obj)[0] === Object.keys(data[0])[0]) {
                 idType = obj[Object.keys(obj)[0]].fieldType;
             }
         });
-
         return (
             <Segment color='black' className='View'>
                 <Table celled className='List'>
