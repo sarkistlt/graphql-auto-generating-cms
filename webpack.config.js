@@ -8,7 +8,7 @@ module.exports = {
         extensions: ['', '.js']
     },
     output: {
-        path: path.resolve(__dirname, './example/lib'),
+        path: path.resolve(__dirname, './example/public'),
         filename: '[name].js',
         publicPath: 'http://localhost:7700/'
     },

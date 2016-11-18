@@ -4,8 +4,8 @@ import schema from './schema';
 import webpack from 'webpack';
 import path from 'path';
 import WebpackDevServer from 'webpack-dev-server';
-import { printSchema } from 'graphql';
-let config = require('../../webpack.config.js');
+import CMSConfig from './cms_config';
+import config from '../../webpack.config.js';
 
 /**
  * you can just use "import graphqlCMS from '';"
@@ -30,47 +30,6 @@ let app = new WebpackDevServer(compiler, {
     hot: NODE_ENV !== 'test',
     inline: NODE_ENV !== 'test'
 });
-
-let CMSConfig = {
-    schema: printSchema(schema),
-    uploadRoot: path.resolve(__dirname, '../public'),
-    rules: {
-        product: {
-            fields: {
-                _id: {},
-                name: {},
-                price: {},
-                shortDescription: {},
-                pageTitle: {},
-                metaDescription: {},
-                metaKeywords: {},
-                categories: {},
-                ingredients: {},
-                createdAt: {},
-                updatedAt: {},
-                image: {
-                    inputType: 'file'
-                },
-                isPublished: {}
-            }
-        },
-        coupon: {
-            fields: {
-                _id: {},
-                couponCode: {},
-                description: {},
-                discountAmount: {},
-                minimumAmount: {},
-                expirationDate: {
-                    label: 'expiration date',
-                    inputType: 'date'
-                },
-                createdAt: {},
-                updatedAt: {}
-            }
-        }
-    }
-};
 
 //running graphqlCMS middleware
 app.use('/graphql_cms_endpoint', graphqlCMS(CMSConfig));
