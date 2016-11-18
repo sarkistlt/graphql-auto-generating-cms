@@ -8,7 +8,8 @@
     "build": "gulp",
     "prepublish": "npm run build",
     "test:all": "mocha --compilers js:babel-core/register",
-    "test:middleware": "mocha --compilers js:babel-core/register test/middleware.js"
+    "test:middleware": "mocha --compilers js:babel-core/register test/middleware.js",
+    "coveralls": "istanbul cover _mocha -- test --compilers js:babel-core/register"
   },
   "repository": {
     "type": "git",
@@ -39,7 +40,7 @@
   "dependencies": {
     "formidable": "^1.0.17",
     "fs-extra": "^1.0.0",
-    "semantic-ui-react": "^0.56.12",
+    "semantic-ui-react": "^0.61.1",
     "util": "^0.10.3"
   },
   "peerDependencies": {
