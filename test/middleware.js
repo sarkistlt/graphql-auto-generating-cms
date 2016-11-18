@@ -4,6 +4,8 @@ import { printSchema } from 'graphql';
 import graphqlCMS from '../src/middleware';
 import chai from 'chai';
 import chaiEnzyme from 'chai-enzyme';
+let assert = require('chai').assert;
+let expect = require('chai').expect;
 chai.use(chaiEnzyme());
 /**
  * DRAFT
