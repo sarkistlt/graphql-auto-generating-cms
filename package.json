@@ -6,7 +6,9 @@
   "scripts": {
     "dev:hot": "babel-node ./example/src/server.js",
     "build": "gulp",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "test:all": "mocha --compilers js:babel-core/register",
+    "test:middleware": "mocha --compilers js:babel-core/register test/middleware.js"
   },
   "repository": {
     "type": "git",
