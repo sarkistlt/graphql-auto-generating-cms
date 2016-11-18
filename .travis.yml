@@ -2,6 +2,6 @@ language: node_js
 node_js:
     - "6"
 before_script:
-    - npm install -g mocha
+    - npm install -g mocha istanbul
 script:
     - npm run test:all
