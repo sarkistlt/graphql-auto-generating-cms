@@ -4,4 +4,4 @@ node_js:
 before_script:
     - npm install -g mocha istanbul@1.0.0-alpha.2
 script:
-    - npm run test:all
+    - npm run test:all && npm run coveralls
