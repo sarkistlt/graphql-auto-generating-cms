@@ -16,7 +16,7 @@ let app = new WebpackDevServer(webpack(config), {
 
 let CMSConfig = {
     schema: printSchema(schema),
-    uploadRoot: path.resolve(__dirname, '../lib/uploads'),
+    uploadRoot: path.resolve(__dirname, '../lib'),
     rules: {
         product: {
             fields: {

@@ -100,7 +100,7 @@ export default class View extends Component {
             data = this.props._collectFieldsData(fields, false, false, propName),
             newState = this.state[propName],
             newData = this.state[`${propName}Data`] ? this.state[`${propName}Data`] : [];
-//console.log(data, label, propName, {text: label ? data[label] : data[Object.keys(data)[1]], value: +newState.length});
+
         newState.push({text: label ? data[label] : data[Object.keys(data)[1]], value: +newState.length});
         newData.push(data);
 
@@ -130,12 +130,10 @@ export default class View extends Component {
     getPopupImgPath(propName) {
         if (propName) {
             let p = document.getElementById(`${propName}-p`),
-                uploadRoot = this.fixPath(this.props.schema.uploadRoot),
-                uploadPath = this.props.schema.uploadPath ? this.fixPath(this.props.schema.uploadPath) : '';
+                uploadPath = this.props.schema.uploadPath ?
+                    this.fixPath(this.props.schema.uploadPath) : this.props.schema.typeName;
 
-            this.setState({popupImgLink: `${uploadRoot}${uploadPath}/${p.innerText}`});
-        } else {
-            this.setState({popupImgLink: false});
+            this.setState({popupImgLink: `${uploadPath}/${p.innerText}`});
         }
     }
 

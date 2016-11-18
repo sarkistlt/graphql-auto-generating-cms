@@ -1,3 +1,7 @@
+import schema from '../example/src/schema';
+import path from 'path';
+import { printSchema } from 'graphql';
+import graphqlCMS from '../src/middleware';
 import chai from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 chai.use(chaiEnzyme());
