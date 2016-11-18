@@ -4,6 +4,6 @@
 
 2. ```npm i```
 
-3. ```npm run-script dev:hot```
+3. ```npm run-script example```
 
 4. open ```http://localhost:7700/``` in your browser
