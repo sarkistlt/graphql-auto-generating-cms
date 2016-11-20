@@ -17,13 +17,12 @@ GraphQL CMS will build a fully-functional CMS by just using your printed GraphQL
 ~~~sh
 npm i -S graphql-auto-generating-cms
 ~~~
-> **If CMS doesn't work correct or you have any error massages in console after bundling your project, instead of ```npm```, directly use source code from ```./src``` or ```./lib``` folder in repository, to import React component on client side.**
 
-> **if you use React component from source code, you need to install following babel presets:**
-* **babel-preset-es2015**
-* **babel-preset-react**
-* **babel-preset-stage-0**
-* **babel-preset-stage-1**
+**And to head of your template add:**
+
+~~~sh
+sh<link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.css" rel="stylesheet">
+~~~
 
 **TODO:**
 * Test cases [in progress]
