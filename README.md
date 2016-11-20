@@ -21,7 +21,7 @@ npm i -S graphql-auto-generating-cms
 **And to head of your template add:**
 
 ~~~sh
-sh<link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.css" rel="stylesheet">
 ~~~
 
 **TODO:**
