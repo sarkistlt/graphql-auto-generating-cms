@@ -59,7 +59,7 @@ export default class Layout extends Component {
     componentDidMount() {
         this.initCMS();
     }
-
+    
     shouldComponentUpdate(p, n) {
         return n.currentPathSchema && n.schema;
     }
