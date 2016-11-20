@@ -67,7 +67,7 @@ export default class Layout extends Component {
     query(type, request, resolver, variables) {
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest(),
-                graphql = this.props.graphql ? this.props.graphql : this.route.graphql;
+                graphql = this.props.graphql ? this.props.graphql : this.props.route.graphql;
             xhr.responseType = 'json';
             xhr.open('POST', graphql);
             xhr.setRequestHeader('Content-Type', 'application/json');
