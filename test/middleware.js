@@ -1,6 +1,7 @@
+import {expect} from 'chai';
 import printedSchema from '../example/src/schema';
 import CMSConfig from '../example/src/cms_config';
-import {printSchema} from 'graphql';
+import {printSchema, parse} from 'graphql';
 import {
   applyRules,
   getResolverName,
@@ -15,8 +16,6 @@ import {
   fixPath,
   graphqlCMS
 } from '../lib/middleware';
-const {parse} = require('graphql');
-const expect = require('chai').expect;
 
 const schema = parse(printSchema(printedSchema));
 const rules = CMSConfig.rules ? CMSConfig.rules : false;
