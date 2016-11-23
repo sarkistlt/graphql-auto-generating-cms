@@ -11,5 +11,4 @@ dependencies:
 
 test:
   post:
-    - npm run test:all
     - npm run coveralls
