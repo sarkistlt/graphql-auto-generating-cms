@@ -1,3 +1,4 @@
+[![License](https://img.shields.io/npm/l/graphql-auto-generating-cms.svg)](https://www.npmjs.com/package/graphql-auto-generating-cms)
 [![NPM](https://img.shields.io/npm/v/graphql-auto-generating-cms.svg)](https://www.npmjs.com/package/graphql-auto-generating-cms)
 [![Build Status](https://travis-ci.org/sarkistlt/graphql-auto-generating-cms.svg?branch=master)](https://travis-ci.org/sarkistlt/graphql-auto-generating-cms)
 [![Dependency Status](https://gemnasium.com/badges/github.com/sarkistlt/graphql-auto-generating-cms.svg)](https://gemnasium.com/github.com/sarkistlt/graphql-auto-generating-cms)
@@ -23,10 +24,3 @@ npm i -S graphql-auto-generating-cms
 ~~~sh
 <link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.css" rel="stylesheet">
 ~~~
-
-**TODO:**
-* Test cases [in progress]
-
-# License
-MIT
-
