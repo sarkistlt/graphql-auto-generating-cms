@@ -2,7 +2,7 @@ machine:
   timezone:
     America/Los_Angeles
   node:
-    version: 5
+    version: 4
 
 dependencies:
   pre:
