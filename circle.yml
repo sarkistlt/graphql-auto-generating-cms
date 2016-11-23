@@ -2,7 +2,7 @@ machine:
   timezone:
     America/Los_Angeles
   node:
-    version: 4
+    version: 6
 
 dependencies:
   override:
