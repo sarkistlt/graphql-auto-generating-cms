@@ -2,6 +2,6 @@ language: node_js
 node_js:
     - "6"
 before_script:
-    - npm install -g mocha istanbul@1.0.0-alpha.2
+    - npm install -g gulp mocha istanbul@1.0.0-alpha.2
 script:
     - npm run test:all && npm run coveralls

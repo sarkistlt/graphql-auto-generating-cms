@@ -6,8 +6,10 @@ machine:
 
 dependencies:
   override:
-    - npm i -g mocha istanbul@1.0.0-alpha.2
+    - npm i
+    - npm i -g gulp mocha istanbul@1.0.0-alpha.2
 
 test:
   post:
-    - npm run test:all && npm run coveralls
+    - npm run test:all
+    - npm run coveralls
