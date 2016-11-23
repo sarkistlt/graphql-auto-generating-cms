@@ -8,9 +8,9 @@
     "example": "NODE_ENV=test babel-node ./example/src/server.js",
     "build": "NODE_ENV=test gulp",
     "prepublish": "npm run build",
-    "test:all": "NODE_ENV=test gulp && mocha --compilers js:babel-core/register",
-    "test:middleware": "NODE_ENV=test gulp build:middleware && mocha --compilers js:babel-core/register test/middleware.js",
-    "coveralls": "NODE_ENV=test istanbul cover _mocha -- test --compilers js:babel-core/register"
+    "test:all": "NODE_ENV=test istanbul cover _mocha -- test --compilers js:babel-core/register",
+    "test:middleware": "mocha --compilers js:babel-core/register test/middleware.js",
+    "test:layout": "mocha --compilers js:babel-core/register test/layout.js"
   },
   "repository": {
     "type": "git",
@@ -81,7 +81,7 @@
     "mocha-lcov-reporter": "^1.2.0",
     "nedb": "^1.8.0",
     "react": "^15.3.2",
-    "react-addons-test-utils": "^15.3.2",
+    "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.3.2",
     "react-router": "^3.0.0",
     "style-loader": "^0.13.1",
