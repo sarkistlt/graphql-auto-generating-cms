@@ -64,15 +64,12 @@ class Layout extends Component {
       fields: false,
     };
   }
-
   componentDidMount() {
     this.initCMS();
   }
-
   shouldComponentUpdate(p, n) {
     return n.currentPathSchema && n.schema;
   }
-
   getCurrentViewFields(schema, currentRout) {
     const array = [];
     const obj = { ...schema };
@@ -94,7 +91,6 @@ class Layout extends Component {
       fields: this.objOfFieldsToArray(obj.fields),
     }, this.getListData);
   }
-
   getViewData(id) {
     const resolver = this.state.currentPathSchema.resolvers.find.resolver;
     const queryArgs = this.state.currentPathSchema.resolvers.find.args;
@@ -113,7 +109,6 @@ class Layout extends Component {
       .then(res => this.setState({ viewData: res, viewMode: true, currentItemId: id }))
       .catch(err => console.log(`error: ${err}`));
   }
-
   getRequestString(fields) {
     let request = '';
     fields.forEach((prop) => {
@@ -126,7 +121,6 @@ class Layout extends Component {
     });
     return request;
   }
-
   getListData() {
     const d = this.state.currentPathSchema;
     const h = this.state.currentPathSchema.listHeader;
@@ -147,7 +141,6 @@ class Layout extends Component {
       })
       .catch((err) => { throw new Error(`error: ${err}`); });
   }
-
   objOfFieldsToArray(fields) {
     const array = [];
     const tmpFields = { ...fields };
@@ -162,7 +155,6 @@ class Layout extends Component {
     });
     return array;
   }
-
   query(type, request, resolver, variables) {
     return new Promise((resolve, reject) => {
       const graphql = this.props.graphql ? this.props.graphql : this.props.route.graphql;
@@ -193,7 +185,6 @@ class Layout extends Component {
       }
     });
   }
-
   create(data) {
     if (this.state.currentPathSchema.resolvers.create) {
       const schema = this.state.currentPathSchema;
@@ -221,7 +212,6 @@ class Layout extends Component {
       }
     }
   }
-
   update() {
     if (this.state.currentPathSchema.resolvers.update) {
       const schema = this.state.currentPathSchema;
@@ -245,7 +235,6 @@ class Layout extends Component {
       }
     }
   }
-
   remove(e) {
     if (this.state.currentPathSchema.resolvers.remove) {
       const id = e.target.id;
@@ -272,7 +261,6 @@ class Layout extends Component {
       }
     }
   }
-
   initCMS() {
     const endpoint = this.props.endpoint ? this.props.endpoint : this.props.route.endpoint;
     fetch(endpoint, { method: 'GET' })
@@ -299,7 +287,6 @@ class Layout extends Component {
       })
       .catch((err) => { throw new Error(err); });
   }
-
   showErrorMs() {
     document.getElementById('ms-error').style.visibility = 'visible';
     document.getElementById('ms-error').style.opacity = 1;
@@ -308,7 +295,6 @@ class Layout extends Component {
       document.getElementById('ms-error').style.opacity = 0;
     }, 3000);
   }
-
   showSuccessMs() {
     document.getElementById('ms-success').style.visibility = 'visible';
     document.getElementById('ms-success').style.opacity = 1;
@@ -317,7 +303,6 @@ class Layout extends Component {
       document.getElementById('ms-success').style.opacity = 0;
     }, 3000);
   }
-
   validateFields(data) {
     let response = true;
     Object.keys(data.types).forEach((arg) => {
@@ -338,7 +323,6 @@ class Layout extends Component {
     });
     return response;
   }
-
   nextPage() {
     const { offset, lastPage } = this.state;
     if (!lastPage) {
@@ -347,7 +331,6 @@ class Layout extends Component {
       }, this.getListData);
     }
   }
-
   previewsPage() {
     const { offset } = this.state;
     if (offset) {
@@ -356,7 +339,6 @@ class Layout extends Component {
       }, this.getListData);
     }
   }
-
   addNewItem() {
     if (this.state.currentPathSchema.resolvers.create) {
       this.setState({
@@ -366,7 +348,6 @@ class Layout extends Component {
       }, this.forceUpdate);
     }
   }
-
   routeToList(path) {
     this.setState({
       currentPathName: path,
@@ -383,45 +364,43 @@ class Layout extends Component {
       this.getCurrentViewFields(this.state.schema[this.state.currentPathName], [this.state.currentPathName]);
     });
   }
-
   routeToView(e) {
     this.getViewData(e.target.id);
   }
-
   collectFieldsData(fields, id, action, prefix) {
-    const schema = { ...this.state.currentPathSchema };
-    let data = { values: {}, types: {} };
-    function getCurrentFieldData(ID, type, pref) {
-      const pr = pref ? `${pref}/` : '';
+    const schema = {...this.state.currentPathSchema};
+    let data = {values: {}, types: {}};
+    function getCurrentFieldData(id, type, prefix) {
+      const pr = prefix ? `${prefix}/` : '';
       switch (type || type.slice(0, -1)) {
         case 'Int':
-          return document.getElementById(`${pr}${ID}`).value;
+          return document.getElementById(`${pr}${id}`).value;
         case 'Float':
-          return document.getElementById(`${pr}${ID}`).value;
+          return document.getElementById(`${pr}${id}`).value;
         case 'Boolean':
-          return document.getElementById(`${pr}${ID}`).checked;
+          return document.getElementById(`${pr}${id}`).checked;
         case 'String':
-          return document.getElementById(`${pr}${ID}`).value;
+          return document.getElementById(`${pr}${id}`).value;
         case 'file':
-          return document.getElementById(`${pr}${ID}-p`).innerHTML;
+          return document.getElementById(`${pr}${id}-p`).innerHTML;
         case 'selection':
-          return document.getElementById(`${pr}${ID}`).firstChild.selectedOptions;
+          return document.getElementById(`${pr}${id}`).firstChild.selectedOptions;
         default:
-          return document.getElementById(`${pr}${ID}`).value;
+          return document.getElementById(`${pr}${id}`).value;
       }
     }
-    function getCurrentFieldMutationType(propName, sch, type, act) {
+    function getCurrentFieldMutationType(propName, schema, type, action) {
       let response = type;
-      if (sch.resolvers.create.args[propName] && act === 'create') {
-        response = sch.resolvers.create.args[propName];
-      } else if (sch.resolvers.update.args[propName] && act === 'update') {
-        response = sch.resolvers.update.args[propName];
+      if (schema.resolvers.create.args[propName] && action === 'create') {
+        response = schema.resolvers.create.args[propName];
+      } else if (schema.resolvers.update.args[propName] && action === 'update') {
+        response = schema.resolvers.update.args[propName];
       }
       return response;
     }
     function getNestedFieldsData(nestedFields, propName) {
-      const tmpData = {};
-      nestedFields.forEach((field) => {
+      let tmpData = {};
+      nestedFields.forEach(field => {
         if (!field.nestedFields) {
           tmpData[Object.keys(field)[0]] =
             getCurrentFieldData(Object.keys(field)[0], field[Object.keys(field)[0]].fieldType, propName, prefix);
@@ -444,20 +423,16 @@ class Layout extends Component {
       fields.forEach((fieldObj) => {
         const propName = Object.keys(fieldObj)[0];
         const type = fieldObj[propName].fieldType;
-        if (
-          fieldObj[propName].nestedFields &&
-          fieldObj[propName].inputControl !== 'selection'
-        ) {
+        if (fieldObj[propName].nestedFields &&
+          fieldObj[propName].inputControl !== 'selection') {
           data[propName] = JSON.stringify(getNestedFieldsData(fieldObj[propName].nestedFields, propName));
         } else if (!checkIfDisabled(fieldObj, propName)) {
-          if (
-            propName !== 'id' &&
+          if (propName !== 'id' &&
             propName !== '_id' &&
             propName !== 'offset' &&
             propName !== 'limit' &&
             fieldObj[propName].inputType !== 'file' &&
-            fieldObj[propName].inputControl !== 'selection'
-          ) {
+            fieldObj[propName].inputControl !== 'selection') {
             data[propName] = getCurrentFieldData(propName, type, prefix);
           } else if (fieldObj[propName].inputType === 'file') {
             data.values[propName] = getCurrentFieldData(propName, 'file', prefix);
@@ -467,7 +442,7 @@ class Layout extends Component {
             const selectValue = getCurrentFieldData(propName, 'selection', prefix);
             const valuesData = [];
             Object.keys(selectValue).forEach((node) => {
-              valuesData.push(ref.state[`${propName}Data`][node.value]);
+              valuesData.push(ref.state[`${propName}Data`][selectValue[node].value]);
             });
             data[propName] = JSON.stringify(valuesData);
           }
@@ -481,14 +456,12 @@ class Layout extends Component {
           data.values[propName] = JSON.stringify(getNestedFieldsData(fieldObj[propName].nestedFields, propName));
           data.types[propName] = 'String';
         } else if (!checkIfDisabled(fieldObj, propName)) {
-          if (
-            propName !== 'id' &&
+          if (propName !== 'id' &&
             propName !== '_id' &&
             propName !== 'offset' &&
             propName !== 'limit' &&
             fieldObj[propName].inputType !== 'file' &&
-            fieldObj[propName].inputControl !== 'selection'
-          ) {
+            fieldObj[propName].inputControl !== 'selection') {
             data.values[propName] = getCurrentFieldData(propName, type, prefix);
             data.types[propName] = getCurrentFieldMutationType(propName, schema, type, action);
           } else if (fieldObj[propName].inputType === 'file') {
@@ -499,7 +472,7 @@ class Layout extends Component {
             const selectValue = getCurrentFieldData(propName, 'selection', prefix);
             const valuesData = [];
             Object.keys(selectValue).forEach((node) => {
-              valuesData.push(ref.state[`${propName}Data`][node.value]);
+              valuesData.push(ref.state[`${propName}Data`][selectValue[node].value]);
             });
             data.values[propName] = JSON.stringify(valuesData);
             data.types[propName] = 'String';
@@ -520,7 +493,6 @@ class Layout extends Component {
     }
     return data;
   }
-
   handleNewMenuClick(label) {
     this.setState({
       newMenuItemSecret: label,
@@ -535,7 +507,6 @@ class Layout extends Component {
       lastPage: false,
     }, this.forceUpdate);
   }
-
   uploadImage(e) {
     e.preventDefault();
     if (e.currentTarget.files[0]) {
@@ -551,7 +522,6 @@ class Layout extends Component {
         .catch((err) => { throw new Error(`error: ${err}`); });
     }
   }
-
   render() {
     const { Column } = Grid;
     const {

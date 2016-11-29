@@ -106,29 +106,27 @@ class View extends Component {
               res.data[field[propName].list.resolvers.find.resolver].forEach((obj, idx) => {
                 dataForOptions.push(obj);
                 options.push({ text: obj[label], value: idx });
-                const statement = data[propName].find((item) => {
-                  let response;
-                  if (item.id) {
-                    response = item.id === obj.id;
-                  } else if (item._id) {
-                    response = item._id === obj._id;
+                let statement;
+                data[propName].forEach((item) => {
+                  if (Object.prototype.hasOwnProperty.call(item, 'id')) {
+                    statement = item.id === obj.id;
+                  } else if (Object.prototype.hasOwnProperty.call(item, '_id')) {
+                    statement = item._id === obj._id;
                   }
-                  return response;
                 });
                 if (data && statement) defaultOptions.push(idx);
               });
+              this.setState({
+                [`${propName}DefaultValue`]: defaultOptions,
+              }, () => setTimeout(() => this.refs[propName].forceUpdate(), 1));
             })
-            .catch((err) => {
-              throw new Error(`${propName}, getSelectData, error: ${err}`);
-            });
+            .catch((err) => { throw new Error(`${propName}, getSelectData, error: ${err}`); });
         }
         this.setState({
           [`${propName}DefaultValue`]: defaultOptions,
           [`${propName}Data`]: dataForOptions,
           [propName]: options,
-        }, () => {
-          setTimeout(() => this.refs[propName].forceUpdate(), 1);
-        });
+        }, () => setTimeout(() => this.refs[propName].forceUpdate(), 1));
       }
     });
   }
@@ -343,15 +341,13 @@ class View extends Component {
         );
       } else if (fields[propName].inputControl === 'selection') {
         const options = this.state[propName];
-        const defaultOptions = data ? this.state[`${propName}DefaultValue`] : [];
         const hasOwnAPI = Object.keys(fields[propName].list.resolvers.find.args).length !== 0 &&
           Object.keys(fields[propName].list.resolvers.create.args).length !== 0;
-
         DOM = (
           <div className="file-form" key={idx}>
             <label>{fields[propName].label}</label>
             {!hasOwnAPI ? this.generateModal(fields, propName) : null}
-            {options ?
+            {options && Array.isArray(this.state[`${propName}DefaultValue`]) ?
               <Dropdown
                 ref={propName}
                 placeholder={fields[propName].label}
@@ -360,7 +356,7 @@ class View extends Component {
                 multiple
                 selection
                 search
-                defaultValue={defaultOptions}
+                defaultValue={this.state[`${propName}DefaultValue`]}
                 options={options}
               /> : null}
           </div>
