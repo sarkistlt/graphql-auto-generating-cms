@@ -84,7 +84,7 @@ describe('graphqlCMS:middleware', () => {
     it('return object with all fields of graphQL Type + additional information for each field', () => {
       Queries.fields.forEach(graphqlType => {
         let typeName = graphqlType.type.type.name.value,
-          fields = getFields(schema, typeName, rules);
+          fields = getFields({ schema, typeName, rules });
         
         for (let key in fields) {
           if (fields.hasOwnProperty(key)) {
@@ -124,11 +124,11 @@ describe('graphqlCMS:middleware', () => {
     it('if field of graphQL Type is graphQLList, should return new "schema" object for that field', () => {
       Queries.fields.forEach(graphqlType => {
         let typeName = graphqlType.type.type.name.value,
-          fields = getFields(schema, typeName, rules);
+            fields = getFields({ schema, typeName, rules });
         
         for (let key in fields) {
           if (fields.hasOwnProperty(key) && fields[key].list) {
-            let listSchema = getTypeListData(schema, fields[key].fieldType, rules);
+            let listSchema = getTypeListData({ schema, rules, typeName: fields[key].fieldType });
             
             expect(listSchema).to.be.an('object').and.to.have.all.keys(
               'label',
@@ -150,10 +150,10 @@ describe('graphqlCMS:middleware', () => {
     it('check if mutation permission is allowed for each graphQL Type', () => {
       Queries.fields.forEach(graphqlType => {
         let typeName = graphqlType.type.type.name.value,
-          find = checkMethodPermission(typeName, 'find', Mutations, rules),
-          create = checkMethodPermission(typeName, 'create', Mutations, rules),
-          update = checkMethodPermission(typeName, 'update', Mutations, rules),
-          remove = checkMethodPermission(typeName, 'remove', Mutations, rules);
+          find = checkMethodPermission({ rules, typeName, method: 'find', mutations: Mutations }),
+          create = checkMethodPermission({ rules, typeName, method: 'create', mutations: Mutations }),
+          update = checkMethodPermission({ rules, typeName, method: 'update', mutations: Mutations }),
+          remove = checkMethodPermission({ rules, typeName, method: 'remove', mutations: Mutations });
         
         expect(find).to.be.a('boolean');
         expect(create).to.be.a('boolean');
@@ -166,10 +166,10 @@ describe('graphqlCMS:middleware', () => {
     it('find all arguments for each mutation method of GraphQL Type', () => {
       Queries.fields.forEach(graphqlType => {
         let typeName = graphqlType.type.type.name.value,
-          find = findResolverArgs(typeName, 'find', Queries.fields, rules),
-          create = findResolverArgs(typeName, 'create', Mutations.fields, rules),
-          update = findResolverArgs(typeName, 'update', Mutations.fields, rules),
-          remove = findResolverArgs(typeName, 'remove', Mutations.fields, rules);
+          find = findResolverArgs({ typeName, method: 'find', fields: Queries.fields, rules }),
+          create = findResolverArgs({ typeName, method: 'create', fields: Mutations.fields, rules }),
+          update = findResolverArgs({ typeName, method: 'update', fields: Mutations.fields, rules }),
+          remove = findResolverArgs({ typeName, method: 'remove', fields: Mutations.fields, rules });
         
         expect(find).to.be.an('object');
         expect(create).to.be.a('object');
@@ -196,20 +196,15 @@ describe('graphqlCMS:middleware', () => {
   });
   describe('func:graphqlCMS', () => {
     it('generate "shape" object for CMS', () => {
-      let shape = graphqlCMS(schema, rules, exclude, uploadRoot);
+      let shape = graphqlCMS({ schema, rules, exclude, uploadRoot });
       expect(shape).to.be.an('object');
   
     });
   });
   describe('func:applyRules', () => {
     it('apply users config object to auto-generated shape object for CMS', () => {
-      let shape = graphqlCMS(schema, rules, exclude, uploadRoot),
-          result = applyRules(shape, rules);
-  
+      const result = applyRules({ rules, shape: graphqlCMS({ schema, rules, exclude, uploadRoot }) });
       expect(result).to.be.an('object');
-      for (let key in rules) {
-        expect(result[key]).to.be.equal(rules[key]);
-      }
     });
   });
 });
