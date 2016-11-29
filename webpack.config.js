@@ -2,10 +2,10 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    app: [path.resolve(__dirname, './example/src/app.js')],
+    app: [path.resolve(__dirname, './example/src/app.jsx')],
   },
   resolve: {
-    extensions: ['', '.js'],
+    extensions: ['', '.js', '.jsx'],
   },
   output: {
     path: path.resolve(__dirname, './example/public'),
@@ -24,7 +24,7 @@ module.exports = {
         loaders: ['style', 'css'],
       },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loaders: ['babel'],
       },
     ],

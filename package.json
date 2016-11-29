@@ -8,8 +8,8 @@
     "example": "NODE_ENV=test babel-node ./example/src/server.js",
     "build": "NODE_ENV=test gulp",
     "prepublish": "npm run build",
-    "test:all": "NODE_ENV=test istanbul cover _mocha -- test --compilers js:babel-core/register",
-    "test:middleware": "mocha --compilers js:babel-core/register test/middleware.js",
+    "test:all": "npm run build && NODE_ENV=test istanbul cover _mocha -- test --compilers js:babel-core/register",
+    "test:middleware": "NODE_ENV=test gulp build:middleware && mocha --compilers js:babel-core/register test/middleware.js",
     "test:layout": "mocha --compilers js:babel-core/register test/layout.js"
   },
   "repository": {
@@ -39,6 +39,7 @@
   },
   "homepage": "https://github.com/sarkistlt/graphql-auto-generating-cms#readme",
   "dependencies": {
+    "airbnb_javascript_helpers": "^1.0.1",
     "formidable": "^1.0.17",
     "fs-extra": "^1.0.0",
     "semantic-ui-react": "^0.61.1",
