@@ -1,0 +1,15 @@
+.git/
+.gitignore
+node_modules
+.idea/
+.DS_Store
+/draft/
+*.log
+/coverage/
+/test/
+/example/
+/.coveralls.yml
+/.travis.yml
+/webpack.config.js
+/gulpfile.babel.js
+/.babelrc

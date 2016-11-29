@@ -1,14 +1,24 @@
-import React, {PropTypes, Component} from 'react';
-import {Grid, Loader, Segment, Message} from 'semantic-ui-react';
+import React, { PropTypes, Component } from 'react';
+import { Grid, Loader, Segment, Message } from 'semantic-ui-react';
 import SideMenu from './components/SideMenu';
 import View from './components/View';
 import List from './components/List';
 import './components/styles.css';
 
+const propTypes = {
+  route: PropTypes.shape({
+    graphql: PropTypes.string,
+    endpoint: PropTypes.string,
+    newMenuItems: PropTypes.array
+  }),
+  graphql: PropTypes.string,
+  endpoint: PropTypes.string,
+  newMenuItems: PropTypes.array
+};
 
-export default class Layout extends Component {
-  constructor(props) {
-    super(props);
+class Layout extends Component {
+  constructor(...args) {
+    super(...args);
     this.query = ::this.query;
     this.create = ::this.create;
     this.update = ::this.update;
@@ -28,33 +38,22 @@ export default class Layout extends Component {
     this._collectFieldsData = ::this._collectFieldsData;
     this._handleNewMenuClick = ::this._handleNewMenuClick;
     this.getCurrentViewFields = ::this.getCurrentViewFields;
-  }
-  
-  static propTypes = {
-    route: PropTypes.shape({
-      graphql: PropTypes.string,
-      endpoint: PropTypes.string,
-      newMenuItems: PropTypes.array
-    }),
-    graphql: PropTypes.string,
-    endpoint: PropTypes.string,
-    newMenuItems: PropTypes.array
-  }
-  
-  state = {
-    newMenuItemSecret: false,
-    viewData: false,
-    listData: false,
-    schema: false,
-    currentPathSchema: false,
-    currentPathName: false,
-    SideMenuItems: false,
-    viewMode: false,
-    currentItemId: false,
-    limit: 50,
-    offset: 0,
-    lastPage: false,
-    fields: false
+    
+    this.state = {
+      newMenuItemSecret: false,
+      viewData: false,
+      listData: false,
+      schema: false,
+      currentPathSchema: false,
+      currentPathName: false,
+      SideMenuItems: false,
+      viewMode: false,
+      currentItemId: false,
+      limit: 50,
+      offset: 0,
+      lastPage: false,
+      fields: false
+    };
   }
   
   componentDidMount() {
@@ -80,7 +79,7 @@ export default class Layout extends Component {
         reject(err.error);
       };
       if (!variables) {
-        xhr.send(JSON.stringify({query: `${type} { ${resolver} {${request}} }`}));
+        xhr.send(JSON.stringify({ query: `${type} { ${resolver} {${request}} }` }));
       } else {
         let varTypes = '',
           varForRequest = '';
@@ -162,7 +161,7 @@ export default class Layout extends Component {
         currentList = this.state.currentPathName,
         resolver = schema.resolvers.remove.resolver,
         req = id.split(':')[0],
-        data = {values: {}, types: {}};
+        data = { values: {}, types: {} };
       
       data.values[id.split(':')[0]] = id.split(':')[1];
       data.types[id.split(':')[0]] = id.split(':')[2];
@@ -190,10 +189,10 @@ export default class Layout extends Component {
     let d = this.state.currentPathSchema,
       h = this.state.currentPathSchema.listHeader,
       resolver = d.resolvers.find.resolver,
-      {offset, limit} = this.state,
+      { offset, limit } = this.state,
       data = {
-        values: {offset: offset, limit: limit},
-        types: {offset: 'Int!', limit: 'Int!'}
+        values: { offset: offset, limit: limit },
+        types: { offset: 'Int!', limit: 'Int!' }
       },
       req = `${h.id.join(' ')} ${h.title.join(' ')}`;
     this.query('query', req, resolver, data)
@@ -234,27 +233,27 @@ export default class Layout extends Component {
     }
     
     let variables = {
-      values: {[queryId]: id.split(':')[1]},
-      types: {[queryId]: queryArgs[queryId]}
+      values: { [queryId]: id.split(':')[1] },
+      types: { [queryId]: queryArgs[queryId] }
     };
     
     this.query('query', request, resolver, variables)
-      .then(res => this.setState({viewData: res, viewMode: true, currentItemId: id}))
+      .then(res => this.setState({ viewData: res, viewMode: true, currentItemId: id }))
       .catch(err => console.log(`error: ${err}`));
   }
   
   objOfFieldsToArray(fields) {
     let array = [],
-      tmpFields = {...fields};
+      tmpFields = { ...fields };
     
     for (let key in tmpFields) {
       if (tmpFields.hasOwnProperty(key)) {
         if (!tmpFields[key].exclude && !tmpFields[key].nestedFields) {
-          array.push({[key]: tmpFields[key]});
+          array.push({ [key]: tmpFields[key] });
         } else if (!tmpFields[key].exclude && tmpFields[key].nestedFields) {
-          let newObj = {...tmpFields[key]};
+          let newObj = { ...tmpFields[key] };
           newObj.nestedFields = this.objOfFieldsToArray(tmpFields[key].nestedFields);
-          array.push({[key]: newObj});
+          array.push({ [key]: newObj });
         }
       }
     }
@@ -263,11 +262,11 @@ export default class Layout extends Component {
   
   getCurrentViewFields(schema, currentRout) {
     let array = [],
-      obj = {...schema};
+      obj = { ...schema };
     for (let key in obj.fields) {
       if (obj.fields.hasOwnProperty(key)) {
         if (!obj.fields[key].exclude) {
-          array.push({[key]: obj.fields[key]});
+          array.push({ [key]: obj.fields[key] });
         }
       }
     }
@@ -288,7 +287,7 @@ export default class Layout extends Component {
   
   initCMS() {
     let endpoint = this.props.endpoint ? this.props.endpoint : this.props.route.endpoint;
-    fetch(endpoint, {method: 'GET'})
+    fetch(endpoint, { method: 'GET' })
       .then(json => json.json())
       .then(res => {
         let menuItems = [],
@@ -296,7 +295,7 @@ export default class Layout extends Component {
             this.props.newMenuItems : this.props.route.newMenuItems;
         for (let type in res) {
           if (res.hasOwnProperty(type)) {
-            menuItems.push({label: res[type].label, typeName: type});
+            menuItems.push({ label: res[type].label, typeName: type });
           }
         }
         
@@ -358,7 +357,7 @@ export default class Layout extends Component {
   }
   
   _nextPage() {
-    let {offset, lastPage} = this.state;
+    let { offset, lastPage } = this.state;
     
     if (!lastPage) {
       this.setState({
@@ -368,7 +367,7 @@ export default class Layout extends Component {
   }
   
   _previewsPage() {
-    let {offset} = this.state;
+    let { offset } = this.state;
     if (offset) {
       this.setState({
         offset: offset - 50
@@ -408,27 +407,27 @@ export default class Layout extends Component {
   }
   
   _collectFieldsData(fields, id, action, prefix) {
-    let schema = {...this.state.currentPathSchema},
-      data = {values: {}, types: {}};
+    let schema = { ...this.state.currentPathSchema },
+      data = { values: {}, types: {} };
     
     function getCurrentFieldData(id, type, prefix) {
       let pr = prefix ? `${prefix}/` : '';
       
       switch (type || type.slice(0, -1)) {
-      case 'Int':
-        return document.getElementById(`${pr}${id}`).value;
-      case 'Float':
-        return document.getElementById(`${pr}${id}`).value;
-      case 'Boolean':
-        return document.getElementById(`${pr}${id}`).checked;
-      case 'String':
-        return document.getElementById(`${pr}${id}`).value;
-      case 'file':
-        return document.getElementById(`${pr}${id}-p`).innerHTML;
-      case 'selection':
-        return document.getElementById(`${pr}${id}`).firstChild.selectedOptions;
-      default:
-        return document.getElementById(`${pr}${id}`).value;
+        case 'Int':
+          return document.getElementById(`${pr}${id}`).value;
+        case 'Float':
+          return document.getElementById(`${pr}${id}`).value;
+        case 'Boolean':
+          return document.getElementById(`${pr}${id}`).checked;
+        case 'String':
+          return document.getElementById(`${pr}${id}`).value;
+        case 'file':
+          return document.getElementById(`${pr}${id}-p`).innerHTML;
+        case 'selection':
+          return document.getElementById(`${pr}${id}`).firstChild.selectedOptions;
+        default:
+          return document.getElementById(`${pr}${id}`).value;
       }
     }
     
@@ -573,13 +572,13 @@ export default class Layout extends Component {
       
       fd.append('file', fileFromInput, [fileFromInput.name, folderPath]);
       massage.innerHTML = fileFromInput.name;
-      fetch(endpoint, {method: 'POST', body: fd})
+      fetch(endpoint, { method: 'POST', body: fd })
         .catch(err => console.log(`error: ${err}`));
     }
   }
   
   render() {
-    const {Column} = Grid;
+    const { Column } = Grid;
     const {
       schema, currentPathSchema, fields, viewData, offset, lastPage,
       listData, SideMenuItems, viewMode, currentItemId, newMenuItemSecret
@@ -593,9 +592,9 @@ export default class Layout extends Component {
     if (!schema) {
       return (
         <Segment className='loading-block'>
-            <div className='ui active dimmer'>
-                <Loader content='Loading'/>
-            </div>
+          <div className='ui active dimmer'>
+            <Loader content='Loading'/>
+          </div>
         </Segment>
       );
     } else {
@@ -606,69 +605,72 @@ export default class Layout extends Component {
       } else {
         resolverForList = currentPathSchema.resolvers.find.resolver;
       }
-      
       return (
         <Grid className='graphql-cms'>
-            <Column computer={3} mobile={16}>
-                <SideMenu
-                  setState={this.setState}
-                  newMenuItems={newMenuItems}
-                  items={SideMenuItems}
-                  _handleNewMenuClick={_handleNewMenuClick}
-                  _routeToList={_routeToList}
-                />
-            </Column>
-            <Message color='green' id='ms-success'>Success!</Message>
-            <Message color='red' id='ms-error'>Error!</Message>
-            <Column computer={13} mobile={16}>
-              {viewMode ?
-                (!viewData && currentItemId ?
+          <Column computer={3} mobile={16}>
+            <SideMenu
+              setState={this.setState}
+              newMenuItems={newMenuItems}
+              items={SideMenuItems}
+              _handleNewMenuClick={_handleNewMenuClick}
+              _routeToList={_routeToList}
+            />
+          </Column>
+          <Message color='green' id='ms-success'>Success!</Message>
+          <Message color='red' id='ms-error'>Error!</Message>
+          <Column computer={13} mobile={16}>
+            {viewMode ?
+              (!viewData && currentItemId ?
+                <Segment className='loading-block'>
+                  <div className='ui active dimmer'>
+                    <Loader content='Loading'/>
+                  </div>
+                </Segment> :
+                <View
+                  ref='View'
+                  query={query}
+                  data={!viewData ? false : viewData.data[resolverForList][0] ?
+                    viewData.data[resolverForList][0] : viewData.data[resolverForList]}
+                  fields={fields}
+                  update={update}
+                  remove={remove}
+                  currentItemId={currentItemId}
+                  _addNewItem={_addNewItem}
+                  _routeToAdd={_routeToAdd}
+                  _uploadImage={_uploadImage}
+                  _collectFieldsData={_collectFieldsData}
+                  getRequestString={getRequestString}
+                  schema={currentPathSchema}
+                />) :
+              (!listData ?
+                (!newMenuItemSecret ?
                   <Segment className='loading-block'>
-                      <div className='ui active dimmer'>
-                          <Loader content='Loading'/>
-                      </div>
+                    <div className='ui active dimmer'>
+                      <Loader content='Loading'/>
+                    </div>
                   </Segment> :
-                  <View
-                    ref='View'
-                    query={query}
-                    data={!viewData ? false : viewData.data[resolverForList][0] ?
-                      viewData.data[resolverForList][0] : viewData.data[resolverForList]}
-                    fields={fields}
-                    update={update}
-                    remove={remove}
-                    currentItemId={currentItemId}
-                    _addNewItem={_addNewItem}
-                    _routeToAdd={_routeToAdd}
-                    _uploadImage={_uploadImage}
-                    _collectFieldsData={_collectFieldsData}
-                    getRequestString={getRequestString}
-                    schema={currentPathSchema}
-                  />) :
-                (!listData ?
-                  (!newMenuItemSecret ?
-                    <Segment className='loading-block'>
-                        <div className='ui active dimmer'>
-                            <Loader content='Loading'/>
-                        </div>
-                    </Segment> :
-                    <Segment color='black' className='View'>
-                        <NewMenuView/>
-                    </Segment>) :
-                  <List
-                    query={query}
-                    remove={remove}
-                    offset={offset}
-                    lastPage={lastPage}
-                    _nextPage={_nextPage}
-                    _previewsPage={_previewsPage}
-                    _addNewItem={_addNewItem}
-                    _routeToView={_routeToView}
-                    data={listData.data[resolverForList]}
-                    schema={currentPathSchema}
-                  />)}
-            </Column>
+                  <Segment color='black' className='View'>
+                    <NewMenuView/>
+                  </Segment>) :
+                <List
+                  query={query}
+                  remove={remove}
+                  offset={offset}
+                  lastPage={lastPage}
+                  _nextPage={_nextPage}
+                  _previewsPage={_previewsPage}
+                  _addNewItem={_addNewItem}
+                  _routeToView={_routeToView}
+                  data={listData.data[resolverForList]}
+                  schema={currentPathSchema}
+                />)}
+          </Column>
         </Grid>
       );
     }
   }
 }
+
+Layout.propTypes = propTypes;
+
+export default Layout;

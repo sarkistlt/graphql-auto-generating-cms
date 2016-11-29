@@ -1,9 +1,39 @@
-import React, {PropTypes, Component} from 'react';
-import {Segment, Grid, Form, Button, Divider, Icon, Popup, Dropdown, Modal} from 'semantic-ui-react';
+import React, { PropTypes, Component } from 'react';
+import {
+  Segment,
+  Grid,
+  Form,
+  Button,
+  Divider,
+  Icon,
+  Popup,
+  Dropdown,
+  Modal
+} from 'semantic-ui-react';
 
-export default class View extends Component {
-  constructor(props) {
-    super(props);
+const propTypes = {
+  schema: PropTypes.object,
+  query: PropTypes.func,
+  data: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.boolean
+  ]),
+  fields: PropTypes.array,
+  update: PropTypes.func,
+  _collectFieldsData: PropTypes.func,
+  getRequestString: PropTypes.func,
+  remove: PropTypes.func,
+  currentItemId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.boolean
+  ]),
+  _uploadImage: PropTypes.func,
+  _addNewItem: PropTypes.func
+};
+
+class View extends Component {
+  constructor(...args) {
+    super(...args);
     this.getOptionsForModal = ::this.getOptionsForModal;
     this.generateModal = ::this.generateModal;
     this.getSelectData = ::this.getSelectData;
@@ -11,39 +41,19 @@ export default class View extends Component {
     this.checkIfDisabled = ::this.checkIfDisabled;
     this.initStatesForSelector = ::this.initStatesForSelector;
     
+    this.state = {
+      schema: this.props.schema,
+      fields: this.props.fields,
+      data: this.props.data,
+      currentItemId: this.props.currentItemId,
+      popupImgLink: false
+    };
+    
     this.initStatesForSelector(this.props.fields);
   }
   
-  static propTypes = {
-    schema: PropTypes.object,
-    query: PropTypes.func,
-    data: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.boolean
-    ]),
-    fields: PropTypes.array,
-    update: PropTypes.func,
-    _collectFieldsData: PropTypes.func,
-    getRequestString: PropTypes.func,
-    remove: PropTypes.func,
-    currentItemId: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.boolean
-    ]),
-    _uploadImage: PropTypes.func,
-    _addNewItem: PropTypes.func
-  }
-  
-  state = {
-    schema: this.props.schema,
-    fields: this.props.fields,
-    data: this.props.data,
-    currentItemId: this.props.currentItemId,
-    popupImgLink: false
-  }
-  
   componentWillMount() {
-    let {fields, data} = this.state;
+    let { fields, data } = this.state;
     this.getSelectData(fields, data);
   }
   
@@ -95,13 +105,16 @@ export default class View extends Component {
     this.getSelectData(fields);
   }
   
-  addSelectOption({label, fields}, e) {
+  addSelectOption({ label, fields }, e) {
     let propName = e.currentTarget.name,
       data = this.props._collectFieldsData(fields, false, false, propName),
       newState = this.state[propName],
       newData = this.state[`${propName}Data`] ? this.state[`${propName}Data`] : [];
     
-    newState.push({text: label ? data[label] : data[Object.keys(data)[1]], value: +newState.length});
+    newState.push({
+      text: label ? data[label] : data[Object.keys(data)[1]],
+      value: +newState.length
+    });
     newData.push(data);
     
     this.setState({
@@ -133,7 +146,7 @@ export default class View extends Component {
         uploadPath = this.props.schema.uploadPath ?
           this.fixPath(this.props.schema.uploadPath) : this.props.schema.typeName;
       
-      this.setState({popupImgLink: `${uploadPath}/${p.innerText}`});
+      this.setState({ popupImgLink: `${uploadPath}/${p.innerText}` });
     }
   }
   
@@ -154,7 +167,7 @@ export default class View extends Component {
           data[propName].forEach((obj, idx) => {
             defaultOptions.push(idx);
             dataForOptions.push(obj);
-            options.push({text: obj[label], value: idx});
+            options.push({ text: obj[label], value: idx });
           });
         } else if (hasOwnAPI) {
           let resolver = field[propName].list.resolvers.find.resolver,
@@ -164,7 +177,7 @@ export default class View extends Component {
             .then(res => {
               res.data[field[propName].list.resolvers.find.resolver].forEach((obj, idx) => {
                 dataForOptions.push(obj);
-                options.push({text: obj[label], value: idx});
+                options.push({ text: obj[label], value: idx });
                 
                 if (data && data[propName].find(item => {
                     if (item.id) {
@@ -199,47 +212,47 @@ export default class View extends Component {
       <Modal
         id={`${propName}Modal`}
         trigger={
-            <Button icon
-                    className='selector-add'
-                    onClick={this.getOptionsForModal.bind(this, field[propName].nestedFields)}>
-                <Icon name='plus'/>
-            </Button>
+          <Button icon
+                  className='selector-add'
+                  onClick={this.getOptionsForModal.bind(this, field[propName].nestedFields)}>
+            <Icon name='plus'/>
+          </Button>
         }
         className='graphql-cms_modal graphql-cms'>
-          <Modal.Header>
-              Add new select option for "{propName}"
-              <div className='btn-row'>
-                  <Button type='submit' color='black'
-                          name={propName}
-                          onClick={this.addSelectOption.bind(this, {
-                            fields: field[propName].nestedFields,
-                            label: field[propName].list.label
-                          })}>
-                      add
-                  </Button>
-              </div>
-          </Modal.Header>
-          <Modal.Content>
-              <Grid as={Form}>
-                  <Grid.Column computer={8} mobile={16}>
-                    {field[propName].nestedFields.slice(0, to).map((field, idx) =>
-                      this.generateFields(field, idx, false, false, `${propName}/`)
-                    )}
-                  </Grid.Column>
-                  <Grid.Column computer={8} mobile={16}>
-                    {field[propName].nestedFields.slice(-from).map((field, idx) =>
-                      this.generateFields(field, idx, false, false, `${propName}/`)
-                    )}
-                  </Grid.Column>
-              </Grid>
-          </Modal.Content>
+        <Modal.Header>
+          Add new select option for "{propName}"
+          <div className='btn-row'>
+            <Button type='submit' color='black'
+                    name={propName}
+                    onClick={this.addSelectOption.bind(this, {
+                      fields: field[propName].nestedFields,
+                      label: field[propName].list.label
+                    })}>
+              add
+            </Button>
+          </div>
+        </Modal.Header>
+        <Modal.Content>
+          <Grid as={Form}>
+            <Grid.Column computer={8} mobile={16}>
+              {field[propName].nestedFields.slice(0, to).map((field, idx) =>
+                this.generateFields(field, idx, false, false, `${propName}/`)
+              )}
+            </Grid.Column>
+            <Grid.Column computer={8} mobile={16}>
+              {field[propName].nestedFields.slice(-from).map((field, idx) =>
+                this.generateFields(field, idx, false, false, `${propName}/`)
+              )}
+            </Grid.Column>
+          </Grid>
+        </Modal.Content>
       </Modal>
     );
   }
   
   generateFields(obj, idx, data, dis, prefix) {
     let pr = prefix ? prefix : '',
-      field = {...obj},
+      field = { ...obj },
       propName = Object.keys(field)[0],
       value = '',
       checked = '',
@@ -247,7 +260,7 @@ export default class View extends Component {
       disabled = typeof (dis) === 'boolean' ? dis : this.checkIfDisabled(field, propName),
       control = field[propName].inputControl,
       _uploadImage = this.props._uploadImage,
-      {popupImgLink} = this.state;
+      { popupImgLink } = this.state;
     
     if (field[propName].nestedFields &&
       field[propName].nestedFields[0] &&
@@ -257,11 +270,11 @@ export default class View extends Component {
       
       return (
         <div className='nestedFields' key={idx}>
-            <Divider horizontal>{propName} <Icon name='level down'/></Divider>
+          <Divider horizontal>{propName} <Icon name='level down'/></Divider>
           {field[propName].nestedFields.map((field, idx) =>
             this.generateFields(field, idx + 300, newData, disabled, `${propName}/`)
           )}
-            <Divider horizontal>{propName} <Icon name='level up'/></Divider>
+          <Divider horizontal>{propName} <Icon name='level up'/></Divider>
         </div>
       );
     }
@@ -297,22 +310,24 @@ export default class View extends Component {
       if (type === 'file') {
         return (
           <div className='file-form' key={idx}>
-              <Button
-                as='label'
-                content={field[propName].label}
-                className='file-form-btn'
-                icon='upload'
-                disabled={disabled}
-                labelPosition='right'
-                htmlFor={`${pr}${propName}-input`}
-              />
-              <Popup onMount={this.getPopupImgPath.bind(this, propName)}
-                     onClose={this.getPopupImgPath.bind(this, false)}
-                     name={propName}
-                     trigger={<p className='file-name' id={`${pr}${propName}-p`}>{data[propName]}</p>}>
-                  <img id={`${pr}${propName}-img`} src={popupImgLink}/>
-              </Popup>
-              <input disabled={disabled} onChange={_uploadImage} id={`${pr}${propName}-input`} type="file"/>
+            <Button
+              as='label'
+              content={field[propName].label}
+              className='file-form-btn'
+              icon='upload'
+              disabled={disabled}
+              labelPosition='right'
+              htmlFor={`${pr}${propName}-input`}
+            />
+            <Popup onMount={this.getPopupImgPath.bind(this, propName)}
+                   onClose={this.getPopupImgPath.bind(this, false)}
+                   name={propName}
+                   trigger={<p className='file-name'
+                               id={`${pr}${propName}-p`}>{data[propName]}</p>}>
+              <img id={`${pr}${propName}-img`} src={popupImgLink}/>
+            </Popup>
+            <input disabled={disabled} onChange={_uploadImage} id={`${pr}${propName}-input`}
+                   type="file"/>
           </div>
         );
       } else if (field[propName].inputControl === 'selection') {
@@ -323,7 +338,7 @@ export default class View extends Component {
         
         return (
           <div className='file-form' key={idx}>
-              <label>{field[propName].label}</label>
+            <label>{field[propName].label}</label>
             {!hasOwnAPI ? this.generateModal(field, propName) : null}
             {options ?
               <Dropdown
@@ -359,47 +374,51 @@ export default class View extends Component {
   }
   
   render() {
-    const {Column} = Grid;
-    const {fields, schema, currentItemId, data} = this.state;
-    let {update, remove, _addNewItem} = this.props,
-      {generateFields} = this,
+    const { Column } = Grid;
+    const { fields, schema, currentItemId, data } = this.state;
+    let { update, remove, _addNewItem } = this.props,
+      { generateFields } = this,
       to = (fields.length / 2).toFixed(0),
       from = fields.length - to;
     
     return (
       <Segment color='black' className='View'>
-          <div className='btn-row'>
-            {currentItemId ?
-              <Button type='submit' color='black'
-                      onClick={_addNewItem}
-                      disabled={!schema.resolvers.create}>
-                  add new
-              </Button> : null}
-              <Button type='submit' color='black'
-                      onClick={!schema.resolvers.update ? null : update}
-                      disabled={!schema.resolvers.update}>
-                  save
-              </Button>
-              <Button type='submit' color='black'
-                      id={currentItemId}
-                      onClick={!schema.resolvers.remove ? null : remove}
-                      disabled={!schema.resolvers.remove}>
-                  remove
-              </Button>
-          </div>
-          <Grid as={Form}>
-              <Column computer={8} mobile={16}>
-                {fields.slice(0, to).map((field, idx) =>
-                  generateFields(field, idx, data)
-                )}
-              </Column>
-              <Column computer={8} mobile={16}>
-                {fields.slice(-from).map((field, idx) =>
-                  generateFields(field, idx, data)
-                )}
-              </Column>
-          </Grid>
+        <div className='btn-row'>
+          {currentItemId ?
+            <Button type='submit' color='black'
+                    onClick={_addNewItem}
+                    disabled={!schema.resolvers.create}>
+              add new
+            </Button> : null}
+          <Button type='submit' color='black'
+                  onClick={!schema.resolvers.update ? null : update}
+                  disabled={!schema.resolvers.update}>
+            save
+          </Button>
+          <Button type='submit' color='black'
+                  id={currentItemId}
+                  onClick={!schema.resolvers.remove ? null : remove}
+                  disabled={!schema.resolvers.remove}>
+            remove
+          </Button>
+        </div>
+        <Grid as={Form}>
+          <Column computer={8} mobile={16}>
+            {fields.slice(0, to).map((field, idx) =>
+              generateFields(field, idx, data)
+            )}
+          </Column>
+          <Column computer={8} mobile={16}>
+            {fields.slice(-from).map((field, idx) =>
+              generateFields(field, idx, data)
+            )}
+          </Column>
+        </Grid>
       </Segment>
     );
   }
 }
+
+View.propTypes = propTypes;
+
+export default View;
