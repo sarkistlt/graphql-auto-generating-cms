@@ -8,7 +8,7 @@ import {
   Icon,
   Popup,
   Dropdown,
-  Modal
+  Modal,
 } from 'semantic-ui-react';
 
 const propTypes = {
@@ -16,153 +16,82 @@ const propTypes = {
   query: PropTypes.func,
   data: PropTypes.oneOfType([
     PropTypes.object,
-    PropTypes.boolean
+    PropTypes.boolean,
   ]),
   fields: PropTypes.array,
   update: PropTypes.func,
-  _collectFieldsData: PropTypes.func,
+  collectFieldsData: PropTypes.func,
   getRequestString: PropTypes.func,
   remove: PropTypes.func,
   currentItemId: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.boolean
+    PropTypes.boolean,
   ]),
-  _uploadImage: PropTypes.func,
-  _addNewItem: PropTypes.func
+  uploadImage: PropTypes.func,
+  addNewItem: PropTypes.func,
+};
+const defaultProps = {
+  schema: {},
+  query() {},
+  data: {},
+  fields: [],
+  update() {},
+  collectFieldsData() {},
+  getRequestString() {},
+  remove() {},
+  currentItemId: '',
+  uploadImage() {},
+  addNewItem() {},
 };
 
 class View extends Component {
   constructor(...args) {
     super(...args);
-    this.getOptionsForModal = ::this.getOptionsForModal;
-    this.generateModal = ::this.generateModal;
-    this.getSelectData = ::this.getSelectData;
-    this.generateFields = ::this.generateFields;
-    this.checkIfDisabled = ::this.checkIfDisabled;
-    this.initStatesForSelector = ::this.initStatesForSelector;
-    
+    this.getOptionsForModal = this.getOptionsForModal.bind(this);
+    this.addSelectOption = this.addSelectOption.bind(this);
+    this.generateModal = this.generateModal.bind(this);
+    this.getSelectData = this.getSelectData.bind(this);
+    this.generateFields = this.generateFields.bind(this);
+    this.checkIfDisabled = this.checkIfDisabled.bind(this);
+    this.getPopupImgPath = this.getPopupImgPath.bind(this);
+    this.initStatesForSelector = this.initStatesForSelector.bind(this);
     this.state = {
       schema: this.props.schema,
       fields: this.props.fields,
       data: this.props.data,
       currentItemId: this.props.currentItemId,
-      popupImgLink: false
+      popupImgLink: false,
     };
-    
     this.initStatesForSelector(this.props.fields);
   }
-  
   componentWillMount() {
-    let { fields, data } = this.state;
+    const { fields, data } = this.state;
     this.getSelectData(fields, data);
   }
-  
   componentWillReceiveProps() {
     this.setState({
       data: this.props.data,
-      currentItemId: this.props.currentItemId
+      currentItemId: this.props.currentItemId,
     });
   }
-  
-  initStatesForSelector(fields) {
-    fields.forEach(field => {
-      if (field[Object.keys(field)[0]].inputControl === 'selection') {
-        this.state[Object.keys(field)[0]] = [];
-      }
-    });
-  }
-  
   getDateValue(arg) {
-    let date = new Date(arg),
-      y = date.getFullYear(),
-      m = (date.getMonth() + 1).toString().length === 2 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`,
-      d = date.getDate().toString().length === 2 ? date.getDate() : `0${date.getDate()}`;
+    const date = new Date(arg);
+    const y = date.getFullYear();
+    const m = (date.getMonth() + 1).toString().length === 2 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`;
+    const d = date.getDate().toString().length === 2 ? date.getDate() : `0${date.getDate()}`;
     return `${y}-${m}-${d}`;
   }
-  
-  checkOnEnterIfTextarea(e) {
-    if (e.target.nodeName === 'INPUT' && e.target.value.length > 100) {
-      let textarea = document.createElement('textarea');
-      textarea.id = e.target.id;
-      textarea.placeholder = e.target.placeholder;
-      textarea.innerText = e.target.value;
-      
-      e.target.parentNode.insertBefore(textarea, e.target);
-      e.target.parentNode.removeChild(e.target);
-      document.getElementById(textarea.id).focus();
-    }
-  }
-  
-  checkIfDisabled(field, propName) {
-    let method = this.state.data ?
-      this.state.schema.resolvers.update.args : this.state.schema.resolvers.create.args;
-    
-    return method[propName] ? field[propName].disabled : true;
-  }
-  
-  getOptionsForModal(fields, e) {
-    e.preventDefault();
-    this.getSelectData(fields);
-  }
-  
-  addSelectOption({ label, fields }, e) {
-    let propName = e.currentTarget.name,
-      data = this.props._collectFieldsData(fields, false, false, propName),
-      newState = this.state[propName],
-      newData = this.state[`${propName}Data`] ? this.state[`${propName}Data`] : [];
-    
-    newState.push({
-      text: label ? data[label] : data[Object.keys(data)[1]],
-      value: +newState.length
-    });
-    newData.push(data);
-    
-    this.setState({
-      [propName]: newState,
-      [`${propName}Data`]: newData
-    }, () => {
-      document.querySelector('.modals').click();
-    });
-  }
-  
-  isDate(val) {
-    var d = new Date(val);
-    return !isNaN(d.valueOf()) &&
-      typeof (val) !== 'boolean' &&
-      typeof (val) !== 'number' &&
-      typeof (+val) !== 'number';
-  }
-  
-  fixPath(string) {
-    let result = '';
-    string.slice(0, 1) === '/' || string.slice(0, 1) === '.' ? result = string : result = `/${string}`;
-    result.slice(-1) === '/' ? result = result.slice(0, -1) : null;
-    return result;
-  }
-  
-  getPopupImgPath(propName) {
-    if (propName) {
-      let p = document.getElementById(`${propName}-p`),
-        uploadPath = this.props.schema.uploadPath ?
-          this.fixPath(this.props.schema.uploadPath) : this.props.schema.typeName;
-      
-      this.setState({ popupImgLink: `${uploadPath}/${p.innerText}` });
-    }
-  }
-  
   getSelectData(fields, data) {
-    fields.forEach(field => {
-      let propName = Object.keys(field)[0];
-      
+    fields.forEach((field) => {
+      const propName = Object.keys(field)[0];
       if (field[propName].inputControl === 'selection') {
-        let options = [],
-          defaultOptions = [],
-          dataForOptions = [],
-          label = field[propName].list.label ?
-            field[propName].list.label : Object.keys(field[propName].nestedFields[1])[0],
-          hasOwnAPI = Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
-            Object.keys(field[propName].list.resolvers.create.args).length !== 0;
-        
+        const options = [];
+        const defaultOptions = [];
+        const dataForOptions = [];
+        const label = field[propName].list.label ?
+          field[propName].list.label : Object.keys(field[propName].nestedFields[1])[0];
+        const hasOwnAPI = Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
+          Object.keys(field[propName].list.resolvers.create.args).length !== 0;
         if (!hasOwnAPI && data) {
           data[propName].forEach((obj, idx) => {
             defaultOptions.push(idx);
@@ -170,64 +99,138 @@ class View extends Component {
             options.push({ text: obj[label], value: idx });
           });
         } else if (hasOwnAPI) {
-          let resolver = field[propName].list.resolvers.find.resolver,
-            request = this.props.getRequestString(field[propName].nestedFields);
-          
+          const resolver = field[propName].list.resolvers.find.resolver;
+          const request = this.props.getRequestString(field[propName].nestedFields);
           this.props.query('query', request, resolver)
-            .then(res => {
+            .then((res) => {
               res.data[field[propName].list.resolvers.find.resolver].forEach((obj, idx) => {
                 dataForOptions.push(obj);
                 options.push({ text: obj[label], value: idx });
-                
-                if (data && data[propName].find(item => {
-                    if (item.id) {
-                      return item.id === obj.id;
-                    } else if (item._id) {
-                      return item._id === obj._id;
-                    }
-                  })) {
-                  defaultOptions.push(idx);
-                }
+                const statement = data[propName].find((item) => {
+                  let response;
+                  if (item.id) {
+                    response = item.id === obj.id;
+                  } else if (item._id) {
+                    response = item._id === obj._id;
+                  }
+                  return response;
+                });
+                if (data && statement) defaultOptions.push(idx);
               });
             })
-            .catch(err => console.log(`${propName}, getSelectData, error: ${err}`));
+            .catch((err) => {
+              throw new Error(`${propName}, getSelectData, error: ${err}`);
+            });
         }
-        
         this.setState({
           [`${propName}DefaultValue`]: defaultOptions,
           [`${propName}Data`]: dataForOptions,
-          [propName]: options
+          [propName]: options,
         }, () => {
           setTimeout(() => this.refs[propName].forceUpdate(), 1);
         });
       }
     });
   }
-  
-  generateModal(field, propName) {
-    let to = (field[propName].nestedFields.length / 2).toFixed(0),
-      from = field[propName].nestedFields.length - to;
-    
+  getOptionsForModal(e, fields) {
+    e.preventDefault();
+    this.getSelectData(fields);
+  }
+  getPopupImgPath(propName) {
+    if (propName) {
+      const p = document.getElementById(`${propName}-p`);
+      const uploadPath = this.props.schema.uploadPath ?
+        this.fixPath(this.props.schema.uploadPath) : this.props.schema.typeName;
+      this.setState({ popupImgLink: `${uploadPath}/${p.innerText}` });
+    }
+  }
+  fixPath(string) {
+    let response = '';
+    if (string.slice(0, 1) === '/' || string.slice(0, 1) === '.') {
+      response = string;
+    } else {
+      response = `/${string}`;
+    }
+    if (response.slice(-1) === '/') {
+      response = response.slice(0, -1);
+    }
+    return response;
+  }
+  isDate(val) {
+    const d = new Date(val);
+    return !isNaN(d.valueOf()) &&
+      typeof (val) !== 'boolean' &&
+      typeof (val) !== 'number' &&
+      typeof (+val) !== 'number';
+  }
+  addSelectOption(e, { label, fields }) {
+    const propName = e.currentTarget.name;
+    const data = this.props.collectFieldsData(fields, false, false, propName);
+    const newState = this.state[propName];
+    const newData = this.state[`${propName}Data`] ? this.state[`${propName}Data`] : [];
+    newState.push({
+      text: label ? data[label] : data[Object.keys(data)[1]],
+      value: +newState.length,
+    });
+    newData.push(data);
+    this.setState({
+      [propName]: newState,
+      [`${propName}Data`]: newData,
+    }, () => {
+      document.querySelector('.modals').click();
+    });
+  }
+  checkIfDisabled(field, propName) {
+    const method = this.state.data ?
+      this.state.schema.resolvers.update.args : this.state.schema.resolvers.create.args;
+    return method[propName] ? field[propName].disabled : true;
+  }
+  checkOnEnterIfTextarea(e) {
+    if (e.target.nodeName === 'INPUT' && e.target.value.length > 100) {
+      const textarea = document.createElement('textarea');
+      textarea.id = e.target.id;
+      textarea.placeholder = e.target.placeholder;
+      textarea.innerText = e.target.value;
+      e.target.parentNode.insertBefore(textarea, e.target);
+      e.target.parentNode.removeChild(e.target);
+      document.getElementById(textarea.id).focus();
+    }
+  }
+  initStatesForSelector(fields) {
+    fields.forEach((field) => {
+      if (field[Object.keys(field)[0]].inputControl === 'selection') {
+        this.state[Object.keys(field)[0]] = [];
+      }
+    });
+  }
+  generateModal(fields, propName) {
+    const to = (fields[propName].nestedFields.length / 2).toFixed(0);
+    const from = fields[propName].nestedFields.length - to;
     return (
       <Modal
         id={`${propName}Modal`}
         trigger={
-          <Button icon
-                  className='selector-add'
-                  onClick={this.getOptionsForModal.bind(this, field[propName].nestedFields)}>
-            <Icon name='plus'/>
+          <Button
+            icon
+            className="selector-add"
+            onClick={e => this.getOptionsForModal(e, fields[propName].nestedFields)}
+          >
+            <Icon name="plus" />
           </Button>
         }
-        className='graphql-cms_modal graphql-cms'>
+        className="graphql-cms_modal graphql-cms"
+      >
         <Modal.Header>
           Add new select option for "{propName}"
-          <div className='btn-row'>
-            <Button type='submit' color='black'
-                    name={propName}
-                    onClick={this.addSelectOption.bind(this, {
-                      fields: field[propName].nestedFields,
-                      label: field[propName].list.label
-                    })}>
+          <div className="btn-row">
+            <Button
+              type="submit" color="black"
+              name={propName}
+              onClick={e => this.addSelectOption(e, {
+                fields: fields[propName].nestedFields,
+                label: fields[propName].list.label,
+              })}
+            >
               add
             </Button>
           </div>
@@ -235,13 +238,13 @@ class View extends Component {
         <Modal.Content>
           <Grid as={Form}>
             <Grid.Column computer={8} mobile={16}>
-              {field[propName].nestedFields.slice(0, to).map((field, idx) =>
-                this.generateFields(field, idx, false, false, `${propName}/`)
+              {fields[propName].nestedFields.slice(0, to).map((field, idx) =>
+                this.generateFields(field, idx, false, false, `${propName}/`),
               )}
             </Grid.Column>
             <Grid.Column computer={8} mobile={16}>
-              {field[propName].nestedFields.slice(-from).map((field, idx) =>
-                this.generateFields(field, idx, false, false, `${propName}/`)
+              {fields[propName].nestedFields.slice(-from).map((field, idx) =>
+                this.generateFields(field, idx, false, false, `${propName}/`),
               )}
             </Grid.Column>
           </Grid>
@@ -249,39 +252,39 @@ class View extends Component {
       </Modal>
     );
   }
-  
   generateFields(obj, idx, data, dis, prefix) {
-    let pr = prefix ? prefix : '',
-      field = { ...obj },
-      propName = Object.keys(field)[0],
-      value = '',
-      checked = '',
-      dateInput = false,
-      disabled = typeof (dis) === 'boolean' ? dis : this.checkIfDisabled(field, propName),
-      control = field[propName].inputControl,
-      _uploadImage = this.props._uploadImage,
-      { popupImgLink } = this.state;
-    
-    if (field[propName].nestedFields &&
-      field[propName].nestedFields[0] &&
-      field[propName].inputControl !== 'selection') {
-      disabled = field[propName].disabled;
-      let newData = data ? data[propName] : false;
-      
+    const pr = prefix ? prefix : '';
+    const fields = { ...obj };
+    const propName = Object.keys(fields)[0];
+    const { popupImgLink } = this.state;
+    let value = '';
+    let checked = '';
+    let dateInput = false;
+    let disabled = typeof (dis) === 'boolean' ? dis : this.checkIfDisabled(fields, propName);
+    let control = fields[propName].inputControl;
+    let DOM;
+    if (
+      fields[propName].nestedFields &&
+      fields[propName].nestedFields[0] &&
+      fields[propName].inputControl !== 'selection'
+    ) {
+      disabled = fields[propName].disabled;
+      const newData = data ? data[propName] : false;
       return (
-        <div className='nestedFields' key={idx}>
-          <Divider horizontal>{propName} <Icon name='level down'/></Divider>
-          {field[propName].nestedFields.map((field, idx) =>
-            this.generateFields(field, idx + 300, newData, disabled, `${propName}/`)
+        <div className="nestedFields" key={idx}>
+          <Divider horizontal>{propName} <Icon name="level down" /></Divider>
+          {fields[propName].nestedFields.map((field, index) =>
+            this.generateFields(field, index + 300, newData, disabled, `${propName}/`),
           )}
-          <Divider horizontal>{propName} <Icon name='level up'/></Divider>
+          <Divider horizontal>{propName} <Icon name="level up" /></Divider>
         </div>
       );
     }
-    
-    if (data && (data[propName] ||
+    if (
+      data && (data[propName] ||
       typeof (data[propName]) === 'boolean') &&
-      field[propName].inputType !== 'file') {
+      fields[propName].inputType !== 'file'
+    ) {
       value = data[propName];
       if (value.length > 100) {
         control = 'textarea';
@@ -289,61 +292,69 @@ class View extends Component {
     } else {
       value = '';
     }
-    if (data && field[propName].inputType === 'checkbox') {
+    if (data && fields[propName].inputType === 'checkbox') {
       checked = !data ? false : data[propName];
     } else {
       checked = false;
     }
-    
-    if (this.isDate(value) ||
+    if (
+      this.isDate(value) ||
       propName === 'createdAt' ||
       propName === 'updatedAt' ||
       propName === 'deletedAt' ||
-      field[propName].inputType === 'date') {
+      fields[propName].inputType === 'date'
+    ) {
       dateInput = 'date';
       value = !data ? '' : this.getDateValue(value);
     }
-    
-    let type = dateInput || field[propName].inputType;
-    
+    const type = dateInput || fields[propName].inputType;
     if (data || (propName !== 'id' && propName !== '_id' && propName !== 'offset' && propName !== 'limit')) {
       if (type === 'file') {
-        return (
-          <div className='file-form' key={idx}>
+        DOM = (
+          <div className="file-form" key={idx}>
             <Button
-              as='label'
-              content={field[propName].label}
-              className='file-form-btn'
-              icon='upload'
+              as="label"
+              content={fields[propName].label}
+              className="file-form-btn"
+              icon="upload"
               disabled={disabled}
-              labelPosition='right'
+              labelPosition="right"
               htmlFor={`${pr}${propName}-input`}
             />
-            <Popup onMount={this.getPopupImgPath.bind(this, propName)}
-                   onClose={this.getPopupImgPath.bind(this, false)}
-                   name={propName}
-                   trigger={<p className='file-name'
-                               id={`${pr}${propName}-p`}>{data[propName]}</p>}>
-              <img id={`${pr}${propName}-img`} src={popupImgLink}/>
+            <Popup
+              onMount={() => this.getPopupImgPath(propName)}
+              onClose={() => this.getPopupImgPath(false)}
+              name={propName}
+              trigger={
+                <p className="file-name" id={`${pr}${propName}-p`}>
+                  {data[propName]}
+                </p>
+              }
+            >
+              <img id={`${pr}${propName}-img`} src={popupImgLink} alt={propName} />
             </Popup>
-            <input disabled={disabled} onChange={_uploadImage} id={`${pr}${propName}-input`}
-                   type="file"/>
+            <input
+              disabled={disabled}
+              onChange={this.props.uploadImage}
+              id={`${pr}${propName}-input`}
+              type="file"
+            />
           </div>
         );
-      } else if (field[propName].inputControl === 'selection') {
-        let options = this.state[propName],
-          defaultOptions = data ? this.state[`${propName}DefaultValue`] : [],
-          hasOwnAPI = Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
-            Object.keys(field[propName].list.resolvers.create.args).length !== 0;
-        
-        return (
-          <div className='file-form' key={idx}>
-            <label>{field[propName].label}</label>
-            {!hasOwnAPI ? this.generateModal(field, propName) : null}
+      } else if (fields[propName].inputControl === 'selection') {
+        const options = this.state[propName];
+        const defaultOptions = data ? this.state[`${propName}DefaultValue`] : [];
+        const hasOwnAPI = Object.keys(fields[propName].list.resolvers.find.args).length !== 0 &&
+          Object.keys(fields[propName].list.resolvers.create.args).length !== 0;
+
+        DOM = (
+          <div className="file-form" key={idx}>
+            <label>{fields[propName].label}</label>
+            {!hasOwnAPI ? this.generateModal(fields, propName) : null}
             {options ?
               <Dropdown
                 ref={propName}
-                placeholder={field[propName].label}
+                placeholder={fields[propName].label}
                 id={`${pr}${propName}`}
                 fluid
                 multiple
@@ -355,10 +366,10 @@ class View extends Component {
           </div>
         );
       } else {
-        return (
+        DOM = (
           <Form.Field
             key={idx}
-            label={field[propName].label}
+            label={fields[propName].label}
             control={control}
             type={type}
             id={`${pr}${propName}`}
@@ -366,51 +377,56 @@ class View extends Component {
             defaultChecked={checked}
             onInput={this.checkOnEnterIfTextarea}
             disabled={disabled}
-            placeholder={propName}/>
+            placeholder={propName}
+          />
         );
       }
-      
     }
+    return DOM;
   }
-  
   render() {
     const { Column } = Grid;
     const { fields, schema, currentItemId, data } = this.state;
-    let { update, remove, _addNewItem } = this.props,
-      { generateFields } = this,
-      to = (fields.length / 2).toFixed(0),
-      from = fields.length - to;
-    
+    const { update, remove, addNewItem } = this.props;
+    const { generateFields } = this;
+    const to = (fields.length / 2).toFixed(0);
+    const from = fields.length - to;
     return (
-      <Segment color='black' className='View'>
-        <div className='btn-row'>
+      <Segment color="black" className="View">
+        <div className="btn-row">
           {currentItemId ?
-            <Button type='submit' color='black'
-                    onClick={_addNewItem}
-                    disabled={!schema.resolvers.create}>
+            <Button
+              type="submit" color="black"
+              onClick={addNewItem}
+              disabled={!schema.resolvers.create}
+            >
               add new
             </Button> : null}
-          <Button type='submit' color='black'
-                  onClick={!schema.resolvers.update ? null : update}
-                  disabled={!schema.resolvers.update}>
+          <Button
+            type="submit" color="black"
+            onClick={!schema.resolvers.update ? null : update}
+            disabled={!schema.resolvers.update}
+          >
             save
           </Button>
-          <Button type='submit' color='black'
-                  id={currentItemId}
-                  onClick={!schema.resolvers.remove ? null : remove}
-                  disabled={!schema.resolvers.remove}>
+          <Button
+            type="submit" color="black"
+            id={currentItemId}
+            onClick={!schema.resolvers.remove ? null : remove}
+            disabled={!schema.resolvers.remove}
+          >
             remove
           </Button>
         </div>
         <Grid as={Form}>
           <Column computer={8} mobile={16}>
             {fields.slice(0, to).map((field, idx) =>
-              generateFields(field, idx, data)
+              generateFields(field, idx, data),
             )}
           </Column>
           <Column computer={8} mobile={16}>
             {fields.slice(-from).map((field, idx) =>
-              generateFields(field, idx, data)
+              generateFields(field, idx, data),
             )}
           </Column>
         </Grid>
@@ -420,5 +436,6 @@ class View extends Component {
 }
 
 View.propTypes = propTypes;
+View.defaultProps = defaultProps;
 
 export default View;

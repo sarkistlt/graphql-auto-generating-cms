@@ -3,15 +3,25 @@ import { Segment, Icon, Menu, Table, Button } from 'semantic-ui-react';
 
 const propTypes = {
   schema: PropTypes.object,
-  _routeToView: PropTypes.func,
-  query: PropTypes.func,
+  routeToView: PropTypes.func,
   data: PropTypes.array,
   remove: PropTypes.func,
-  _addNewItem: PropTypes.func,
-  _nextPage: PropTypes.func,
-  _previewsPage: PropTypes.func,
+  addNewItem: PropTypes.func,
+  nextPage: PropTypes.func,
+  previewsPage: PropTypes.func,
   offset: PropTypes.number,
-  lastPage: PropTypes.bool
+  lastPage: PropTypes.bool,
+};
+const defaultProps = {
+  schema: {},
+  routeToView() {},
+  data: [],
+  remove() {},
+  addNewItem() {},
+  nextPage() {},
+  previewsPage() {},
+  offset: 0,
+  lastPage: true,
 };
 
 class List extends Component {
@@ -24,37 +34,35 @@ class List extends Component {
       lastPage: this.props.lastPage,
     };
   }
-  
   componentWillReceiveProps() {
     this.setState({
       schema: this.props.schema,
       data: this.props.data,
       offset: this.props.offset,
-      lastPage: this.props.lastPage
+      lastPage: this.props.lastPage,
     });
   }
-  
   headerToString(obj, arr) {
     let string = '';
-    arr.forEach(prop => obj[prop] ? string += `${obj[prop]} ` : null);
+    arr.forEach((prop) => {
+      if (obj[prop]) string += `${obj[prop]} `;
+    });
     return string;
   }
-  
   render() {
     const { data, schema, offset, lastPage } = this.state;
-    let { _routeToView, remove, _addNewItem, _nextPage, _previewsPage } = this.props,
-      header = schema.listHeader,
-      { headerToString } = this,
-      idType = '';
-    
-    schema.fields.find(obj => {
+    const { routeToView, remove, addNewItem, nextPage, previewsPage } = this.props;
+    const header = schema.listHeader;
+    const { headerToString } = this;
+    let idType = '';
+    schema.fields.forEach((obj) => {
       if (data[0] && Object.keys(obj)[0] === Object.keys(data[0])[0]) {
         idType = obj[Object.keys(obj)[0]].fieldType;
       }
     });
     return (
-      <Segment color='black' className='View'>
-        <Table celled className='List'>
+      <Segment color="black" className="View">
+        <Table celled className="List">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>#/ID</Table.HeaderCell>
@@ -63,46 +71,52 @@ class List extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {data.map((obj, idx) =>
-              <Table.Row key={idx}>
+            {data.map(obj =>
+              <Table.Row key={obj._id || obj.id}>
                 <Table.Cell>{headerToString(obj, header.id)}</Table.Cell>
                 <Table.Cell>{headerToString(obj, header.title)}</Table.Cell>
                 <Table.Cell>
-                  <Button type='submit'
-                          color='black'
-                          className='action-btn'
-                          id={obj._id ? `_id:${obj._id}:${idType}` : `id:${obj.id}:${idType}`}
-                          onClick={_routeToView}>
+                  <Button
+                    type="submit"
+                    color="black"
+                    className="action-btn"
+                    id={obj._id ? `_id:${obj._id}:${idType}` : `id:${obj.id}:${idType}`}
+                    onClick={routeToView}
+                  >
                     view
                   </Button>
-                  <Button type='submit'
-                          color='black'
-                          className='action-btn'
-                          id={obj._id ? `_id:${obj._id}:${idType}` : `id:${obj.id}:${idType}`}
-                          onClick={!schema.resolvers.remove ? null : remove}
-                          disabled={!schema.resolvers.remove}>
+                  <Button
+                    type="submit"
+                    color="black"
+                    className="action-btn"
+                    id={obj._id ? `_id:${obj._id}:${idType}` : `id:${obj.id}:${idType}`}
+                    onClick={!schema.resolvers.remove ? null : remove}
+                    disabled={!schema.resolvers.remove}
+                  >
                     remove
                   </Button>
                 </Table.Cell>
-              </Table.Row>
+              </Table.Row>,
             )}
           </Table.Body>
           <Table.Footer>
             <Table.Row>
-              <Table.HeaderCell colSpan='3'>
-                <Button type='submit'
-                        color='black'
-                        className='add-btn'
-                        onClick={_addNewItem}
-                        disabled={!schema.resolvers.create}>
+              <Table.HeaderCell colSpan="3">
+                <Button
+                  type="submit"
+                  color="black"
+                  className="add-btn"
+                  onClick={addNewItem}
+                  disabled={!schema.resolvers.create}
+                >
                   add new
                 </Button>
-                <Menu floated='right' pagination>
-                  <Menu.Item as='a' icon onClick={_previewsPage}>
-                    <Icon name='left chevron' disabled={!offset}/>
+                <Menu floated="right" pagination>
+                  <Menu.Item as="a" icon onClick={previewsPage}>
+                    <Icon name="left chevron" disabled={!offset} />
                   </Menu.Item>
-                  <Menu.Item as='a' icon onClick={_nextPage}>
-                    <Icon name='right chevron' disabled={lastPage}/>
+                  <Menu.Item as="a" icon onClick={nextPage}>
+                    <Icon name="right chevron" disabled={lastPage} />
                   </Menu.Item>
                 </Menu>
               </Table.HeaderCell>
@@ -115,5 +129,6 @@ class List extends Component {
 }
 
 List.propTypes = propTypes;
+List.defaultProps = defaultProps;
 
 export default List;
