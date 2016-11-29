@@ -1,10 +1,10 @@
 {
   "name": "graphql-auto-generating-cms",
-  "version": "2.1.20",
+  "version": "2.1.21",
   "description": "This module will use your existed graphQL schema to generate simple for use CMS in a couple minutes!",
   "main": "lib/index.js",
   "scripts": {
-    "dev:hot": "NODE_ENV=development babel-node ./example/src/server.js",
+    "dev:hot": "npm run build && NODE_ENV=development babel-node ./example/src/server.js",
     "example": "NODE_ENV=test babel-node ./example/src/server.js",
     "build": "NODE_ENV=test gulp",
     "prepublish": "npm run build",
@@ -39,7 +39,6 @@
   },
   "homepage": "https://github.com/sarkistlt/graphql-auto-generating-cms#readme",
   "dependencies": {
-    "airbnb_javascript_helpers": "^1.0.1",
     "formidable": "^1.0.17",
     "fs-extra": "^1.0.0",
     "semantic-ui-react": "^0.61.1",
