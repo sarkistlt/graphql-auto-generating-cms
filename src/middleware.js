@@ -327,7 +327,7 @@ const fileUploadingMiddleware = function funcFileUploadingMiddleware(req, res, u
   form.on('error', (err) => {
     if (err) throw new Error(err);
   });
-  form.on('end', () => {
+  form.on('end', function () {
     const tempPath = this.openedFiles[0].path;
     const fileName = this.openedFiles[0].name.split(',')[0];
     const folderPath = fixPath(this.openedFiles[0].name.split(',')[1]);
@@ -367,7 +367,7 @@ export default function (config) {
     if (req.method.toLowerCase() === 'get') {
       res.send(applyRules({ rules, shape: graphqlCMS({ schema, rules, exclude, uploadRoot }) }));
     } else if (req.method.toLowerCase() === 'post') {
-      fileUploadingMiddleware(req, res, uploadRoot);
+      fileUploadingMiddleware.call(this, req, res, uploadRoot);
     }
   };
 }
