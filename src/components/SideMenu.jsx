@@ -7,7 +7,6 @@ const propTypes = {
   newMenuItems: PropTypes.array,
   handleNewMenuClick: PropTypes.func,
 };
-
 const defaultProps = {
   items: [],
   routeToList() {},

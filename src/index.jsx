@@ -274,7 +274,7 @@ class Layout extends Component {
         this.setState({
           schema: res,
           SideMenuItems: menuItems,
-          newMenuItemSecret: newMenuItems ? newMenuItems[0].secret : false,
+          newMenuItemSecret: newMenuItems && newMenuItems[0] ? newMenuItems[0].secret : false,
         }, () => {
           if (!this.state.newMenuItemSecret) {
             const prop = this.state.SideMenuItems[0].typeName;
