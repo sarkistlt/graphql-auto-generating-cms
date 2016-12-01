@@ -1,7 +1,8 @@
-import GraphqlCMS from '../../src';
+import GraphqlCMS from '../../lib';
 import React from 'react';
 import {render} from 'react-dom';
 //import {Router, Route, browserHistory} from 'react-router';
+import '../../lib/styles.css';
 
 class firstComponent extends React.Component {
     render() {

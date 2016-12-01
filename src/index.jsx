@@ -3,7 +3,6 @@ import { Grid, Loader, Segment, Message } from 'semantic-ui-react';
 import SideMenu from './components/SideMenu';
 import View from './components/View';
 import List from './components/List';
-import './components/styles.css';
 
 const propTypes = {
   route: PropTypes.shape({

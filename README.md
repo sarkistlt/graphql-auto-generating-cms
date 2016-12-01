@@ -18,6 +18,11 @@ GraphQL CMS will build a fully-functional CMS by just using your printed GraphQL
 ~~~sh
 npm i -S graphql-auto-generating-cms
 ~~~
+~~~js
+import GraphqlCMS from 'graphql-auto-generating-cms';
+import 'graphql-auto-generating-cms/lib/styles.css';
+...
+~~~
 
 **And to head of your template add:**
 

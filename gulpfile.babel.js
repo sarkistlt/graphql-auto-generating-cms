@@ -11,7 +11,7 @@ gulp.task('scss', () => {
   clean('/components/styles.css');
   return gulp.src('./src/styles.scss')
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-    .pipe(gulp.dest('./lib/components'));
+    .pipe(gulp.dest('./lib'));
 });
 
 gulp.task('build:component:SideMenu', () => {
