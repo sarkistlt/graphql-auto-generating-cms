@@ -14,16 +14,6 @@ const propTypes = {
   endpoint: PropTypes.string,
   newMenuItems: PropTypes.array,
 };
-const defaultProps = {
-  route: {
-    graphql: '',
-    endpoint: '',
-    newMenuItems: [],
-  },
-  graphql: '',
-  endpoint: '',
-  newMenuItems: [],
-};
 
 class Layout extends Component {
   constructor(...args) {
@@ -614,6 +604,5 @@ class Layout extends Component {
 }
 
 Layout.propTypes = propTypes;
-Layout.defaultProps = defaultProps;
 
 export default Layout;
