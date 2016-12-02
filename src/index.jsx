@@ -256,8 +256,12 @@ class Layout extends Component {
       .then(json => json.json())
       .then((res) => {
         const menuItems = [];
-        const newMenuItems = this.props.newMenuItems ?
-            this.props.newMenuItems : this.props.route.newMenuItems;
+        let newMenuItems = false;
+        if (this.props.newMenuItems) {
+			newMenuItems = this.props.newMenuItems;
+		} else if (this.props.route && this.props.route.newMenuItems) {
+			newMenuItems = this.props.route.newMenuItems;
+		}
         Object.keys(res).forEach((type) => {
           menuItems.push({ label: res[type].label, typeName: type });
         });
