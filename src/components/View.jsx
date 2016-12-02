@@ -16,7 +16,7 @@ const propTypes = {
   query: PropTypes.func,
   data: PropTypes.oneOfType([
     PropTypes.object,
-    PropTypes.boolean,
+    PropTypes.bool,
   ]),
   fields: PropTypes.array,
   update: PropTypes.func,
@@ -25,7 +25,7 @@ const propTypes = {
   remove: PropTypes.func,
   currentItemId: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.boolean,
+    PropTypes.bool,
   ]),
   uploadImage: PropTypes.func,
   addNewItem: PropTypes.func,

@@ -5,8 +5,8 @@ const propTypes = {
   items: PropTypes.array,
   routeToList: PropTypes.func,
   newMenuItems: PropTypes.oneOfType([
-	  PropTypes.array,
-	  PropTypes.boolean,
+    PropTypes.array,
+    PropTypes.bool,
   ]),
   handleNewMenuClick: PropTypes.func,
 };

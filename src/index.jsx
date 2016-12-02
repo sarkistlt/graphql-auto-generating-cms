@@ -255,7 +255,6 @@ class Layout extends Component {
     fetch(endpoint, { method: 'GET' })
       .then(json => json.json())
       .then((res) => {
-      console.log(res);
         const menuItems = [];
         let newMenuItems = false;
         if (this.props.newMenuItems) {
