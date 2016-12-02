@@ -96,7 +96,7 @@ class Layout extends Component {
     };
     this.query('query', request, resolver, variables)
       .then(res => this.setState({ viewData: res, viewMode: true, currentItemId: id }))
-      .catch(err => console.log(`error: ${err}`));
+      .catch(err => console.log(`getViewData error: ${err}`));
   }
   getRequestString(fields) {
     let request = '';
@@ -384,9 +384,17 @@ class Layout extends Component {
     }
     function getCurrentFieldMutationType(propName, schema, type, action) {
       let response = type;
-      if (schema.resolvers.create.args[propName] && action === 'create') {
+      if (
+        schema.resolvers.create &&
+        schema.resolvers.create.args[propName] &&
+        action === 'create'
+      ) {
         response = schema.resolvers.create.args[propName];
-      } else if (schema.resolvers.update.args[propName] && action === 'update') {
+      } else if (
+        schema.resolvers.update &&
+        schema.resolvers.update.args[propName] &&
+        action === 'update'
+      ) {
         response = schema.resolvers.update.args[propName];
       }
       return response;
@@ -405,9 +413,13 @@ class Layout extends Component {
       return tmpData;
     }
     function checkIfDisabled(field, propName) {
-      const method = action && action === 'update' ?
-        schema.resolvers.update.args : schema.resolvers.create.args;
-      let result = method[propName] ? field[propName].disabled : true;
+      let method = false;
+      if (action && action === 'update' && schema.resolvers.update) {
+        method = schema.resolvers.update.args;
+      } else if (action && action === 'create' && schema.resolvers.create) {
+        method = schema.resolvers.create.args;
+      }
+      let result = method && method[propName] ? field[propName].disabled : true;
       if (prefix) result = false;
       return result;
     }
@@ -525,11 +537,11 @@ class Layout extends Component {
         routeToList, routeToView, routeToAdd, addNewItem, uploadImage, getRequestString,
         nextPage, previewsPage, query, update, remove, handleNewMenuClick, collectFieldsData,
       } = this;
-	  let newMenuItems = false;
-	  if (this.props.newMenuItems) {
-		  newMenuItems = this.props.newMenuItems;
+    let newMenuItems = false;
+    if (this.props.newMenuItems) {
+	    newMenuItems = this.props.newMenuItems;
 	  } else if (this.props.route && this.props.route.newMenuItems) {
-		  newMenuItems = this.props.route.newMenuItems;
+	    newMenuItems = this.props.route.newMenuItems;
 	  }
     if (!schema) {
       return (

@@ -90,8 +90,19 @@ class View extends Component {
         const dataForOptions = [];
         const label = field[propName].list.label ?
           field[propName].list.label : Object.keys(field[propName].nestedFields[1])[0];
-        const hasOwnAPI = Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
-          Object.keys(field[propName].list.resolvers.create.args).length !== 0;
+        let hasOwnAPI = false;
+        if (
+          Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
+          (
+            (field[propName].list.resolvers.create &&
+            Object.keys(field[propName].list.resolvers.create.args).length !== 0) ||
+            (field[propName].list.resolvers.update &&
+            Object.keys(field[propName].list.resolvers.update.args).length !== 0)
+          )
+        ) {
+          hasOwnAPI = true;
+        }
+
         if (!hasOwnAPI && data) {
           data[propName].forEach((obj, idx) => {
             defaultOptions.push(idx);
@@ -179,9 +190,15 @@ class View extends Component {
     });
   }
   checkIfDisabled(field, propName) {
-    const method = this.state.data ?
-      this.state.schema.resolvers.update.args : this.state.schema.resolvers.create.args;
-    return method[propName] ? field[propName].disabled : true;
+    let method = false;
+    const { schema } = this.state;
+    if (schema.resolvers.update) {
+      method = schema.resolvers.update.args;
+    } else if (schema.resolvers.create) {
+      method = schema.resolvers.create.args;
+    }
+    const result = method && method[propName] ? field[propName].disabled : true;
+    return result;
   }
   checkOnEnterIfTextarea(e) {
     if (e.target.nodeName === 'INPUT' && e.target.value.length > 100) {
@@ -341,8 +358,18 @@ class View extends Component {
         );
       } else if (fields[propName].inputControl === 'selection') {
         const options = this.state[propName];
-        const hasOwnAPI = Object.keys(fields[propName].list.resolvers.find.args).length !== 0 &&
-          Object.keys(fields[propName].list.resolvers.create.args).length !== 0;
+        let hasOwnAPI = false;
+        if (
+          Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
+          (
+            (field[propName].list.resolvers.create &&
+            Object.keys(field[propName].list.resolvers.create.args).length !== 0) ||
+            (field[propName].list.resolvers.update &&
+            Object.keys(field[propName].list.resolvers.update.args).length !== 0)
+          )
+        ) {
+          hasOwnAPI = true;
+        }
         DOM = (
           <div className="file-form" key={idx}>
             <label>{fields[propName].label}</label>

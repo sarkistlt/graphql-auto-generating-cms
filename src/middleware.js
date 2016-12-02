@@ -262,7 +262,7 @@ const graphqlCMS = function funcGraphqlCMS(args) {
               rules,
               typeName: methodTypeName,
               method: 'find',
-              fields: Queries.fields
+              fields: Queries.fields,
             }),
             allowed: true,
           },
@@ -272,13 +272,13 @@ const graphqlCMS = function funcGraphqlCMS(args) {
               rules,
               typeName: methodTypeName,
               method: 'create',
-              fields: Mutations.fields
+              fields: Mutations.fields,
             }),
             allowed: checkMethodPermission({
               rules,
               typeName: methodTypeName,
               method: 'create',
-              mutations: Mutations
+              mutations: Mutations,
             }),
           },
           update: {
@@ -287,13 +287,13 @@ const graphqlCMS = function funcGraphqlCMS(args) {
               rules,
               typeName: methodTypeName,
               method: 'update',
-              fields: Mutations.fields
+              fields: Mutations.fields,
             }),
             allowed: checkMethodPermission({
               rules,
               typeName: methodTypeName,
               method: 'update',
-              mutations: Mutations
+              mutations: Mutations,
             }),
           },
           remove: {
@@ -302,13 +302,13 @@ const graphqlCMS = function funcGraphqlCMS(args) {
               rules,
               typeName: methodTypeName,
               method: 'remove',
-              fields: Mutations.fields
+              fields: Mutations.fields,
             }),
             allowed: checkMethodPermission({
               rules,
               typeName: methodTypeName,
               method: 'remove',
-              mutations: Mutations
+              mutations: Mutations,
             }),
           },
         },
