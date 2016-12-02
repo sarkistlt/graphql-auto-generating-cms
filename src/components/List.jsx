@@ -91,7 +91,7 @@ class List extends Component {
                     className="action-btn"
                     id={obj._id ? `_id:${obj._id}:${idType}` : `id:${obj.id}:${idType}`}
                     onClick={!schema.resolvers.remove ? null : remove}
-                    disabled={!schema.resolvers.remove}
+                    disabled={!schema.resolvers.remove || !schema.resolvers.remove.allowed}
                   >
                     remove
                   </Button>
@@ -107,7 +107,7 @@ class List extends Component {
                   color="black"
                   className="add-btn"
                   onClick={addNewItem}
-                  disabled={!schema.resolvers.create}
+                  disabled={!schema.resolvers.create || !schema.resolvers.create.allowed}
                 >
                   add new
                 </Button>

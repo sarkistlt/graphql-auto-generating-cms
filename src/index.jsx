@@ -255,13 +255,14 @@ class Layout extends Component {
     fetch(endpoint, { method: 'GET' })
       .then(json => json.json())
       .then((res) => {
+      console.log(res);
         const menuItems = [];
         let newMenuItems = false;
         if (this.props.newMenuItems) {
-			newMenuItems = this.props.newMenuItems;
-		} else if (this.props.route && this.props.route.newMenuItems) {
-			newMenuItems = this.props.route.newMenuItems;
-		}
+          newMenuItems = this.props.newMenuItems;
+        } else if (this.props.route && this.props.route.newMenuItems) {
+          newMenuItems = this.props.route.newMenuItems;
+        }
         Object.keys(res).forEach((type) => {
           menuItems.push({ label: res[type].label, typeName: type });
         });
@@ -361,8 +362,8 @@ class Layout extends Component {
     this.getViewData(e.target.id);
   }
   collectFieldsData(fields, id, action, prefix) {
-    const schema = {...this.state.currentPathSchema};
-    let data = {values: {}, types: {}};
+    const schema = { ...this.state.currentPathSchema };
+    let data = { values: {}, types: {} };
     function getCurrentFieldData(id, type, prefix) {
       const pr = prefix ? `${prefix}/` : '';
       switch (type || type.slice(0, -1)) {
@@ -392,8 +393,8 @@ class Layout extends Component {
       return response;
     }
     function getNestedFieldsData(nestedFields, propName) {
-      let tmpData = {};
-      nestedFields.forEach(field => {
+      const tmpData = {};
+      nestedFields.forEach((field) => {
         if (!field.nestedFields) {
           tmpData[Object.keys(field)[0]] =
             getCurrentFieldData(Object.keys(field)[0], field[Object.keys(field)[0]].fieldType, propName, prefix);

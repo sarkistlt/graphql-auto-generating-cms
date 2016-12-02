@@ -394,14 +394,14 @@ class View extends Component {
             <Button
               type="submit" color="black"
               onClick={addNewItem}
-              disabled={!schema.resolvers.create}
+              disabled={!schema.resolvers.create || !schema.resolvers.create.allowed}
             >
               add new
             </Button> : null}
           <Button
             type="submit" color="black"
             onClick={!schema.resolvers.update ? null : update}
-            disabled={!schema.resolvers.update}
+            disabled={!schema.resolvers.update || !schema.resolvers.update.allowed}
           >
             save
           </Button>
@@ -409,7 +409,7 @@ class View extends Component {
             type="submit" color="black"
             id={currentItemId}
             onClick={!schema.resolvers.remove ? null : remove}
-            disabled={!schema.resolvers.remove}
+            disabled={!schema.resolvers.remove || !schema.resolvers.remove.allowed}
           >
             remove
           </Button>
