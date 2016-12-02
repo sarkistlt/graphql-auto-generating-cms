@@ -525,8 +525,12 @@ class Layout extends Component {
         routeToList, routeToView, routeToAdd, addNewItem, uploadImage, getRequestString,
         nextPage, previewsPage, query, update, remove, handleNewMenuClick, collectFieldsData,
       } = this;
-    const newMenuItems = this.props.newMenuItems ?
-      this.props.newMenuItems : this.props.route.newMenuItems;
+	  let newMenuItems = false;
+	  if (this.props.newMenuItems) {
+		  newMenuItems = this.props.newMenuItems;
+	  } else if (this.props.route && this.props.route.newMenuItems) {
+		  newMenuItems = this.props.route.newMenuItems;
+	  }
     if (!schema) {
       return (
         <Segment className="loading-block">
@@ -538,7 +542,7 @@ class Layout extends Component {
     } else {
       let resolverForList = false;
       let NewMenuView = false;
-      if (newMenuItemSecret) {
+      if (newMenuItemSecret && newMenuItems) {
         NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret).view.component;
       } else {
         resolverForList = currentPathSchema.resolvers.find.resolver;
