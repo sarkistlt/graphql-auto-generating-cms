@@ -4,7 +4,10 @@ import { Menu, Grid, Dropdown, Button } from 'semantic-ui-react';
 const propTypes = {
   items: PropTypes.array,
   routeToList: PropTypes.func,
-  newMenuItems: PropTypes.array,
+  newMenuItems: PropTypes.oneOfType([
+	  PropTypes.array,
+	  PropTypes.boolean,
+  ]),
   handleNewMenuClick: PropTypes.func,
 };
 const defaultProps = {
