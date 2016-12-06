@@ -67,13 +67,16 @@ class Layout extends Component {
         array.push({ [key]: obj.fields[key] });
       }
     });
+    const h = obj.listHeader;
+    const tb1 = Array.isArray(h.id) ? h.id : Object.keys(h.id).map(key => h.id[key]);
+    const tb2 = Array.isArray(h.title) ? h.title : Object.keys(h.title).map(key => h.title[key]);
     this.setState({
       currentPathSchema: {
         typeName: currentRout[0],
         label: obj.label,
         resolvers: obj.resolvers,
         fields: array,
-        listHeader: obj.listHeader,
+        listHeader: { id: tb1, title: tb2 },
         uploadPath: obj.uploadPath,
         uploadRoot: obj.uploadRoot,
       },
@@ -95,8 +98,8 @@ class Layout extends Component {
       types: { [queryId]: queryArgs[queryId] },
     };
     this.query('query', request, resolver, variables)
-      .then(res => this.setState({ viewData: res, viewMode: true, currentItemId: id }))
-      .catch(err => console.log(`getViewData error: ${err}`));
+    .then(res => this.setState({ viewData: res, viewMode: true, currentItemId: id }))
+    .catch(err => console.log(`getViewData error: ${err}`));
   }
   getRequestString(fields) {
     let request = '';
@@ -121,14 +124,14 @@ class Layout extends Component {
     };
     const req = `${h.id.join(' ')} ${h.title.join(' ')}`;
     this.query('query', req, resolver, data)
-      .then((res) => {
-        if (res.errors) throw new Error(res);
-        this.setState({
-          listData: res,
-          lastPage: res.data[resolver].length < 50,
-        }, this.forceUpdate);
-      })
-      .catch((err) => { throw new Error(`error: ${err}`); });
+    .then((res) => {
+      if (res.errors) throw new Error(res);
+      this.setState({
+        listData: res,
+        lastPage: res.data[resolver].length < 50,
+      }, this.forceUpdate);
+    })
+    .catch((err) => { throw new Error(`error: ${err}`); });
   }
   objOfFieldsToArray(fields) {
     const array = [];
@@ -189,15 +192,15 @@ class Layout extends Component {
         throw new Error('data wasn\'t provided');
       } else if (schema.resolvers.create) {
         this.query('mutation', req, resolver, data)
-          .then(() => {
-            this.forceUpdate();
-            this.showSuccessMs();
-            this.routeToList(currentList);
-          })
-          .catch((err) => {
-            this.showErrorMs();
-            throw new Error(`create error: ${err}`);
-          });
+        .then(() => {
+          this.forceUpdate();
+          this.showSuccessMs();
+          this.routeToList(currentList);
+        })
+        .catch((err) => {
+          this.showErrorMs();
+          throw new Error(`create error: ${err}`);
+        });
       }
     }
   }
@@ -215,11 +218,11 @@ class Layout extends Component {
       } else if (data) {
         if (schema.resolvers.update) {
           this.query('mutation', req, resolver, data)
-            .then(this.showSuccessMs)
-            .catch((err) => {
-              this.showErrorMs();
-              throw new Error(`update error: ${err}`);
-            });
+          .then(this.showSuccessMs)
+          .catch((err) => {
+            this.showErrorMs();
+            throw new Error(`update error: ${err}`);
+          });
         }
       }
     }
@@ -238,47 +241,47 @@ class Layout extends Component {
         throw new Error('id wasn\'t provided');
       } else if (schema.resolvers.remove) {
         this.query('mutation', req, resolver, data)
-          .then(() => {
-            this.forceUpdate();
-            this.showSuccessMs();
-            this.routeToList(currentList);
-          })
-          .catch((err) => {
-            this.showErrorMs();
-            throw new Error(`remove error: ${err}`);
-          });
+        .then(() => {
+          this.forceUpdate();
+          this.showSuccessMs();
+          this.routeToList(currentList);
+        })
+        .catch((err) => {
+          this.showErrorMs();
+          throw new Error(`remove error: ${err}`);
+        });
       }
     }
   }
   initCMS() {
     const endpoint = this.props.endpoint ? this.props.endpoint : this.props.route.endpoint;
     fetch(endpoint, { method: 'GET' })
-      .then(json => json.json())
-      .then((res) => {
-        const menuItems = [];
-        let newMenuItems = false;
-        if (this.props.newMenuItems) {
-          newMenuItems = this.props.newMenuItems;
-        } else if (this.props.route && this.props.route.newMenuItems) {
-          newMenuItems = this.props.route.newMenuItems;
+    .then(json => json.json())
+    .then((res) => {
+      const menuItems = [];
+      let newMenuItems = false;
+      if (this.props.newMenuItems) {
+        newMenuItems = this.props.newMenuItems;
+      } else if (this.props.route && this.props.route.newMenuItems) {
+        newMenuItems = this.props.route.newMenuItems;
+      }
+      Object.keys(res).forEach((type) => {
+        menuItems.push({ label: res[type].label, typeName: type });
+      });
+      this.setState({
+        schema: res,
+        SideMenuItems: menuItems,
+        newMenuItemSecret: newMenuItems && newMenuItems[0] ? newMenuItems[0].secret : false,
+      }, () => {
+        if (!this.state.newMenuItemSecret) {
+          const prop = this.state.SideMenuItems[0].typeName;
+          this.getCurrentViewFields(this.state.schema[prop], prop);
+        } else {
+          this.forceUpdate();
         }
-        Object.keys(res).forEach((type) => {
-          menuItems.push({ label: res[type].label, typeName: type });
-        });
-        this.setState({
-          schema: res,
-          SideMenuItems: menuItems,
-          newMenuItemSecret: newMenuItems && newMenuItems[0] ? newMenuItems[0].secret : false,
-        }, () => {
-          if (!this.state.newMenuItemSecret) {
-            const prop = this.state.SideMenuItems[0].typeName;
-            this.getCurrentViewFields(this.state.schema[prop], prop);
-          } else {
-            this.forceUpdate();
-          }
-        });
-      })
-      .catch((err) => { throw new Error(err); });
+      });
+    })
+    .catch((err) => { throw new Error(err); });
   }
   showErrorMs() {
     document.getElementById('ms-error').style.visibility = 'visible';
@@ -518,13 +521,13 @@ class Layout extends Component {
       const endpoint = this.props.endpoint ? this.props.endpoint : this.props.route.endpoint;
       const fileFromInput = e.currentTarget.files[0];
       const folderPath = this.state.currentPathSchema.uploadPath ?
-          `/${this.state.currentPathSchema.uploadPath}` : `/${this.state.currentPathSchema.typeName}`;
+        `/${this.state.currentPathSchema.uploadPath}` : `/${this.state.currentPathSchema.typeName}`;
       const massage = e.currentTarget.previousElementSibling;
       const fd = new FormData();
       fd.append('file', fileFromInput, [fileFromInput.name, folderPath]);
       massage.innerHTML = fileFromInput.name;
       fetch(endpoint, { method: 'POST', body: fd })
-        .catch((err) => { throw new Error(`error: ${err}`); });
+      .catch((err) => { throw new Error(`error: ${err}`); });
     }
   }
   render() {
@@ -534,15 +537,15 @@ class Layout extends Component {
       listData, SideMenuItems, viewMode, currentItemId, newMenuItemSecret,
     } = this.state;
     const {
-        routeToList, routeToView, routeToAdd, addNewItem, uploadImage, getRequestString,
-        nextPage, previewsPage, query, update, remove, handleNewMenuClick, collectFieldsData,
-      } = this;
+      routeToList, routeToView, routeToAdd, addNewItem, uploadImage, getRequestString,
+      nextPage, previewsPage, query, update, remove, handleNewMenuClick, collectFieldsData,
+    } = this;
     let newMenuItems = false;
     if (this.props.newMenuItems) {
-	    newMenuItems = this.props.newMenuItems;
-	  } else if (this.props.route && this.props.route.newMenuItems) {
-	    newMenuItems = this.props.route.newMenuItems;
-	  }
+      newMenuItems = this.props.newMenuItems;
+    } else if (this.props.route && this.props.route.newMenuItems) {
+      newMenuItems = this.props.route.newMenuItems;
+    }
     if (!schema) {
       return (
         <Segment className="loading-block">
@@ -605,17 +608,17 @@ class Layout extends Component {
                   <Segment color="black" className="View">
                     <NewMenuView />
                   </Segment>) :
-                  <List
-                    remove={remove}
-                    offset={offset}
-                    lastPage={lastPage}
-                    nextPage={nextPage}
-                    previewsPage={previewsPage}
-                    addNewItem={addNewItem}
-                    routeToView={routeToView}
-                    data={listData.data[resolverForList]}
-                    schema={currentPathSchema}
-                  />)}
+                <List
+                  remove={remove}
+                  offset={offset}
+                  lastPage={lastPage}
+                  nextPage={nextPage}
+                  previewsPage={previewsPage}
+                  addNewItem={addNewItem}
+                  routeToView={routeToView}
+                  data={listData.data[resolverForList]}
+                  schema={currentPathSchema}
+                />)}
           </Column>
         </Grid>
       );
