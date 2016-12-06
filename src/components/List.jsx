@@ -44,8 +44,14 @@ class List extends Component {
   }
   headerToString(obj, arr) {
     let string = '';
-    arr.forEach((prop) => {
-      if (obj[prop]) string += `${obj[prop]} `;
+    arr.forEach((prop, idx) => {
+      if (arr.length === '1') {
+        string += `${obj[prop]}`;
+      } else if (idx === arr.length - 1 && obj[prop]) {
+        string += `${obj[prop]}`;
+      } else if (obj[prop]) {
+        string += `${obj[prop]} | `;
+      }
     });
     return string;
   }
