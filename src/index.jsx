@@ -116,13 +116,14 @@ class Layout extends Component {
   getListData() {
     const d = this.state.currentPathSchema;
     const h = this.state.currentPathSchema.listHeader;
+    const fields = d.fields.map(objKey => Object.keys(objKey)[0]);
     const resolver = d.resolvers.find.resolver;
     const { offset, limit } = this.state;
     const data = {
       values: { offset, limit },
       types: { offset: 'Int!', limit: 'Int!' },
     };
-    const req = `${h.id.join(' ')} ${h.title.join(' ')}`;
+    const req = `${h.id.join(' ')} ${h.title.join(' ')} ${fields.find(key => key === '_id') ? '_id' : 'id'}`;
     this.query('query', req, resolver, data)
     .then((res) => {
       if (res.errors) throw new Error(res);
