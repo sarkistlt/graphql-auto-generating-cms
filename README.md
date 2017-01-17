@@ -1,7 +1,6 @@
 [![License](https://img.shields.io/npm/l/graphql-auto-generating-cms.svg)](https://www.npmjs.com/package/graphql-auto-generating-cms)
 [![NPM](https://img.shields.io/npm/v/graphql-auto-generating-cms.svg)](https://www.npmjs.com/package/graphql-auto-generating-cms)
 [![Build Status](https://travis-ci.org/sarkistlt/graphql-auto-generating-cms.svg?branch=master)](https://travis-ci.org/sarkistlt/graphql-auto-generating-cms)
-[![Dependency Status](https://gemnasium.com/badges/github.com/sarkistlt/graphql-auto-generating-cms.svg)](https://gemnasium.com/github.com/sarkistlt/graphql-auto-generating-cms)
 
 ![alt tag](https://github.com/sarkistlt/graphql-auto-generating-cms/blob/master/example/screenshots/Screen-Shot-2016-10-31-at-10.33.13-AM.png)
 GraphQL CMS will build a fully-functional CMS by just using your printed GraphQL schema without any changes in your existed code or architecture.

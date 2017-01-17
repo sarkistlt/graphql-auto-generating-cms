@@ -288,8 +288,8 @@ class View extends Component {
       return (
         <div className="nestedFields" key={idx}>
           <Divider horizontal>{propName} <Icon name="level down" /></Divider>
-          {fields[propName].nestedFields.map((field, index) =>
-            this.generateFields(field, index + 300, newData, disabled, `${propName}/`),
+          {fields[propName].nestedFields.map((fields, index) =>
+            this.generateFields(fields, index + 300, newData, disabled, `${propName}/`),
           )}
           <Divider horizontal>{propName} <Icon name="level up" /></Divider>
         </div>
@@ -360,12 +360,12 @@ class View extends Component {
         const options = this.state[propName];
         let hasOwnAPI = false;
         if (
-          Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
+          Object.keys(fields[propName].list.resolvers.find.args).length !== 0 &&
           (
-            (field[propName].list.resolvers.create &&
-            Object.keys(field[propName].list.resolvers.create.args).length !== 0) ||
-            (field[propName].list.resolvers.update &&
-            Object.keys(field[propName].list.resolvers.update.args).length !== 0)
+            (fields[propName].list.resolvers.create &&
+            Object.keys(fields[propName].list.resolvers.create.args).length !== 0) ||
+            (fields[propName].list.resolvers.update &&
+            Object.keys(fields[propName].list.resolvers.update.args).length !== 0)
           )
         ) {
           hasOwnAPI = true;

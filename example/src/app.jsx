@@ -1,50 +1,50 @@
-import GraphqlCMS from '../../lib';
 import React from 'react';
 import {render} from 'react-dom';
 //import {Router, Route, browserHistory} from 'react-router';
+import GraphqlCMS from '../../lib';
 import '../../lib/styles.css';
 
 class firstComponent extends React.Component {
-    render() {
-        return (
-            <div>place for your first custom solution</div>
-        );
-    }
+  render() {
+    return (
+      <div>place for your first custom solution</div>
+    );
+  }
 }
 
 class secondComponent extends React.Component {
-    render() {
-        return (
-            <div>place for your second custom solution</div>
-        );
-    }
+  render() {
+    return (
+      <div>place for your second custom solution</div>
+    );
+  }
 }
 
 let customComponents = [
-    {
-        label: 'Custom component 1',
-        secret: 'firstComponent',
-        view: {
-            secret: 'firstComponent',
-            component: firstComponent
-        }
-    },
-    {
-        label: 'Custom component 2',
-        secret: 'secondComponent',
-        view: {
-            secret: 'secondComponent',
-            component: secondComponent
-        }
+  {
+    label: 'Custom component 1',
+    secret: 'firstComponent',
+    view: {
+      secret: 'firstComponent',
+      component: firstComponent
     }
+  },
+  {
+    label: 'Custom component 2',
+    secret: 'secondComponent',
+    view: {
+      secret: 'secondComponent',
+      component: secondComponent
+    }
+  }
 ];
 
 render(
-    <GraphqlCMS
-        endpoint='/graphql_cms_endpoint'
-        graphql='/graphql'
-        newMenuItems={customComponents}
-    />, document.getElementById('root'));
+  <GraphqlCMS
+    endpoint='/graphql_cms_endpoint'
+    graphql='/graphql'
+    newMenuItems={customComponents}
+  />, document.getElementById('root'));
 
 /**
  * if you want to try on separate route
