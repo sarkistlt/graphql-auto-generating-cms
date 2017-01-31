@@ -77,7 +77,7 @@ class View extends Component {
   getDateValue(arg) {
     const date = new Date(arg);
     const y = ("0000" + date.getFullYear()).slice(-4);
-    const m = ("00" + date.getMonth()).slice(-2);
+    const m = ("00" + (date.getMonth() + 1)).slice(-2);
     const d = ("00" + date.getDate()).slice(-2);
     return `${y}-${m}-${d}`;
   }
