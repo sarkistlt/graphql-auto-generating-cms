@@ -4,12 +4,12 @@
   "description": "This module will use your existed graphQL schema to generate simple for use CMS in a couple minutes!",
   "main": "lib/index.js",
   "scripts": {
-    "dev:hot": "npm run build && NODE_ENV=development babel-node ./example/src/server.js",
-    "example": "NODE_ENV=test babel-node ./example/src/server.js",
-    "build": "NODE_ENV=test gulp",
+    "dev:hot": "npm run build && cross-env NODE_ENV=development babel-node ./example/src/server.js",
+    "example": "cross-env NODE_ENV=test babel-node ./example/src/server.js",
+    "build": "cross-env NODE_ENV=test gulp",
     "prepublish": "npm run build",
-    "test:all": "npm run build && NODE_ENV=test istanbul cover _mocha -- test --compilers js:babel-core/register",
-    "test:middleware": "NODE_ENV=test gulp build:middleware && mocha --compilers js:babel-core/register test/middleware.js",
+    "test:all": "npm run build && cross-env NODE_ENV=test istanbul cover _mocha -- test --compilers js:babel-core/register",
+    "test:middleware": "cross-env NODE_ENV=test gulp build:middleware && mocha --compilers js:babel-core/register test/middleware.js",
     "test:layout": "mocha --compilers js:babel-core/register test/layout.js"
   },
   "repository": {
@@ -39,6 +39,7 @@
   },
   "homepage": "https://github.com/sarkistlt/graphql-auto-generating-cms#readme",
   "dependencies": {
+    "cross-env": "^3.1.4",
     "formidable": "^1.0.17",
     "fs-extra": "^1.0.0",
     "semantic-ui-react": "^0.61.1",
