@@ -371,9 +371,9 @@ class Layout extends Component {
       const pr = prefix ? `${prefix}/` : '';
       switch (type || type.slice(0, -1)) {
         case 'Int':
-          return document.getElementById(`${pr}${id}`).value;
+          return Number(document.getElementById(`${pr}${id}`).value);
         case 'Float':
-          return document.getElementById(`${pr}${id}`).value;
+          return Number(document.getElementById(`${pr}${id}`).value);
         case 'Boolean':
           return document.getElementById(`${pr}${id}`).checked;
         case 'String':
