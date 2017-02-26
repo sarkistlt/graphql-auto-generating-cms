@@ -1,8 +1,14 @@
 import React, { PropTypes, Component } from 'react';
 import { Grid, Loader, Segment, Message } from 'semantic-ui-react';
+import 'whatwg-fetch';
+import Promise from 'promise-polyfill';
 import SideMenu from './components/SideMenu';
 import View from './components/View';
 import List from './components/List';
+
+if (!window.Promise) {
+  window.Promise = Promise;
+}
 
 const propTypes = {
   route: PropTypes.shape({
