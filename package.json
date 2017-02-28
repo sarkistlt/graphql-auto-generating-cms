@@ -1,6 +1,6 @@
 {
   "name": "graphql-auto-generating-cms",
-  "version": "2.2.94",
+  "version": "2.2.95",
   "description": "This module will use your existed graphQL schema to generate simple for use CMS in a couple minutes!",
   "main": "lib/index.js",
   "scripts": {
@@ -80,6 +80,7 @@
     "gulp-browserify": "^0.5.1",
     "gulp-less": "^3.2.0",
     "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^2.4.1",
     "mocha": "^3.1.2",
     "mocha-lcov-reporter": "^1.2.0",
     "nedb": "^1.8.0",

@@ -2,6 +2,7 @@ import gulp from 'gulp';
 import sass from 'gulp-sass';
 import babel from 'gulp-babel';
 import del from 'del';
+import sourcemaps from 'gulp-sourcemaps';
 
 function clean(str) {
   return del([`./lib${str}`]);
@@ -10,43 +11,48 @@ function clean(str) {
 gulp.task('scss', () => {
   clean('/components/styles.css');
   return gulp.src('./src/styles.scss')
-    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-    .pipe(gulp.dest('./lib'));
+  .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+  .pipe(gulp.dest('./lib'));
 });
 
 gulp.task('build:component:SideMenu', () => {
   clean('/components/SideMenu.js');
   return gulp.src('./src/components/SideMenu.jsx')
-    .pipe(babel({presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true}))
-    .pipe(gulp.dest('./lib/components'));
+  .pipe(sourcemaps.init())
+  .pipe(babel({ presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true }))
+  .pipe(gulp.dest('./lib/components'));
 });
 
 gulp.task('build:component:List', () => {
   clean('/components/List.js');
   return gulp.src('./src/components/List.jsx')
-    .pipe(babel({presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true}))
-    .pipe(gulp.dest('./lib/components'));
+  .pipe(sourcemaps.init())
+  .pipe(babel({ presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true }))
+  .pipe(gulp.dest('./lib/components'));
 });
 
 gulp.task('build:component:View', () => {
   clean('/components/View.js');
   return gulp.src('./src/components/View.jsx')
-    .pipe(babel({presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true}))
-    .pipe(gulp.dest('./lib/components'));
+  .pipe(sourcemaps.init())
+  .pipe(babel({ presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true }))
+  .pipe(gulp.dest('./lib/components'));
 });
 
 gulp.task('build:component:Layout', () => {
   clean('/index.js');
   return gulp.src('./src/index.jsx')
-    .pipe(babel({presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true}))
-    .pipe(gulp.dest('./lib'));
+  .pipe(sourcemaps.init())
+  .pipe(babel({ presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true }))
+  .pipe(gulp.dest('./lib'));
 });
 
 gulp.task('build:middleware', () => {
   clean('/middleware.js');
   return gulp.src('./src/middleware.js')
-    .pipe(babel({presets: ['es2015', 'stage-0', 'stage-1'], compact: true}))
-    .pipe(gulp.dest('./lib'));
+  .pipe(sourcemaps.init())
+  .pipe(babel({ presets: ['es2015', 'stage-0', 'stage-1'], compact: true }))
+  .pipe(gulp.dest('./lib'));
 });
 
 gulp.task('watch', () => {
