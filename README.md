@@ -9,9 +9,9 @@ GraphQL CMS will build a fully-functional CMS by just using your printed GraphQL
 
 **[Example which you can run with one command on your local machine](/example/)**
 
-**[Online DEMO](http://web4fly.com:7700/)** (db will be overwritten every 24h)
+**[Online DEMO](http://web4fly.com:3031/)** (db will be overwritten every 24h)
 
-**[GraphQL API for DEMO](http://web4fly.com:7700/graphql)**
+**[GraphQL API for DEMO](http://web4fly.com:3031/graphql)**
 
 [Auto generating CMS based on your GraphQL schema](https://medium.com/@sarkis.tlt/auto-generating-cms-based-on-your-graphql-schema-5eaa6b07987b#.7lk3gbz0b) [medium.com]
 
