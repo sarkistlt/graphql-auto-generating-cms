@@ -9,10 +9,7 @@
             "couponCode": null,
             "description": "get 99% discount ",
             "discountAmount": 99,
-            "minimumAmount": 1,
-            "expirationDate": "2016-11-27",
-            "createdAt": "2016-11-11",
-            "updatedAt": "2016-11-25"
+            "minimumAmount": 1
           }
         ]
       }
@@ -975,10 +972,7 @@
     "couponCode": null,
     "description": "get 99% discount ",
     "discountAmount": 99,
-    "minimumAmount": 1,
-    "expirationDate": "2016-11-27",
-    "createdAt": "2016-11-11",
-    "updatedAt": "2016-11-25"
+    "minimumAmount": 1
   },
   "listD": [
     {
