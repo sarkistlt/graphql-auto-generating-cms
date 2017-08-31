@@ -7,8 +7,8 @@
     "dev:hot": "npm run build && cross-env NODE_ENV=development babel-node ./example/src/server.js",
     "build": "cross-env NODE_ENV=development gulp",
     "test": "npm run test:client && npm run test:server",
-    "test:client": "cross-env NODE_ENV=development jest --env=jsdom --runInBand __tests__/components.test.js",
-    "test:server": "cross-env NODE_ENV=development mocha --compilers js:babel-core/register __tests__/middleware.js",
+    "test:client": "cross-env NODE_ENV=test jest --env=jsdom --runInBand __tests__/components.test.js",
+    "test:server": "cross-env NODE_ENV=test mocha --compilers js:babel-core/register __tests__/middleware.js",
     "example": "webpack && cross-env NODE_ENV=test babel-node --no-babelrc --presets=react,env,stage-0  ./example/src/server.js",
     "prepublish": "npm run build && npm run test"
   },
