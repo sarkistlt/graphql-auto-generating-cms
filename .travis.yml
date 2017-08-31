@@ -2,8 +2,7 @@ language: node_js
 node_js:
     - "6"
 install:
-    - npm i -g yarn
-    - yarn install
+    - npm install
 after-install:
     - npm run build
 script:
