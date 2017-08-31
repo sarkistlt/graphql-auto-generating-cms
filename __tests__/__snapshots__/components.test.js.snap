@@ -358,7 +358,7 @@ exports[`View components 1`] = `
         </label>
         <input
           defaultChecked={false}
-          defaultValue="2016-11-16"
+          defaultValue="2016-11-26"
           id="expirationDate"
           onInput={[Function]}
           placeholder="expirationDate"

@@ -10,7 +10,7 @@
             "description": "get 99% discount ",
             "discountAmount": 99,
             "minimumAmount": 1,
-            "expirationDate": "Wed Nov 16 2016 21:07:35 GMT-0800 (PST)",
+            "expirationDate": "2016-11-27",
             "createdAt": "2016-11-11",
             "updatedAt": "2016-11-25"
           }
@@ -976,7 +976,7 @@
     "description": "get 99% discount ",
     "discountAmount": 99,
     "minimumAmount": 1,
-    "expirationDate": "Wed Nov 16 2016 21:07:35 GMT-0800 (PST)",
+    "expirationDate": "2016-11-27",
     "createdAt": "2016-11-11",
     "updatedAt": "2016-11-25"
   },
