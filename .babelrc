@@ -23,7 +23,6 @@
       "plugins": [
         "remove-comments"
       ],
-      "comments": false,
       "compact": true,
       "minified": true
     }

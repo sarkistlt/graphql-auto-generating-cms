@@ -1,9 +1,2 @@
 node_js:
     - "6"
-install:
-    - npm install -g gulp mocha istanbul@1.0.0-alpha.2
-    - npm install
-after-install:
-    - npm run build
-script:
-    - npm run test
