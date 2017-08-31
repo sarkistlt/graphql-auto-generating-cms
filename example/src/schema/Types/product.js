@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLList } from 'graphql';
+import { GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 import category from './category';
 
 const ingredient = new GraphQLObjectType({

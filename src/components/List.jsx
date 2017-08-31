@@ -1,28 +1,17 @@
-import React, { PropTypes, Component } from 'react';
-import { Segment, Icon, Menu, Table, Button } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import { Button, Icon, Menu, Segment, Table } from 'semantic-ui-react';
 
-const propTypes = {
-  schema: PropTypes.object,
-  routeToView: PropTypes.func,
-  data: PropTypes.array,
-  remove: PropTypes.func,
-  addNewItem: PropTypes.func,
-  nextPage: PropTypes.func,
-  previewsPage: PropTypes.func,
-  offset: PropTypes.number,
-  lastPage: PropTypes.bool,
-};
-const defaultProps = {
-  schema: {},
-  routeToView() {},
-  data: [],
-  remove() {},
-  addNewItem() {},
-  nextPage() {},
-  previewsPage() {},
-  offset: 0,
-  lastPage: true,
-};
+// const propTypes = {
+//   schema: PropTypes.object,
+//   routeToView: PropTypes.func,
+//   data: PropTypes.array,
+//   remove: PropTypes.func,
+//   addNewItem: PropTypes.func,
+//   nextPage: PropTypes.func,
+//   previewsPage: PropTypes.func,
+//   offset: PropTypes.number,
+//   lastPage: PropTypes.bool,
+// };
 
 class List extends Component {
   constructor(...args) {
@@ -34,6 +23,7 @@ class List extends Component {
       lastPage: this.props.lastPage,
     };
   }
+
   componentWillReceiveProps() {
     this.setState({
       schema: this.props.schema,
@@ -42,6 +32,7 @@ class List extends Component {
       lastPage: this.props.lastPage,
     });
   }
+
   headerToString(obj, arr) {
     let string = '';
     arr.forEach((prop, idx) => {
@@ -55,6 +46,7 @@ class List extends Component {
     });
     return string;
   }
+
   render() {
     const { data, schema, offset, lastPage } = this.state;
     const { routeToView, remove, addNewItem, nextPage, previewsPage } = this.props;
@@ -78,7 +70,7 @@ class List extends Component {
           </Table.Header>
           <Table.Body>
             {data.map(obj =>
-              <Table.Row key={obj._id || obj.id}>
+              (<Table.Row key={obj._id || obj.id}>
                 <Table.Cell>{headerToString(obj, header.id)}</Table.Cell>
                 <Table.Cell>{headerToString(obj, header.title)}</Table.Cell>
                 <Table.Cell>
@@ -102,7 +94,7 @@ class List extends Component {
                     remove
                   </Button>
                 </Table.Cell>
-              </Table.Row>,
+              </Table.Row>),
             )}
           </Table.Body>
           <Table.Footer>
@@ -133,8 +125,5 @@ class List extends Component {
     );
   }
 }
-
-List.propTypes = propTypes;
-List.defaultProps = defaultProps;
 
 export default List;

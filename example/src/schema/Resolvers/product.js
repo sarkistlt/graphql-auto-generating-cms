@@ -1,4 +1,5 @@
 import { productDb } from '../../../nedb';
+
 const Product = {};
 
 Product.find = (args) => {
@@ -7,12 +8,12 @@ Product.find = (args) => {
   return new Promise((resolve, reject) => {
     if (args._id) {
       productDb.find(query)
-      .exec((err, res) => err ? reject(err) : resolve(res));
+        .exec((err, res) => (err ? reject(err) : resolve(res)));
     } else {
       productDb.find(query)
-      .skip(args.offset)
-      .limit(args.limit)
-      .exec((err, res) => err ? reject(err) : resolve(res));
+        .skip(args.offset)
+        .limit(args.limit)
+        .exec((err, res) => (err ? reject(err) : resolve(res)));
     }
   });
 };
@@ -22,7 +23,7 @@ Product.create = (args) => {
   args.ingredients = JSON.parse(args.ingredients);
 
   return new Promise((resolve, reject) => {
-    productDb.insert(args, (err, newDoc) => err ? reject(err) : resolve(newDoc));
+    productDb.insert(args, (err, newDoc) => (err ? reject(err) : resolve(newDoc)));
   });
 };
 
@@ -33,7 +34,7 @@ Product.update = (args) => {
   delete args._id;
 
   return new Promise((resolve, reject) => {
-    productDb.update(query, { $set: args }, (err, newDoc) => err ? reject(err) : resolve(newDoc));
+    productDb.update(query, { $set: args }, (err, newDoc) => (err ? reject(err) : resolve(newDoc)));
   });
 };
 

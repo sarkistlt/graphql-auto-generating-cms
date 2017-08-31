@@ -1,5 +1,5 @@
-import React, { PropTypes, Component } from 'react';
-import { Grid, Loader, Segment, Message } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import { Grid, Loader, Message, Segment } from 'semantic-ui-react';
 import 'whatwg-fetch';
 import Promise from 'promise-polyfill';
 import SideMenu from './components/SideMenu';
@@ -10,16 +10,16 @@ if (!window.Promise) {
   window.Promise = Promise;
 }
 
-const propTypes = {
-  route: PropTypes.shape({
-    graphql: PropTypes.string,
-    endpoint: PropTypes.string,
-    newMenuItems: PropTypes.array,
-  }),
-  graphql: PropTypes.string,
-  endpoint: PropTypes.string,
-  newMenuItems: PropTypes.array,
-};
+// const propTypes = {
+//   route: PropTypes.shape({
+//     graphql: PropTypes.string,
+//     endpoint: PropTypes.string,
+//     newMenuItems: PropTypes.array,
+//   }),
+//   graphql: PropTypes.string,
+//   endpoint: PropTypes.string,
+//   newMenuItems: PropTypes.array,
+// };
 
 class Layout extends Component {
   constructor(...args) {
@@ -59,12 +59,15 @@ class Layout extends Component {
       fields: false,
     };
   }
+
   componentDidMount() {
     this.initCMS();
   }
+
   shouldComponentUpdate(p, n) {
     return n.currentPathSchema && n.schema;
   }
+
   getCurrentViewFields(schema, currentRout) {
     const array = [];
     const obj = { ...schema };
@@ -89,6 +92,7 @@ class Layout extends Component {
       fields: this.objOfFieldsToArray(obj.fields),
     }, this.getListData);
   }
+
   getViewData(id) {
     const resolver = this.state.currentPathSchema.resolvers.find.resolver;
     const queryArgs = this.state.currentPathSchema.resolvers.find.args;
@@ -104,9 +108,10 @@ class Layout extends Component {
       types: { [queryId]: queryArgs[queryId] },
     };
     this.query('query', request, resolver, variables)
-    .then(res => this.setState({ viewData: res, viewMode: true, currentItemId: id }))
-    .catch(err => console.log(`getViewData error: ${err}`));
+      .then(res => this.setState({ viewData: res, viewMode: true, currentItemId: id }))
+      .catch(err => console.log(`getViewData error: ${err}`));
   }
+
   getRequestString(fields) {
     let request = '';
     fields.forEach((prop) => {
@@ -119,6 +124,7 @@ class Layout extends Component {
     });
     return request;
   }
+
   getListData() {
     const d = this.state.currentPathSchema;
     const h = this.state.currentPathSchema.listHeader;
@@ -131,15 +137,18 @@ class Layout extends Component {
     };
     const req = `${h.id.join(' ')} ${h.title.join(' ')} ${fields.find(key => key === '_id') ? '_id' : 'id'}`;
     this.query('query', req, resolver, data)
-    .then((res) => {
-      if (res.errors) throw new Error(res);
-      this.setState({
-        listData: res,
-        lastPage: res.data[resolver].length < 50,
-      }, this.forceUpdate);
-    })
-    .catch((err) => { throw new Error(`error: ${err}`); });
+      .then((res) => {
+        if (res.errors) throw new Error(res);
+        this.setState({
+          listData: res,
+          lastPage: res.data[resolver].length < 50,
+        }, this.forceUpdate);
+      })
+      .catch((err) => {
+        throw new Error(`error: ${err}`);
+      });
   }
+
   objOfFieldsToArray(fields) {
     const array = [];
     const tmpFields = { ...fields };
@@ -154,6 +163,7 @@ class Layout extends Component {
     });
     return array;
   }
+
   query(type, request, resolver, variables) {
     return new Promise((resolve, reject) => {
       const graphql = this.props.graphql ? this.props.graphql : this.props.route.graphql;
@@ -184,6 +194,7 @@ class Layout extends Component {
       }
     });
   }
+
   create(data) {
     if (this.state.currentPathSchema.resolvers.create) {
       const schema = this.state.currentPathSchema;
@@ -199,18 +210,19 @@ class Layout extends Component {
         throw new Error('data wasn\'t provided');
       } else if (schema.resolvers.create) {
         this.query('mutation', req, resolver, data)
-        .then(() => {
-          this.forceUpdate();
-          this.showSuccessMs();
-          this.routeToList(currentList);
-        })
-        .catch((err) => {
-          this.showErrorMs();
-          throw new Error(`create error: ${err}`);
-        });
+          .then(() => {
+            this.forceUpdate();
+            this.showSuccessMs();
+            this.routeToList(currentList);
+          })
+          .catch((err) => {
+            this.showErrorMs();
+            throw new Error(`create error: ${err}`);
+          });
       }
     }
   }
+
   update() {
     if (this.state.currentPathSchema.resolvers.update) {
       const schema = this.state.currentPathSchema;
@@ -225,15 +237,16 @@ class Layout extends Component {
       } else if (data) {
         if (schema.resolvers.update) {
           this.query('mutation', req, resolver, data)
-          .then(this.showSuccessMs)
-          .catch((err) => {
-            this.showErrorMs();
-            throw new Error(`update error: ${err}`);
-          });
+            .then(this.showSuccessMs)
+            .catch((err) => {
+              this.showErrorMs();
+              throw new Error(`update error: ${err}`);
+            });
         }
       }
     }
   }
+
   remove(e) {
     if (this.state.currentPathSchema.resolvers.remove) {
       const id = e.target.id;
@@ -248,48 +261,52 @@ class Layout extends Component {
         throw new Error('id wasn\'t provided');
       } else if (schema.resolvers.remove) {
         this.query('mutation', req, resolver, data)
-        .then(() => {
-          this.forceUpdate();
-          this.showSuccessMs();
-          this.routeToList(currentList);
-        })
-        .catch((err) => {
-          this.showErrorMs();
-          throw new Error(`remove error: ${err}`);
-        });
+          .then(() => {
+            this.forceUpdate();
+            this.showSuccessMs();
+            this.routeToList(currentList);
+          })
+          .catch((err) => {
+            this.showErrorMs();
+            throw new Error(`remove error: ${err}`);
+          });
       }
     }
   }
+
   initCMS() {
     const endpoint = this.props.endpoint ? this.props.endpoint : this.props.route.endpoint;
     fetch(endpoint, { method: 'GET' })
-    .then(json => json.json())
-    .then((res) => {
-      const menuItems = [];
-      let newMenuItems = false;
-      if (this.props.newMenuItems) {
-        newMenuItems = this.props.newMenuItems;
-      } else if (this.props.route && this.props.route.newMenuItems) {
-        newMenuItems = this.props.route.newMenuItems;
-      }
-      Object.keys(res).forEach((type) => {
-        menuItems.push({ label: res[type].label, typeName: type });
-      });
-      this.setState({
-        schema: res,
-        SideMenuItems: menuItems,
-        newMenuItemSecret: newMenuItems && newMenuItems[0] ? newMenuItems[0].secret : false,
-      }, () => {
-        if (!this.state.newMenuItemSecret) {
-          const prop = this.state.SideMenuItems[0].typeName;
-          this.getCurrentViewFields(this.state.schema[prop], prop);
-        } else {
-          this.forceUpdate();
+      .then(json => json.json())
+      .then((res) => {
+        const menuItems = [];
+        let newMenuItems = false;
+        if (this.props.newMenuItems) {
+          newMenuItems = this.props.newMenuItems;
+        } else if (this.props.route && this.props.route.newMenuItems) {
+          newMenuItems = this.props.route.newMenuItems;
         }
+        Object.keys(res).forEach((type) => {
+          menuItems.push({ label: res[type].label, typeName: type });
+        });
+        this.setState({
+          schema: res,
+          SideMenuItems: menuItems,
+          newMenuItemSecret: newMenuItems && newMenuItems[0] ? newMenuItems[0].secret : false,
+        }, () => {
+          if (!this.state.newMenuItemSecret) {
+            const prop = this.state.SideMenuItems[0].typeName;
+            this.getCurrentViewFields(this.state.schema[prop], prop);
+          } else {
+            this.forceUpdate();
+          }
+        });
+      })
+      .catch((err) => {
+        throw new Error(err);
       });
-    })
-    .catch((err) => { throw new Error(err); });
   }
+
   showErrorMs() {
     document.getElementById('ms-error').style.visibility = 'visible';
     document.getElementById('ms-error').style.opacity = 1;
@@ -298,6 +315,7 @@ class Layout extends Component {
       document.getElementById('ms-error').style.opacity = 0;
     }, 3000);
   }
+
   showSuccessMs() {
     document.getElementById('ms-success').style.visibility = 'visible';
     document.getElementById('ms-success').style.opacity = 1;
@@ -306,6 +324,7 @@ class Layout extends Component {
       document.getElementById('ms-success').style.opacity = 0;
     }, 3000);
   }
+
   validateFields(data) {
     let response = true;
     Object.keys(data.types).forEach((arg) => {
@@ -326,6 +345,7 @@ class Layout extends Component {
     });
     return response;
   }
+
   nextPage() {
     const { offset, lastPage } = this.state;
     if (!lastPage) {
@@ -334,6 +354,7 @@ class Layout extends Component {
       }, this.getListData);
     }
   }
+
   previewsPage() {
     const { offset } = this.state;
     if (offset) {
@@ -342,6 +363,7 @@ class Layout extends Component {
       }, this.getListData);
     }
   }
+
   addNewItem() {
     if (this.state.currentPathSchema.resolvers.create) {
       this.setState({
@@ -351,6 +373,7 @@ class Layout extends Component {
       }, this.forceUpdate);
     }
   }
+
   routeToList(path) {
     this.setState({
       currentPathName: path,
@@ -367,12 +390,15 @@ class Layout extends Component {
       this.getCurrentViewFields(this.state.schema[this.state.currentPathName], [this.state.currentPathName]);
     });
   }
+
   routeToView(e) {
     this.getViewData(e.target.id);
   }
+
   collectFieldsData(fields, id, action, prefix) {
     const schema = { ...this.state.currentPathSchema };
     let data = { values: {}, types: {} };
+
     function getCurrentFieldData(id, type, prefix) {
       const pr = prefix ? `${prefix}/` : '';
       switch (type || type.slice(0, -1)) {
@@ -392,6 +418,7 @@ class Layout extends Component {
           return document.getElementById(`${pr}${id}`).value;
       }
     }
+
     function getCurrentFieldMutationType(propName, schema, type, action) {
       let response = type;
       if (
@@ -409,6 +436,7 @@ class Layout extends Component {
       }
       return response;
     }
+
     function getNestedFieldsData(nestedFields, propName) {
       const tmpData = {};
       nestedFields.forEach((field) => {
@@ -422,6 +450,7 @@ class Layout extends Component {
       });
       return tmpData;
     }
+
     function checkIfDisabled(field, propName) {
       let method = false;
       if (action && action === 'update' && schema.resolvers.update) {
@@ -433,6 +462,7 @@ class Layout extends Component {
       if (prefix) result = false;
       return result;
     }
+
     if (!action) {
       data = {};
       fields.forEach((fieldObj) => {
@@ -508,6 +538,7 @@ class Layout extends Component {
     }
     return data;
   }
+
   handleNewMenuClick(label) {
     this.setState({
       newMenuItemSecret: label,
@@ -522,6 +553,7 @@ class Layout extends Component {
       lastPage: false,
     }, this.forceUpdate);
   }
+
   uploadImage(e) {
     e.preventDefault();
     if (e.currentTarget.files[0]) {
@@ -534,9 +566,44 @@ class Layout extends Component {
       fd.append('file', fileFromInput, [fileFromInput.name, folderPath]);
       massage.innerHTML = fileFromInput.name;
       fetch(endpoint, { method: 'POST', body: fd })
-      .catch((err) => { throw new Error(`error: ${err}`); });
+        .catch((err) => {
+          throw new Error(`error: ${err}`);
+        });
     }
   }
+
+  test() {
+    const {
+      schema, currentPathSchema, fields, viewData, offset, lastPage,
+      listData, SideMenuItems, viewMode, currentItemId, newMenuItemSecret,
+    } = this.state;
+    const {
+      routeToList, routeToView, routeToAdd, addNewItem, uploadImage, getRequestString,
+      nextPage, previewsPage, query, update, remove, handleNewMenuClick, collectFieldsData,
+    } = this;
+    let newMenuItems = false;
+    if (this.props.newMenuItems) {
+      newMenuItems = this.props.newMenuItems;
+    } else if (this.props.route && this.props.route.newMenuItems) {
+      newMenuItems = this.props.route.newMenuItems;
+    }
+
+    let resolverForList = false;
+    let NewMenuView = false;
+    if (newMenuItemSecret && newMenuItems) {
+      NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret).view.component;
+    } else {
+      resolverForList = currentPathSchema.resolvers.find.resolver;
+    }
+
+    console.log(JSON.stringify({
+      state: this.state,
+      data: !viewData ? false : viewData.data[resolverForList][0] ?
+        viewData.data[resolverForList][0] : viewData.data[resolverForList],
+      listD: listData.data[resolverForList],
+    }, null, 2));
+  }
+
   render() {
     const { Column } = Grid;
     const {
@@ -561,61 +628,63 @@ class Layout extends Component {
           </div>
         </Segment>
       );
+    }
+    let resolverForList = false;
+    let NewMenuView = false;
+    if (newMenuItemSecret && newMenuItems) {
+      NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret).view.component;
     } else {
-      let resolverForList = false;
-      let NewMenuView = false;
-      if (newMenuItemSecret && newMenuItems) {
-        NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret).view.component;
-      } else {
-        resolverForList = currentPathSchema.resolvers.find.resolver;
-      }
-      return (
-        <Grid className="graphql-cms">
-          <Column computer={3} mobile={16}>
-            <SideMenu
-              newMenuItems={newMenuItems}
-              items={SideMenuItems}
-              handleNewMenuClick={handleNewMenuClick}
-              routeToList={routeToList}
-            />
-          </Column>
-          <Message color="green" id="ms-success">Success!</Message>
-          <Message color="red" id="ms-error">Error!</Message>
-          <Column computer={13} mobile={16}>
-            {viewMode ?
-              (!viewData && currentItemId ?
+      resolverForList = currentPathSchema.resolvers.find.resolver;
+    }
+
+    return (
+      <Grid className="graphql-cms">
+        <Column computer={3} mobile={16}>
+          {/*<button onClick={this.test.bind(this)}>click</button>*/}
+          <SideMenu
+            newMenuItems={newMenuItems}
+            items={SideMenuItems}
+            handleNewMenuClick={handleNewMenuClick}
+            routeToList={routeToList}
+          />
+        </Column>
+        <Message color="green" id="ms-success">Success!</Message>
+        <Message color="red" id="ms-error">Error!</Message>
+        <Column computer={13} mobile={16}>
+          {viewMode ?
+            (!viewData && currentItemId ?
+              <Segment className="loading-block">
+                <div className="ui active dimmer">
+                  <Loader content="Loading" />
+                </div>
+              </Segment> :
+              <View
+                ref="View"
+                query={query}
+                data={!viewData ? false : viewData.data[resolverForList][0] ?
+                  viewData.data[resolverForList][0] : viewData.data[resolverForList]}
+                fields={fields}
+                update={update}
+                remove={remove}
+                currentItemId={currentItemId}
+                addNewItem={addNewItem}
+                routeToAdd={routeToAdd}
+                uploadImage={uploadImage}
+                collectFieldsData={collectFieldsData}
+                getRequestString={getRequestString}
+                schema={currentPathSchema}
+              />) :
+            (!listData ?
+              (!newMenuItemSecret ?
                 <Segment className="loading-block">
                   <div className="ui active dimmer">
                     <Loader content="Loading" />
                   </div>
                 </Segment> :
-                <View
-                  ref="View"
-                  query={query}
-                  data={!viewData ? false : viewData.data[resolverForList][0] ?
-                    viewData.data[resolverForList][0] : viewData.data[resolverForList]}
-                  fields={fields}
-                  update={update}
-                  remove={remove}
-                  currentItemId={currentItemId}
-                  addNewItem={addNewItem}
-                  routeToAdd={routeToAdd}
-                  uploadImage={uploadImage}
-                  collectFieldsData={collectFieldsData}
-                  getRequestString={getRequestString}
-                  schema={currentPathSchema}
-                />) :
-              (!listData ?
-                (!newMenuItemSecret ?
-                  <Segment className="loading-block">
-                    <div className="ui active dimmer">
-                      <Loader content="Loading" />
-                    </div>
-                  </Segment> :
-                  <Segment color="black" className="View">
-                    <NewMenuView />
-                  </Segment>) :
-                <List
+                <Segment color="black" className="View">
+                  <NewMenuView />
+                </Segment>) :
+              <List
                   remove={remove}
                   offset={offset}
                   lastPage={lastPage}
@@ -626,13 +695,10 @@ class Layout extends Component {
                   data={listData.data[resolverForList]}
                   schema={currentPathSchema}
                 />)}
-          </Column>
-        </Grid>
-      );
-    }
+        </Column>
+      </Grid>
+    );
   }
 }
-
-Layout.propTypes = propTypes;
 
 export default Layout;

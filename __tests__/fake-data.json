@@ -1,0 +1,989 @@
+{
+  "state": {
+    "newMenuItemSecret": false,
+    "viewData": {
+      "data": {
+        "coupon_find": [
+          {
+            "_id": "z8iuy0EMvrPFhklq",
+            "couponCode": null,
+            "description": "get 99% discount ",
+            "discountAmount": 99,
+            "minimumAmount": 1,
+            "expirationDate": "Wed Nov 16 2016 21:07:35 GMT-0800 (PST)",
+            "createdAt": "2016-11-11",
+            "updatedAt": "2016-11-25"
+          }
+        ]
+      }
+    },
+    "listData": {
+      "data": {
+        "coupon_find": [
+          {
+            "_id": "z8iuy0EMvrPFhklq",
+            "description": "get 99% discount "
+          }
+        ]
+      }
+    },
+    "schema": {
+      "product": {
+        "fields": {
+          "_id": {
+            "label": "_id",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "name": {
+            "label": "name",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "price": {
+            "label": "price",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "shortDescription": {
+            "label": "shortDescription",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "pageTitle": {
+            "label": "pageTitle",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "metaDescription": {
+            "label": "metaDescription",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "metaKeywords": {
+            "label": "metaKeywords",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "categories": {
+            "label": "categories",
+            "fieldType": "category",
+            "inputType": false,
+            "inputControl": "selection",
+            "disabled": false,
+            "exclude": false,
+            "list": {
+              "propTypeName": "category",
+              "label": false,
+              "resolvers": {
+                "find": {
+                  "resolver": "category_find",
+                  "args": {
+                    "offset": "Int",
+                    "limit": "Int",
+                    "_id": "String"
+                  }
+                },
+                "create": {
+                  "resolver": "category_create",
+                  "args": {
+                    "name": "String",
+                    "createdAt": "String",
+                    "updatedAt": "String"
+                  }
+                }
+              }
+            },
+            "nestedFields": {
+              "_id": {
+                "label": "_id",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              },
+              "name": {
+                "label": "name",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              },
+              "createdAt": {
+                "label": "createdAt",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              },
+              "updatedAt": {
+                "label": "updatedAt",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              }
+            }
+          },
+          "ingredients": {
+            "label": "ingredients",
+            "fieldType": "ingredient",
+            "inputType": false,
+            "inputControl": "selection",
+            "disabled": false,
+            "exclude": false,
+            "list": {
+              "propTypeName": "ingredient",
+              "label": false,
+              "resolvers": {
+                "find": {
+                  "resolver": "ingredient_find",
+                  "args": {}
+                },
+                "create": {
+                  "resolver": "ingredient_create",
+                  "args": {}
+                }
+              }
+            },
+            "nestedFields": {
+              "value": {
+                "label": "value",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              },
+              "label": {
+                "label": "label",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              }
+            }
+          },
+          "createdAt": {
+            "label": "createdAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "updatedAt": {
+            "label": "updatedAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "image": {
+            "inputType": "file",
+            "label": "image",
+            "fieldType": "String",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "isPublished": {
+            "label": "isPublished",
+            "fieldType": "Boolean",
+            "inputType": "checkbox",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        },
+        "uploadRoot": "/Users/sarkisarutiunian/Projects/Modules/graphql-auto-generating-cms/example/public",
+        "label": "product",
+        "listHeader": {
+          "id": [
+            "_id"
+          ],
+          "title": [
+            "name"
+          ]
+        },
+        "resolvers": {
+          "find": {
+            "resolver": "product_find",
+            "args": {
+              "offset": "Int",
+              "limit": "Int",
+              "_id": "String"
+            },
+            "allowed": true
+          },
+          "create": {
+            "resolver": "product_create",
+            "args": {
+              "name": "String",
+              "price": "String",
+              "shortDescription": "String",
+              "pageTitle": "String",
+              "metaDescription": "String",
+              "metaKeywords": "String",
+              "categories": "String",
+              "ingredients": "String",
+              "createdAt": "String",
+              "updatedAt": "String",
+              "image": "String",
+              "isPublished": "Boolean"
+            },
+            "allowed": true
+          },
+          "update": {
+            "resolver": "product_update",
+            "args": {
+              "_id": "String",
+              "name": "String",
+              "price": "String",
+              "shortDescription": "String",
+              "pageTitle": "String",
+              "metaDescription": "String",
+              "metaKeywords": "String",
+              "categories": "String",
+              "ingredients": "String",
+              "updatedAt": "String",
+              "image": "String",
+              "isPublished": "Boolean"
+            },
+            "allowed": true
+          }
+        }
+      },
+      "coupon": {
+        "fields": {
+          "_id": {
+            "label": "_id",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "couponCode": {},
+          "description": {
+            "label": "description",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "discountAmount": {
+            "label": "discountAmount",
+            "fieldType": "Int",
+            "inputType": "number",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "minimumAmount": {
+            "label": "minimumAmount",
+            "fieldType": "Int",
+            "inputType": "number",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "expirationDate": {
+            "label": "expiration date",
+            "inputType": "date",
+            "fieldType": "String",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "createdAt": {
+            "label": "createdAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "updatedAt": {
+            "label": "updatedAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        },
+        "uploadRoot": "/Users/sarkisarutiunian/Projects/Modules/graphql-auto-generating-cms/example/public",
+        "label": "coupon",
+        "listHeader": {
+          "id": [
+            "_id"
+          ],
+          "title": [
+            "description"
+          ]
+        },
+        "resolvers": {
+          "find": {
+            "resolver": "coupon_find",
+            "args": {
+              "offset": "Int",
+              "limit": "Int",
+              "_id": "String"
+            },
+            "allowed": true
+          },
+          "create": {
+            "resolver": "coupon_create",
+            "args": {
+              "couponCode": "String",
+              "description": "String",
+              "discountAmount": "Int",
+              "minimumAmount": "Int",
+              "expirationDate": "String",
+              "createdAt": "String",
+              "updatedAt": "String"
+            },
+            "allowed": true
+          },
+          "update": {
+            "resolver": "coupon_update",
+            "args": {
+              "_id": "String",
+              "couponCode": "String",
+              "description": "String",
+              "discountAmount": "Int",
+              "minimumAmount": "Int",
+              "expirationDate": "String",
+              "updatedAt": "String"
+            },
+            "allowed": true
+          }
+        }
+      },
+      "category": {
+        "uploadRoot": "/Users/sarkisarutiunian/Projects/Modules/graphql-auto-generating-cms/example/public",
+        "label": "category",
+        "listHeader": {
+          "id": [
+            "_id"
+          ],
+          "title": [
+            "name"
+          ]
+        },
+        "resolvers": {
+          "find": {
+            "resolver": "category_find",
+            "args": {
+              "offset": "Int",
+              "limit": "Int",
+              "_id": "String"
+            },
+            "allowed": true
+          },
+          "create": {
+            "resolver": "category_create",
+            "args": {
+              "name": "String",
+              "createdAt": "String",
+              "updatedAt": "String"
+            },
+            "allowed": true
+          },
+          "update": {
+            "resolver": "category_update",
+            "args": {
+              "_id": "String",
+              "name": "String",
+              "updatedAt": "String"
+            },
+            "allowed": true
+          },
+          "remove": {
+            "resolver": "category_remove",
+            "args": {
+              "_id": "String"
+            },
+            "allowed": true
+          }
+        },
+        "fields": {
+          "_id": {
+            "label": "_id",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "name": {
+            "label": "name",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "createdAt": {
+            "label": "createdAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "updatedAt": {
+            "label": "updatedAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        }
+      },
+      "customer": {
+        "uploadRoot": "/Users/sarkisarutiunian/Projects/Modules/graphql-auto-generating-cms/example/public",
+        "label": "customer",
+        "listHeader": {
+          "id": [
+            "_id"
+          ],
+          "title": [
+            "firstName"
+          ]
+        },
+        "resolvers": {
+          "find": {
+            "resolver": "customer_find",
+            "args": {
+              "offset": "Int",
+              "limit": "Int",
+              "_id": "String"
+            },
+            "allowed": true
+          },
+          "create": {
+            "resolver": "customer_create",
+            "args": {
+              "_id": "Int",
+              "firstName": "String",
+              "lastName": "String",
+              "email": "String",
+              "password": "String",
+              "info": "String",
+              "createdAt": "String",
+              "updatedAt": "String"
+            },
+            "allowed": true
+          },
+          "update": {
+            "resolver": "customer_update",
+            "args": {
+              "_id": "String",
+              "firstName": "String",
+              "lastName": "String",
+              "email": "String",
+              "password": "String",
+              "info": "String",
+              "createdAt": "String",
+              "updatedAt": "String"
+            },
+            "allowed": true
+          },
+          "remove": {
+            "resolver": "customer_remove",
+            "args": {},
+            "allowed": false
+          }
+        },
+        "fields": {
+          "_id": {
+            "label": "_id",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "firstName": {
+            "label": "firstName",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "lastName": {
+            "label": "lastName",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "email": {
+            "label": "email",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "password": {
+            "label": "password",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "info": {
+            "label": "info",
+            "fieldType": "customer_info",
+            "inputType": "String",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": {
+              "postalCode": {
+                "label": "postalCode",
+                "fieldType": "Int",
+                "inputType": "number",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              },
+              "country": {
+                "label": "country",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              },
+              "city": {
+                "label": "city",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              },
+              "address": {
+                "label": "address",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              },
+              "phone": {
+                "label": "phone",
+                "fieldType": "String",
+                "inputType": "text",
+                "inputControl": "input",
+                "disabled": false,
+                "exclude": false,
+                "list": false,
+                "nestedFields": false
+              }
+            }
+          },
+          "createdAt": {
+            "label": "createdAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          },
+          "updatedAt": {
+            "label": "updatedAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        }
+      }
+    },
+    "currentPathSchema": {
+      "typeName": "coupon",
+      "label": "coupon",
+      "resolvers": {
+        "find": {
+          "resolver": "coupon_find",
+          "args": {
+            "offset": "Int",
+            "limit": "Int",
+            "_id": "String"
+          },
+          "allowed": true
+        },
+        "create": {
+          "resolver": "coupon_create",
+          "args": {
+            "couponCode": "String",
+            "description": "String",
+            "discountAmount": "Int",
+            "minimumAmount": "Int",
+            "expirationDate": "String",
+            "createdAt": "String",
+            "updatedAt": "String"
+          },
+          "allowed": true
+        },
+        "update": {
+          "resolver": "coupon_update",
+          "args": {
+            "_id": "String",
+            "couponCode": "String",
+            "description": "String",
+            "discountAmount": "Int",
+            "minimumAmount": "Int",
+            "expirationDate": "String",
+            "updatedAt": "String"
+          },
+          "allowed": true
+        }
+      },
+      "fields": [
+        {
+          "_id": {
+            "label": "_id",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        },
+        {
+          "couponCode": {}
+        },
+        {
+          "description": {
+            "label": "description",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        },
+        {
+          "discountAmount": {
+            "label": "discountAmount",
+            "fieldType": "Int",
+            "inputType": "number",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        },
+        {
+          "minimumAmount": {
+            "label": "minimumAmount",
+            "fieldType": "Int",
+            "inputType": "number",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        },
+        {
+          "expirationDate": {
+            "label": "expiration date",
+            "inputType": "date",
+            "fieldType": "String",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        },
+        {
+          "createdAt": {
+            "label": "createdAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        },
+        {
+          "updatedAt": {
+            "label": "updatedAt",
+            "fieldType": "String",
+            "inputType": "text",
+            "inputControl": "input",
+            "disabled": false,
+            "exclude": false,
+            "list": false,
+            "nestedFields": false
+          }
+        }
+      ],
+      "listHeader": {
+        "id": [
+          "_id"
+        ],
+        "title": [
+          "description"
+        ]
+      },
+      "uploadRoot": "/Users/sarkisarutiunian/Projects/Modules/graphql-auto-generating-cms/example/public"
+    },
+    "currentPathName": "coupon",
+    "SideMenuItems": [
+      {
+        "label": "product",
+        "typeName": "product"
+      },
+      {
+        "label": "coupon",
+        "typeName": "coupon"
+      },
+      {
+        "label": "category",
+        "typeName": "category"
+      },
+      {
+        "label": "customer",
+        "typeName": "customer"
+      }
+    ],
+    "viewMode": true,
+    "currentItemId": "_id:z8iuy0EMvrPFhklq:String",
+    "limit": 50,
+    "offset": 0,
+    "lastPage": true,
+    "fields": [
+      {
+        "_id": {
+          "label": "_id",
+          "fieldType": "String",
+          "inputType": "text",
+          "inputControl": "input",
+          "disabled": false,
+          "exclude": false,
+          "list": false,
+          "nestedFields": false
+        }
+      },
+      {
+        "couponCode": {}
+      },
+      {
+        "description": {
+          "label": "description",
+          "fieldType": "String",
+          "inputType": "text",
+          "inputControl": "input",
+          "disabled": false,
+          "exclude": false,
+          "list": false,
+          "nestedFields": false
+        }
+      },
+      {
+        "discountAmount": {
+          "label": "discountAmount",
+          "fieldType": "Int",
+          "inputType": "number",
+          "inputControl": "input",
+          "disabled": false,
+          "exclude": false,
+          "list": false,
+          "nestedFields": false
+        }
+      },
+      {
+        "minimumAmount": {
+          "label": "minimumAmount",
+          "fieldType": "Int",
+          "inputType": "number",
+          "inputControl": "input",
+          "disabled": false,
+          "exclude": false,
+          "list": false,
+          "nestedFields": false
+        }
+      },
+      {
+        "expirationDate": {
+          "label": "expiration date",
+          "inputType": "date",
+          "fieldType": "String",
+          "inputControl": "input",
+          "disabled": false,
+          "exclude": false,
+          "list": false,
+          "nestedFields": false
+        }
+      },
+      {
+        "createdAt": {
+          "label": "createdAt",
+          "fieldType": "String",
+          "inputType": "text",
+          "inputControl": "input",
+          "disabled": false,
+          "exclude": false,
+          "list": false,
+          "nestedFields": false
+        }
+      },
+      {
+        "updatedAt": {
+          "label": "updatedAt",
+          "fieldType": "String",
+          "inputType": "text",
+          "inputControl": "input",
+          "disabled": false,
+          "exclude": false,
+          "list": false,
+          "nestedFields": false
+        }
+      }
+    ]
+  },
+  "data": {
+    "_id": "z8iuy0EMvrPFhklq",
+    "couponCode": null,
+    "description": "get 99% discount ",
+    "discountAmount": 99,
+    "minimumAmount": 1,
+    "expirationDate": "Wed Nov 16 2016 21:07:35 GMT-0800 (PST)",
+    "createdAt": "2016-11-11",
+    "updatedAt": "2016-11-25"
+  },
+  "listD": [
+    {
+      "_id": "z8iuy0EMvrPFhklq",
+      "description": "get 99% discount "
+    }
+  ]
+}

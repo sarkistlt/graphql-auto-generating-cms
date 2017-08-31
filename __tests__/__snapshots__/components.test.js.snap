@@ -1,0 +1,404 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Layout components 1`] = `
+<div
+  className="ui loading-block segment"
+>
+  <div
+    className="ui active dimmer"
+  >
+    <div
+      className="ui text loader"
+    >
+      Loading
+    </div>
+  </div>
+</div>
+`;
+
+exports[`List components 1`] = `
+<div
+  className="ui black View segment"
+>
+  <table
+    className="ui celled List table"
+  >
+    <thead
+      className=""
+    >
+      <tr
+        className=""
+      >
+        <th
+          className=""
+        >
+          #/ID
+        </th>
+        <th
+          className=""
+        >
+          TITLE
+        </th>
+        <th
+          className=""
+        >
+          ACTION
+        </th>
+      </tr>
+    </thead>
+    <tbody
+      className=""
+    >
+      <tr
+        className=""
+      >
+        <td
+          className=""
+        >
+          z8iuy0EMvrPFhklq
+        </td>
+        <td
+          className=""
+        >
+          get 99% discount 
+        </td>
+        <td
+          className=""
+        >
+          <button
+            className="ui black button action-btn"
+            id="_id:z8iuy0EMvrPFhklq:String"
+            onClick={[Function]}
+            tabIndex={undefined}
+            type="submit"
+          >
+            view
+          </button>
+          <button
+            className="ui black disabled button action-btn"
+            id="_id:z8iuy0EMvrPFhklq:String"
+            onClick={[Function]}
+            tabIndex={undefined}
+            type="submit"
+          >
+            remove
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot
+      className=""
+    >
+      <tr
+        className=""
+      >
+        <th
+          className=""
+          colSpan="3"
+        >
+          <button
+            className="ui black button add-btn"
+            onClick={[Function]}
+            tabIndex={undefined}
+            type="submit"
+          >
+            add new
+          </button>
+          <div
+            className="ui right floated pagination menu"
+          >
+            <a
+              className="icon item"
+              onClick={[Function]}
+            >
+              <i
+                className="disabled left chevron icon"
+              />
+            </a>
+            <a
+              className="icon item"
+              onClick={[Function]}
+            >
+              <i
+                className="disabled right chevron icon"
+              />
+            </a>
+          </div>
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+`;
+
+exports[`SideMenu components 1`] = `
+<div
+  className="ui one column grid SideMenuWrapper"
+>
+  <div
+    className="computer only column ui inverted pointing vertical SideMenu menu"
+  >
+    <a
+      className="active item"
+      id="product"
+      onClick={[Function]}
+    >
+      product
+    </a>
+    <a
+      className="item"
+      id="coupon"
+      onClick={[Function]}
+    >
+      coupon
+    </a>
+    <a
+      className="item"
+      id="category"
+      onClick={[Function]}
+    >
+      category
+    </a>
+    <a
+      className="item"
+      id="customer"
+      onClick={[Function]}
+    >
+      customer
+    </a>
+    <a
+      className="item github"
+      href="https://github.com/sarkistlt/graphql-auto-generating-cms"
+      onClick={[Function]}
+      target="_blink"
+    >
+      <button
+        className="ui inverted button"
+        onClick={[Function]}
+        tabIndex={undefined}
+      >
+        <i
+          className="github icon"
+        />
+         
+        GitHub
+      </button>
+    </a>
+  </div>
+  <div
+    className="tablet mobile only column ui button floating labeled icon mobile-nav dropdown"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onMouseDown={[Function]}
+    tabIndex="0"
+  >
+    <div
+      className="text"
+    >
+      NAVIGATION MENU
+    </div>
+    <i
+      className="dropdown icon"
+    />
+    <div
+      className="menu transition"
+    >
+      <div
+        className="item"
+        onClick={[Function]}
+      >
+        product
+      </div>
+      <div
+        className="item"
+        onClick={[Function]}
+      >
+        coupon
+      </div>
+      <div
+        className="item"
+        onClick={[Function]}
+      >
+        category
+      </div>
+      <div
+        className="item"
+        onClick={[Function]}
+      >
+        customer
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`View components 1`] = `
+<div
+  className="ui black View segment"
+>
+  <div
+    className="btn-row"
+  >
+    <button
+      className="ui black button"
+      onClick={[Function]}
+      tabIndex={undefined}
+      type="submit"
+    >
+      add new
+    </button>
+    <button
+      className="ui black button"
+      onClick={[Function]}
+      tabIndex={undefined}
+      type="submit"
+    >
+      save
+    </button>
+    <button
+      className="ui black disabled button"
+      id="_id:z8iuy0EMvrPFhklq:String"
+      onClick={[Function]}
+      tabIndex={undefined}
+      type="submit"
+    >
+      remove
+    </button>
+  </div>
+  <form
+    className="ui form ui grid"
+    onSubmit={[Function]}
+  >
+    <div
+      className="eight wide computer sixteen wide mobile column"
+    >
+      <div
+        className="field"
+      >
+        <label>
+          _id
+        </label>
+        <input
+          defaultChecked={false}
+          defaultValue="z8iuy0EMvrPFhklq"
+          id="_id"
+          onInput={[Function]}
+          placeholder="_id"
+          required={undefined}
+          type="text"
+        />
+      </div>
+      <div
+        className="field"
+        defaultChecked={false}
+        defaultValue=""
+        id="couponCode"
+        onInput={[Function]}
+        placeholder="couponCode"
+      />
+      <div
+        className="field"
+      >
+        <label>
+          description
+        </label>
+        <input
+          defaultChecked={false}
+          defaultValue="get 99% discount "
+          id="description"
+          onInput={[Function]}
+          placeholder="description"
+          required={undefined}
+          type="text"
+        />
+      </div>
+      <div
+        className="field"
+      >
+        <label>
+          discountAmount
+        </label>
+        <input
+          defaultChecked={false}
+          defaultValue={99}
+          id="discountAmount"
+          onInput={[Function]}
+          placeholder="discountAmount"
+          required={undefined}
+          type="number"
+        />
+      </div>
+    </div>
+    <div
+      className="eight wide computer sixteen wide mobile column"
+    >
+      <div
+        className="field"
+      >
+        <label>
+          minimumAmount
+        </label>
+        <input
+          defaultChecked={false}
+          defaultValue={1}
+          id="minimumAmount"
+          onInput={[Function]}
+          placeholder="minimumAmount"
+          required={undefined}
+          type="number"
+        />
+      </div>
+      <div
+        className="field"
+      >
+        <label>
+          expiration date
+        </label>
+        <input
+          defaultChecked={false}
+          defaultValue="2016-11-16"
+          id="expirationDate"
+          onInput={[Function]}
+          placeholder="expirationDate"
+          required={undefined}
+          type="date"
+        />
+      </div>
+      <div
+        className="disabled field"
+      >
+        <label>
+          createdAt
+        </label>
+        <input
+          defaultChecked={false}
+          defaultValue="2016-11-10"
+          id="createdAt"
+          onInput={[Function]}
+          placeholder="createdAt"
+          required={undefined}
+          type="date"
+        />
+      </div>
+      <div
+        className="field"
+      >
+        <label>
+          updatedAt
+        </label>
+        <input
+          defaultChecked={false}
+          defaultValue="2016-11-24"
+          id="updatedAt"
+          onInput={[Function]}
+          placeholder="updatedAt"
+          required={undefined}
+          type="date"
+        />
+      </div>
+    </div>
+  </form>
+</div>
+`;

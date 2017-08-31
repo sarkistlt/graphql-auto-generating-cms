@@ -1,4 +1,4 @@
-import { GraphQLString, GraphQLObjectType, GraphQLBoolean, GraphQLInt } from 'graphql';
+import { GraphQLBoolean, GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
 import { category, coupon, customer, product } from './Types';
 import { Category, Coupon, Customer, Product } from './Resolvers';
 

@@ -1,4 +1,31 @@
 {
-  "presets": ["react", "es2015", "stage-0", "stage-1"],
-  "compact": true
+  "presets": [
+    "react",
+    "stage-0",
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [">= 5%", "ie >= 11"]
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "transform-flow-comments"
+  ],
+  "env": {
+    "production": {
+      "presets": [
+        "flow",
+        "minify"
+      ],
+      "plugins": [
+        "remove-comments"
+      ],
+      "comments": false,
+      "compact": true,
+      "minified": true
+    }
+  }
 }

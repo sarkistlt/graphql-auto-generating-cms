@@ -1,4 +1,5 @@
 import { customerDb } from '../../../nedb';
+
 const Customer = {};
 
 Customer.find = (args) => {
@@ -7,12 +8,12 @@ Customer.find = (args) => {
   return new Promise((resolve, reject) => {
     if (args._id) {
       customerDb.find(query)
-      .exec((err, res) => err ? reject(err) : resolve(res));
+        .exec((err, res) => (err ? reject(err) : resolve(res)));
     } else {
       customerDb.find(query)
-      .skip(args.offset)
-      .limit(args.limit)
-      .exec((err, res) => err ? reject(err) : resolve(res));
+        .skip(args.offset)
+        .limit(args.limit)
+        .exec((err, res) => (err ? reject(err) : resolve(res)));
     }
   });
 };
@@ -21,7 +22,7 @@ Customer.create = (args) => {
   args.info = JSON.parse(args.info);
 
   return new Promise((resolve, reject) => {
-    customerDb.insert(args, (err, newDoc) => err ? reject(err) : resolve(newDoc));
+    customerDb.insert(args, (err, newDoc) => (err ? reject(err) : resolve(newDoc)));
   });
 };
 
@@ -31,7 +32,7 @@ Customer.update = (args) => {
   delete args._id;
 
   return new Promise((resolve, reject) => {
-    customerDb.update(query, { $set: args }, (err, newDoc) => err ? reject(err) : resolve(newDoc));
+    customerDb.update(query, { $set: args }, (err, newDoc) => (err ? reject(err) : resolve(newDoc)));
   });
 };
 

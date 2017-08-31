@@ -1,21 +1,15 @@
-import React, { PropTypes, Component } from 'react';
-import { Menu, Grid, Dropdown, Button } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import { Button, Dropdown, Grid, Menu } from 'semantic-ui-react';
 
-const propTypes = {
-  items: PropTypes.array,
-  routeToList: PropTypes.func,
-  newMenuItems: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.bool,
-  ]),
-  handleNewMenuClick: PropTypes.func,
-};
-const defaultProps = {
-  items: [],
-  routeToList() {},
-  newMenuItems: [],
-  handleNewMenuClick() {},
-};
+// const propTypes = {
+//   items: PropTypes.array,
+//   routeToList: PropTypes.func,
+//   newMenuItems: PropTypes.oneOfType([
+//     PropTypes.array,
+//     PropTypes.bool,
+//   ]),
+//   handleNewMenuClick: PropTypes.func,
+// };
 
 class SideMenu extends Component {
   constructor(...args) {
@@ -28,6 +22,7 @@ class SideMenu extends Component {
       items: this.props.items,
     };
   }
+
   handleMenuClick(e, { name }) {
     if (e.name) {
       this.setState({ activeItem: e.name });
@@ -37,6 +32,7 @@ class SideMenu extends Component {
       this.props.routeToList(name);
     }
   }
+
   handleNewMenuClick(e, { name }) {
     if (e.name) {
       this.setState({ activeItem: e.name });
@@ -46,6 +42,7 @@ class SideMenu extends Component {
       this.props.handleNewMenuClick(name);
     }
   }
+
   render() {
     const { activeItem, items } = this.state;
     const { handleMenuClick, handleNewMenuClick } = this;
@@ -54,7 +51,7 @@ class SideMenu extends Component {
       <Grid columns={1} className="SideMenuWrapper">
         <Menu as={Grid.Column} pointing vertical inverted className="SideMenu" only="computer">
           {newMenuItems ? newMenuItems.map((item, idx) =>
-            <Menu.Item
+            (<Menu.Item
               key={idx}
               name={item.secret}
               id={item.secret}
@@ -62,9 +59,9 @@ class SideMenu extends Component {
               onClick={handleNewMenuClick}
             >
               {item.label}
-            </Menu.Item>) : null}
+            </Menu.Item>)) : null}
           {items.map((item, idx) =>
-            <Menu.Item
+            (<Menu.Item
               key={idx}
               name={item.typeName}
               id={item.typeName}
@@ -72,7 +69,7 @@ class SideMenu extends Component {
               onClick={handleMenuClick}
             >
               {item.label}
-            </Menu.Item>)}
+            </Menu.Item>))}
           <Menu.Item
             className="github"
             href="https://github.com/sarkistlt/graphql-auto-generating-cms"
@@ -96,19 +93,16 @@ class SideMenu extends Component {
         >
           <Dropdown.Menu>
             {items.map((item, idx) =>
-              <Dropdown.Item
+              (<Dropdown.Item
                 key={idx}
                 text={item.label}
                 onClick={e => handleMenuClick(e, { name: item.label })}
-              />)}
+              />))}
           </Dropdown.Menu>
         </Dropdown>
       </Grid>
     );
   }
 }
-
-SideMenu.propTypes = propTypes;
-SideMenu.defaultProps = defaultProps;
 
 export default SideMenu;

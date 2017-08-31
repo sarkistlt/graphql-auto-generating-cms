@@ -1,48 +1,35 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import {
-  Segment,
-  Grid,
-  Form,
   Button,
   Divider,
-  Icon,
-  Popup,
   Dropdown,
+  Form,
+  Grid,
+  Icon,
   Modal,
+  Popup,
+  Segment,
 } from 'semantic-ui-react';
 
-const propTypes = {
-  schema: PropTypes.object,
-  query: PropTypes.func,
-  data: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.bool,
-  ]),
-  fields: PropTypes.array,
-  update: PropTypes.func,
-  collectFieldsData: PropTypes.func,
-  getRequestString: PropTypes.func,
-  remove: PropTypes.func,
-  currentItemId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.bool,
-  ]),
-  uploadImage: PropTypes.func,
-  addNewItem: PropTypes.func,
-};
-const defaultProps = {
-  schema: {},
-  query() {},
-  data: {},
-  fields: [],
-  update() {},
-  collectFieldsData() {},
-  getRequestString() {},
-  remove() {},
-  currentItemId: '',
-  uploadImage() {},
-  addNewItem() {},
-};
+// const propTypes = {
+//   schema: PropTypes.object,
+//   query: PropTypes.func,
+//   data: PropTypes.oneOfType([
+//     PropTypes.object,
+//     PropTypes.bool,
+//   ]),
+//   fields: PropTypes.array,
+//   update: PropTypes.func,
+//   collectFieldsData: PropTypes.func,
+//   getRequestString: PropTypes.func,
+//   remove: PropTypes.func,
+//   currentItemId: PropTypes.oneOfType([
+//     PropTypes.string,
+//     PropTypes.bool,
+//   ]),
+//   uploadImage: PropTypes.func,
+//   addNewItem: PropTypes.func,
+// };
 
 class View extends Component {
   constructor(...args) {
@@ -64,23 +51,27 @@ class View extends Component {
     };
     this.initStatesForSelector(this.props.fields);
   }
+
   componentWillMount() {
     const { fields, data } = this.state;
     this.getSelectData(fields, data);
   }
+
   componentWillReceiveProps() {
     this.setState({
       data: this.props.data,
       currentItemId: this.props.currentItemId,
     });
   }
+
   getDateValue(arg) {
     const date = new Date(arg);
-    const y = ("0000" + date.getFullYear()).slice(-4);
-    const m = ("00" + (date.getMonth() + 1)).slice(-2);
-    const d = ("00" + date.getDate()).slice(-2);
+    const y = (`0000${date.getFullYear()}`).slice(-4);
+    const m = (`00${date.getMonth() + 1}`).slice(-2);
+    const d = (`00${date.getDate()}`).slice(-2);
     return `${y}-${m}-${d}`;
   }
+
   getSelectData(fields, data) {
     fields.forEach((field) => {
       const propName = Object.keys(field)[0];
@@ -95,9 +86,9 @@ class View extends Component {
           Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
           (
             (field[propName].list.resolvers.create &&
-            Object.keys(field[propName].list.resolvers.create.args).length !== 0) ||
+              Object.keys(field[propName].list.resolvers.create.args).length !== 0) ||
             (field[propName].list.resolvers.update &&
-            Object.keys(field[propName].list.resolvers.update.args).length !== 0)
+              Object.keys(field[propName].list.resolvers.update.args).length !== 0)
           )
         ) {
           hasOwnAPI = true;
@@ -131,7 +122,9 @@ class View extends Component {
                 [`${propName}DefaultValue`]: defaultOptions,
               }, () => setTimeout(() => this.refs[propName].forceUpdate(), 1));
             })
-            .catch((err) => { throw new Error(`${propName}, getSelectData, error: ${err}`); });
+            .catch((err) => {
+              throw new Error(`${propName}, getSelectData, error: ${err}`);
+            });
         }
         this.setState({
           [`${propName}DefaultValue`]: defaultOptions,
@@ -141,10 +134,12 @@ class View extends Component {
       }
     });
   }
+
   getOptionsForModal(e, fields) {
     e.preventDefault();
     this.getSelectData(fields);
   }
+
   getPopupImgPath(propName) {
     if (propName) {
       const p = document.getElementById(`${propName}-p`);
@@ -153,6 +148,7 @@ class View extends Component {
       this.setState({ popupImgLink: `${uploadPath}/${p.innerText}` });
     }
   }
+
   fixPath(string) {
     let response = '';
     if (string.slice(0, 1) === '/' || string.slice(0, 1) === '.') {
@@ -165,6 +161,7 @@ class View extends Component {
     }
     return response;
   }
+
   isDate(val) {
     const d = new Date(val);
     return !isNaN(d.valueOf()) &&
@@ -172,6 +169,7 @@ class View extends Component {
       typeof (val) !== 'number' &&
       typeof (+val) !== 'number';
   }
+
   addSelectOption(e, { label, fields }) {
     const propName = e.currentTarget.name;
     const data = this.props.collectFieldsData(fields, false, false, propName);
@@ -189,6 +187,7 @@ class View extends Component {
       document.querySelector('.modals').click();
     });
   }
+
   checkIfDisabled(field, propName) {
     let method = false;
     const { schema } = this.state;
@@ -200,6 +199,7 @@ class View extends Component {
     const result = method && method[propName] ? field[propName].disabled : true;
     return result;
   }
+
   checkOnEnterIfTextarea(e) {
     if (e.target.nodeName === 'INPUT' && e.target.value.length > 100) {
       const textarea = document.createElement('textarea');
@@ -211,6 +211,7 @@ class View extends Component {
       document.getElementById(textarea.id).focus();
     }
   }
+
   initStatesForSelector(fields) {
     fields.forEach((field) => {
       if (field[Object.keys(field)[0]].inputControl === 'selection') {
@@ -218,6 +219,7 @@ class View extends Component {
       }
     });
   }
+
   generateModal(fields, propName) {
     const to = (fields[propName].nestedFields.length / 2).toFixed(0);
     const from = fields[propName].nestedFields.length - to;
@@ -239,7 +241,8 @@ class View extends Component {
           Add new select option for "{propName}"
           <div className="btn-row">
             <Button
-              type="submit" color="black"
+              type="submit"
+              color="black"
               name={propName}
               onClick={e => this.addSelectOption(e, {
                 fields: fields[propName].nestedFields,
@@ -267,8 +270,9 @@ class View extends Component {
       </Modal>
     );
   }
+
   generateFields(obj, idx, data, dis, prefix) {
-    const pr = prefix ? prefix : '';
+    const pr = prefix || '';
     const fields = { ...obj };
     const propName = Object.keys(fields)[0];
     const { popupImgLink } = this.state;
@@ -297,7 +301,7 @@ class View extends Component {
     }
     if (
       data && (data[propName] ||
-      typeof (data[propName]) === 'boolean') &&
+        typeof (data[propName]) === 'boolean') &&
       fields[propName].inputType !== 'file'
     ) {
       value = data[propName];
@@ -363,9 +367,9 @@ class View extends Component {
           Object.keys(fields[propName].list.resolvers.find.args).length !== 0 &&
           (
             (fields[propName].list.resolvers.create &&
-            Object.keys(fields[propName].list.resolvers.create.args).length !== 0) ||
+              Object.keys(fields[propName].list.resolvers.create.args).length !== 0) ||
             (fields[propName].list.resolvers.update &&
-            Object.keys(fields[propName].list.resolvers.update.args).length !== 0)
+              Object.keys(fields[propName].list.resolvers.update.args).length !== 0)
           )
         ) {
           hasOwnAPI = true;
@@ -407,6 +411,7 @@ class View extends Component {
     }
     return DOM;
   }
+
   render() {
     const { Column } = Grid;
     const { fields, schema, currentItemId, data } = this.state;
@@ -419,21 +424,24 @@ class View extends Component {
         <div className="btn-row">
           {currentItemId ?
             <Button
-              type="submit" color="black"
+              type="submit"
+              color="black"
               onClick={addNewItem}
               disabled={!schema.resolvers.create || !schema.resolvers.create.allowed}
             >
               add new
             </Button> : null}
           <Button
-            type="submit" color="black"
+            type="submit"
+            color="black"
             onClick={!schema.resolvers.update ? null : update}
             disabled={!schema.resolvers.update || !schema.resolvers.update.allowed}
           >
             save
           </Button>
           <Button
-            type="submit" color="black"
+            type="submit"
+            color="black"
             id={currentItemId}
             onClick={!schema.resolvers.remove ? null : remove}
             disabled={!schema.resolvers.remove || !schema.resolvers.remove.allowed}
@@ -457,8 +465,5 @@ class View extends Component {
     );
   }
 }
-
-View.propTypes = propTypes;
-View.defaultProps = defaultProps;
 
 export default View;

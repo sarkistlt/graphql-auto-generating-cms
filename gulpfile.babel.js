@@ -11,48 +11,77 @@ function clean(str) {
 gulp.task('scss', () => {
   clean('/components/styles.css');
   return gulp.src('./src/styles.scss')
-  .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
-  .pipe(gulp.dest('./lib'));
+    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+    .pipe(gulp.dest('./lib'));
 });
 
 gulp.task('build:component:SideMenu', () => {
   clean('/components/SideMenu.js');
   return gulp.src('./src/components/SideMenu.jsx')
-  .pipe(sourcemaps.init())
-  .pipe(babel({ presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true }))
-  .pipe(gulp.dest('./lib/components'));
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(gulp.dest('./lib/components'));
 });
 
 gulp.task('build:component:List', () => {
   clean('/components/List.js');
   return gulp.src('./src/components/List.jsx')
-  .pipe(sourcemaps.init())
-  .pipe(babel({ presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true }))
-  .pipe(gulp.dest('./lib/components'));
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(gulp.dest('./lib/components'));
 });
 
 gulp.task('build:component:View', () => {
   clean('/components/View.js');
   return gulp.src('./src/components/View.jsx')
-  .pipe(sourcemaps.init())
-  .pipe(babel({ presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true }))
-  .pipe(gulp.dest('./lib/components'));
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(gulp.dest('./lib/components'));
 });
 
 gulp.task('build:component:Layout', () => {
   clean('/index.js');
   return gulp.src('./src/index.jsx')
-  .pipe(sourcemaps.init())
-  .pipe(babel({ presets: ['react', 'es2015', 'stage-0', 'stage-1'], compact: true }))
-  .pipe(gulp.dest('./lib'));
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(gulp.dest('./lib'));
 });
 
 gulp.task('build:middleware', () => {
   clean('/middleware.js');
   return gulp.src('./src/middleware.js')
-  .pipe(sourcemaps.init())
-  .pipe(babel({ presets: ['es2015', 'stage-0', 'stage-1'], compact: true }))
-  .pipe(gulp.dest('./lib'));
+    .pipe(sourcemaps.init())
+    .pipe(babel({
+      presets: [
+        'stage-0',
+        [
+          'env',
+          {
+            targets: {
+              node: '6.10',
+            },
+          },
+        ],
+      ],
+      plugins: [
+        'transform-flow-comments',
+      ],
+      babelrc: false,
+      env: {
+        production: {
+          presets: [
+            'flow',
+          ],
+          plugins: [
+            'remove-comments',
+          ],
+          comments: false,
+          compact: true,
+          minified: true,
+        },
+      },
+    }))
+    .pipe(gulp.dest('./lib'));
 });
 
 gulp.task('watch', () => {
@@ -70,6 +99,6 @@ gulp.task('default', gulp.parallel(
   'build:component:List',
   'build:component:View',
   'build:component:Layout',
-  'build:middleware'
+  'build:middleware',
 ));
 
