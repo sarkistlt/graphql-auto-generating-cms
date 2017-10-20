@@ -73,7 +73,6 @@ class View extends Component {
   }
 
   getSelectData(fields, data) {
-    console.log(fields, data);
     fields.forEach((field) => {
       const propName = Object.keys(field)[0];
       if (field[propName].inputControl === 'selection') {
@@ -106,9 +105,7 @@ class View extends Component {
           const request = this.props.getRequestString(field[propName].nestedFields);
           this.props.query('query', request, resolver)
             .then((res) => {
-             console.log(res)
               res.data[field[propName].list.resolvers.find.resolver].forEach((obj, idx) => {
-                console.log(obj, idx)
 
                 dataForOptions.push(obj);
                 options.push({ text: obj[label], value: idx });
@@ -384,7 +381,6 @@ class View extends Component {
           <div className="file-form" key={idx}>
             <label>{fields[propName].label}</label>
             {!hasOwnAPI ? this.generateModal(fields, propName) : null}
-            {console.log(propName, this.state[`${propName}DefaultValue`])}
             {options && Array.isArray(this.state[`${propName}DefaultValue`]) ?
               <Dropdown
                 ref={propName}
