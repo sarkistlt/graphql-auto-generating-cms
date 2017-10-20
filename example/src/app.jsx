@@ -15,7 +15,7 @@ class firstComponent extends React.Component {
 class secondComponent extends React.Component {
   render() {
     return (
-      <div>place for your second custom solution</div>
+      <div>place for your second custom solution {JSON.stringify(this.props)}</div>
     );
   }
 }
