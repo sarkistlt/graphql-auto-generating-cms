@@ -235,170 +235,190 @@ exports[`SideMenu components 1`] = `
 `;
 
 exports[`View components 1`] = `
-<div
-  className="ui black View segment"
->
+<div>
   <div
-    className="btn-row"
-  >
-    <button
-      className="ui black button"
-      onClick={[Function]}
-      tabIndex={undefined}
-      type="submit"
-    >
-      add new
-    </button>
-    <button
-      className="ui black button"
-      onClick={[Function]}
-      tabIndex={undefined}
-      type="submit"
-    >
-      save
-    </button>
-    <button
-      className="ui black disabled button"
-      id="_id:z8iuy0EMvrPFhklq:String"
-      onClick={[Function]}
-      tabIndex={undefined}
-      type="submit"
-    >
-      remove
-    </button>
-  </div>
-  <form
-    className="ui form ui grid"
-    onSubmit={[Function]}
+    className="ui black View segment"
   >
     <div
-      className="eight wide computer sixteen wide mobile column"
+      className="btn-row"
+    >
+      <button
+        className="ui black button"
+        onClick={[Function]}
+        tabIndex={undefined}
+        type="submit"
+      >
+        add new
+      </button>
+      <button
+        className="ui black button"
+        onClick={[Function]}
+        tabIndex={undefined}
+        type="submit"
+      >
+        save
+      </button>
+      <button
+        className="ui black disabled button"
+        id="_id:z8iuy0EMvrPFhklq:String"
+        onClick={[Function]}
+        tabIndex={undefined}
+        type="submit"
+      >
+        remove
+      </button>
+    </div>
+    <form
+      className="ui form ui grid"
+      onSubmit={[Function]}
     >
       <div
-        className="field"
+        className="two column row"
       >
-        <label>
-          _id
-        </label>
-        <input
-          defaultChecked={false}
-          defaultValue="z8iuy0EMvrPFhklq"
-          id="_id"
-          onInput={[Function]}
-          placeholder="_id"
-          required={undefined}
-          type="text"
-        />
+        <div
+          className="eight wide computer sixteen wide mobile column"
+        >
+          <div
+            className="field"
+          >
+            <label>
+              _id
+            </label>
+            <input
+              defaultChecked={false}
+              defaultValue="z8iuy0EMvrPFhklq"
+              id="_id"
+              onInput={[Function]}
+              placeholder="_id"
+              required={undefined}
+              type="text"
+            />
+          </div>
+          <div
+            className="field"
+            defaultChecked={false}
+            defaultValue=""
+            id="couponCode"
+            onInput={[Function]}
+            placeholder="couponCode"
+          />
+          <div
+            className="field"
+          >
+            <label>
+              description
+            </label>
+            <input
+              defaultChecked={false}
+              defaultValue="get 99% discount "
+              id="description"
+              onInput={[Function]}
+              placeholder="description"
+              required={undefined}
+              type="text"
+            />
+          </div>
+          <div
+            className="field"
+          >
+            <label>
+              discountAmount
+            </label>
+            <input
+              defaultChecked={false}
+              defaultValue={99}
+              id="discountAmount"
+              onInput={[Function]}
+              placeholder="discountAmount"
+              required={undefined}
+              type="number"
+            />
+          </div>
+        </div>
+        <div
+          className="eight wide computer sixteen wide mobile column"
+        >
+          <div
+            className="field"
+          >
+            <label>
+              minimumAmount
+            </label>
+            <input
+              defaultChecked={false}
+              defaultValue={1}
+              id="minimumAmount"
+              onInput={[Function]}
+              placeholder="minimumAmount"
+              required={undefined}
+              type="number"
+            />
+          </div>
+          <div
+            className="field"
+          >
+            <label>
+              expiration date
+            </label>
+            <input
+              defaultChecked={false}
+              defaultValue="0NaN-aN-aN"
+              id="expirationDate"
+              onInput={[Function]}
+              placeholder="expirationDate"
+              required={undefined}
+              type="date"
+            />
+          </div>
+          <div
+            className="disabled field"
+          >
+            <label>
+              createdAt
+            </label>
+            <input
+              defaultChecked={false}
+              defaultValue="0NaN-aN-aN"
+              id="createdAt"
+              onInput={[Function]}
+              placeholder="createdAt"
+              required={undefined}
+              type="date"
+            />
+          </div>
+          <div
+            className="field"
+          >
+            <label>
+              updatedAt
+            </label>
+            <input
+              defaultChecked={false}
+              defaultValue="0NaN-aN-aN"
+              id="updatedAt"
+              onInput={[Function]}
+              placeholder="updatedAt"
+              required={undefined}
+              type="date"
+            />
+          </div>
+        </div>
       </div>
       <div
-        className="field"
-        defaultChecked={false}
-        defaultValue=""
-        id="couponCode"
-        onInput={[Function]}
-        placeholder="couponCode"
+        className="row"
+      >
+        <div
+          className="column"
+        >
+          <div
+            className="ui container"
+          />
+        </div>
+      </div>
+      <div
+        className="row"
       />
-      <div
-        className="field"
-      >
-        <label>
-          description
-        </label>
-        <input
-          defaultChecked={false}
-          defaultValue="get 99% discount "
-          id="description"
-          onInput={[Function]}
-          placeholder="description"
-          required={undefined}
-          type="text"
-        />
-      </div>
-      <div
-        className="field"
-      >
-        <label>
-          discountAmount
-        </label>
-        <input
-          defaultChecked={false}
-          defaultValue={99}
-          id="discountAmount"
-          onInput={[Function]}
-          placeholder="discountAmount"
-          required={undefined}
-          type="number"
-        />
-      </div>
-    </div>
-    <div
-      className="eight wide computer sixteen wide mobile column"
-    >
-      <div
-        className="field"
-      >
-        <label>
-          minimumAmount
-        </label>
-        <input
-          defaultChecked={false}
-          defaultValue={1}
-          id="minimumAmount"
-          onInput={[Function]}
-          placeholder="minimumAmount"
-          required={undefined}
-          type="number"
-        />
-      </div>
-      <div
-        className="field"
-      >
-        <label>
-          expiration date
-        </label>
-        <input
-          defaultChecked={false}
-          defaultValue="0NaN-aN-aN"
-          id="expirationDate"
-          onInput={[Function]}
-          placeholder="expirationDate"
-          required={undefined}
-          type="date"
-        />
-      </div>
-      <div
-        className="disabled field"
-      >
-        <label>
-          createdAt
-        </label>
-        <input
-          defaultChecked={false}
-          defaultValue="0NaN-aN-aN"
-          id="createdAt"
-          onInput={[Function]}
-          placeholder="createdAt"
-          required={undefined}
-          type="date"
-        />
-      </div>
-      <div
-        className="field"
-      >
-        <label>
-          updatedAt
-        </label>
-        <input
-          defaultChecked={false}
-          defaultValue="0NaN-aN-aN"
-          id="updatedAt"
-          onInput={[Function]}
-          placeholder="updatedAt"
-          required={undefined}
-          type="date"
-        />
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
 `;

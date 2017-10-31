@@ -9,6 +9,9 @@ import {
   Modal,
   Popup,
   Segment,
+  Container,
+  TextArea,
+  Card,
 } from 'semantic-ui-react';
 
 // const propTypes = {
@@ -30,6 +33,8 @@ import {
 //   uploadImage: PropTypes.func,
 //   addNewItem: PropTypes.func,
 // };
+import Editor from './Editor';
+import Markdown from './Markdown';
 
 class View extends Component {
   constructor(...args) {
@@ -42,6 +47,8 @@ class View extends Component {
     this.checkIfDisabled = this.checkIfDisabled.bind(this);
     this.getPopupImgPath = this.getPopupImgPath.bind(this);
     this.initStatesForSelector = this.initStatesForSelector.bind(this);
+    this.editText = this.editText.bind(this);
+    this.update = this.update.bind(this);
     this.state = {
       schema: this.props.schema,
       fields: this.props.fields,
@@ -57,18 +64,19 @@ class View extends Component {
     this.getSelectData(fields, data);
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps) {
+    // console.log(nextProps.data)
     this.setState({
-      data: this.props.data,
-      currentItemId: this.props.currentItemId,
+      data: nextProps.data,
+      currentItemId: nextProps.currentItemId,
     });
   }
 
   getDateValue(arg) {
     const date = new Date(arg);
-    const y = (`0000${date.getFullYear()}`).slice(-4);
-    const m = (`00${date.getMonth() + 1}`).slice(-2);
-    const d = (`00${date.getDate()}`).slice(-2);
+    const y = `0000${date.getFullYear()}`.slice(-4);
+    const m = `00${date.getMonth() + 1}`.slice(-2);
+    const d = `00${date.getDate()}`.slice(-2);
     return `${y}-${m}-${d}`;
   }
 
@@ -79,17 +87,18 @@ class View extends Component {
         const options = [];
         const defaultOptions = [];
         const dataForOptions = [];
-        const label = field[propName].list.label ?
-          field[propName].list.label : Object.keys(field[propName].nestedFields[1])[0];
+        const label = field[propName].list.label
+          ? field[propName].list.label
+          : Object.keys(field[propName].nestedFields[1])[0];
         let hasOwnAPI = false;
         if (
           Object.keys(field[propName].list.resolvers.find.args).length !== 0 &&
-          (
-            (field[propName].list.resolvers.create &&
-              Object.keys(field[propName].list.resolvers.create.args).length !== 0) ||
+          ((field[propName].list.resolvers.create &&
+            Object.keys(field[propName].list.resolvers.create.args).length !==
+              0) ||
             (field[propName].list.resolvers.update &&
-              Object.keys(field[propName].list.resolvers.update.args).length !== 0)
-          )
+              Object.keys(field[propName].list.resolvers.update.args).length !==
+                0))
         ) {
           hasOwnAPI = true;
         }
@@ -102,38 +111,50 @@ class View extends Component {
           });
         } else if (hasOwnAPI) {
           const resolver = field[propName].list.resolvers.find.resolver;
-          const request = this.props.getRequestString(field[propName].nestedFields);
-          this.props.query('query', request, resolver)
+          const request = this.props.getRequestString(
+            field[propName].nestedFields,
+          );
+          this.props
+            .query('query', request, resolver)
             .then((res) => {
-              res.data[field[propName].list.resolvers.find.resolver].forEach((obj, idx) => {
-
+              res.data[
+                field[propName].list.resolvers.find.resolver
+              ].forEach((obj, idx) => {
                 dataForOptions.push(obj);
                 options.push({ text: obj[label], value: idx });
                 let statement;
                 if (data) {
-                data[propName].forEach((item) => {
-                  if (Object.prototype.hasOwnProperty.call(item, 'id')) {
-                    statement = item.id === obj.id;
-                  } else if (Object.prototype.hasOwnProperty.call(item, '_id')) {
-                    statement = item._id === obj._id;
-                  }
-                  if (data && statement) defaultOptions.push(idx);
-                });
-              };
+                  data[propName].forEach((item) => {
+                    if (Object.prototype.hasOwnProperty.call(item, 'id')) {
+                      statement = item.id === obj.id;
+                    } else if (
+                      Object.prototype.hasOwnProperty.call(item, '_id')
+                    ) {
+                      statement = item._id === obj._id;
+                    }
+                    if (data && statement) defaultOptions.push(idx);
+                  });
+                }
               });
-              this.setState({
-                [`${propName}DefaultValue`]: defaultOptions,
-              }, () => setTimeout(() => this.refs[propName].forceUpdate(), 1));
+              this.setState(
+                {
+                  [`${propName}DefaultValue`]: defaultOptions,
+                },
+                () => setTimeout(() => this.refs[propName].forceUpdate(), 1),
+              );
             })
             .catch((err) => {
               throw new Error(`${propName}, getSelectData, error: ${err}`);
             });
         }
-        this.setState({
-          [`${propName}DefaultValue`]: defaultOptions,
-          [`${propName}Data`]: dataForOptions,
-          [propName]: options,
-        }, () => setTimeout(() => this.refs[propName].forceUpdate(), 1));
+        this.setState(
+          {
+            [`${propName}DefaultValue`]: defaultOptions,
+            [`${propName}Data`]: dataForOptions,
+            [propName]: options,
+          },
+          () => setTimeout(() => this.refs[propName].forceUpdate(), 1),
+        );
       }
     });
   }
@@ -146,8 +167,9 @@ class View extends Component {
   getPopupImgPath(propName) {
     if (propName) {
       const p = document.getElementById(`${propName}-p`);
-      const uploadPath = this.props.schema.uploadPath ?
-        this.fixPath(this.props.schema.uploadPath) : this.props.schema.typeName;
+      const uploadPath = this.props.schema.uploadPath
+        ? this.fixPath(this.props.schema.uploadPath)
+        : this.props.schema.typeName;
       this.setState({ popupImgLink: `${uploadPath}/${p.innerText}` });
     }
   }
@@ -167,28 +189,35 @@ class View extends Component {
 
   isDate(val) {
     const d = new Date(val);
-    return !isNaN(d.valueOf()) &&
-      typeof (val) !== 'boolean' &&
-      typeof (val) !== 'number' &&
-      typeof (+val) !== 'number';
+    return (
+      !isNaN(d.valueOf()) &&
+      typeof val !== 'boolean' &&
+      typeof val !== 'number' &&
+      typeof +val !== 'number'
+    );
   }
 
   addSelectOption(e, { label, fields }) {
     const propName = e.currentTarget.name;
     const data = this.props.collectFieldsData(fields, false, false, propName);
     const newState = this.state[propName];
-    const newData = this.state[`${propName}Data`] ? this.state[`${propName}Data`] : [];
+    const newData = this.state[`${propName}Data`]
+      ? this.state[`${propName}Data`]
+      : [];
     newState.push({
       text: label ? data[label] : data[Object.keys(data)[1]],
       value: +newState.length,
     });
     newData.push(data);
-    this.setState({
-      [propName]: newState,
-      [`${propName}Data`]: newData,
-    }, () => {
-      document.querySelector('.modals').click();
-    });
+    this.setState(
+      {
+        [propName]: newState,
+        [`${propName}Data`]: newData,
+      },
+      () => {
+        document.querySelector('.modals').click();
+      },
+    );
   }
 
   checkIfDisabled(field, propName) {
@@ -233,7 +262,8 @@ class View extends Component {
           <Button
             icon
             className="selector-add"
-            onClick={e => this.getOptionsForModal(e, fields[propName].nestedFields)}
+            onClick={e =>
+              this.getOptionsForModal(e, fields[propName].nestedFields)}
           >
             <Icon name="plus" />
           </Button>
@@ -247,10 +277,11 @@ class View extends Component {
               type="submit"
               color="black"
               name={propName}
-              onClick={e => this.addSelectOption(e, {
-                fields: fields[propName].nestedFields,
-                label: fields[propName].list.label,
-              })}
+              onClick={e =>
+                this.addSelectOption(e, {
+                  fields: fields[propName].nestedFields,
+                  label: fields[propName].list.label,
+                })}
             >
               add
             </Button>
@@ -259,14 +290,18 @@ class View extends Component {
         <Modal.Content>
           <Grid as={Form}>
             <Grid.Column computer={8} mobile={16}>
-              {fields[propName].nestedFields.slice(0, to).map((field, idx) =>
-                this.generateFields(field, idx, false, false, `${propName}/`),
-              )}
+              {fields[propName].nestedFields
+                .slice(0, to)
+                .map((field, idx) =>
+                  this.generateFields(field, idx, false, false, `${propName}/`),
+                )}
             </Grid.Column>
             <Grid.Column computer={8} mobile={16}>
-              {fields[propName].nestedFields.slice(-from).map((field, idx) =>
-                this.generateFields(field, idx, false, false, `${propName}/`),
-              )}
+              {fields[propName].nestedFields
+                .slice(-from)
+                .map((field, idx) =>
+                  this.generateFields(field, idx, false, false, `${propName}/`),
+                )}
             </Grid.Column>
           </Grid>
         </Modal.Content>
@@ -274,6 +309,14 @@ class View extends Component {
     );
   }
 
+  editText(node) {
+    this.setState({ editText: node });
+  }
+
+  update() {
+    this.setState({ editText: null });
+    this.props.update();
+  }
   generateFields(obj, idx, data, dis, prefix) {
     const pr = prefix || '';
     const fields = { ...obj };
@@ -282,7 +325,8 @@ class View extends Component {
     let value = '';
     let checked = '';
     let dateInput = false;
-    let disabled = typeof (dis) === 'boolean' ? dis : this.checkIfDisabled(fields, propName);
+    let disabled =
+      typeof dis === 'boolean' ? dis : this.checkIfDisabled(fields, propName);
     let control = fields[propName].inputControl;
     let DOM;
     if (
@@ -294,17 +338,27 @@ class View extends Component {
       const newData = data ? data[propName] : false;
       return (
         <div className="nestedFields" key={idx}>
-          <Divider horizontal>{propName} <Icon name="level down" /></Divider>
+          <Divider horizontal>
+            {propName} <Icon name="level down" />
+          </Divider>
           {fields[propName].nestedFields.map((fields, index) =>
-            this.generateFields(fields, index + 300, newData, disabled, `${propName}/`),
+            this.generateFields(
+              fields,
+              index + 300,
+              newData,
+              disabled,
+              `${propName}/`,
+            ),
           )}
-          <Divider horizontal>{propName} <Icon name="level up" /></Divider>
+          <Divider horizontal>
+            {propName} <Icon name="level up" />
+          </Divider>
         </div>
       );
     }
     if (
-      data && (data[propName] ||
-        typeof (data[propName]) === 'boolean') &&
+      data &&
+      (data[propName] || typeof data[propName] === 'boolean') &&
       fields[propName].inputType !== 'file'
     ) {
       value = data[propName];
@@ -330,7 +384,13 @@ class View extends Component {
       value = !data ? '' : this.getDateValue(value);
     }
     const type = dateInput || fields[propName].inputType;
-    if (data || (propName !== 'id' && propName !== '_id' && propName !== 'offset' && propName !== 'limit')) {
+    if (
+      data ||
+      (propName !== 'id' &&
+        propName !== '_id' &&
+        propName !== 'offset' &&
+        propName !== 'limit')
+    ) {
       if (type === 'file') {
         DOM = (
           <div className="file-form" key={idx}>
@@ -353,7 +413,11 @@ class View extends Component {
                 </p>
               }
             >
-              <img id={`${pr}${propName}-img`} src={popupImgLink} alt={propName} />
+              <img
+                id={`${pr}${propName}-img`}
+                src={popupImgLink}
+                alt={propName}
+              />
             </Popup>
             <input
               disabled={disabled}
@@ -368,12 +432,12 @@ class View extends Component {
         let hasOwnAPI = false;
         if (
           Object.keys(fields[propName].list.resolvers.find.args).length !== 0 &&
-          (
-            (fields[propName].list.resolvers.create &&
-              Object.keys(fields[propName].list.resolvers.create.args).length !== 0) ||
+          ((fields[propName].list.resolvers.create &&
+            Object.keys(fields[propName].list.resolvers.create.args).length !==
+              0) ||
             (fields[propName].list.resolvers.update &&
-              Object.keys(fields[propName].list.resolvers.update.args).length !== 0)
-          )
+              Object.keys(fields[propName].list.resolvers.update.args)
+                .length !== 0))
         ) {
           hasOwnAPI = true;
         }
@@ -381,7 +445,7 @@ class View extends Component {
           <div className="file-form" key={idx}>
             <label>{fields[propName].label}</label>
             {!hasOwnAPI ? this.generateModal(fields, propName) : null}
-            {options && Array.isArray(this.state[`${propName}DefaultValue`]) ?
+            {options && Array.isArray(this.state[`${propName}DefaultValue`]) ? (
               <Dropdown
                 ref={propName}
                 placeholder={fields[propName].label}
@@ -392,8 +456,19 @@ class View extends Component {
                 search
                 defaultValue={this.state[`${propName}DefaultValue`]}
                 options={options}
-              /> : null}
+              />
+            ) : null}
           </div>
+        );
+      } else if (type === 'markdown') {
+        DOM = (
+          <Markdown
+            key={idx}
+            id={`${pr}${propName}`}
+            value={value}
+            label={fields[propName].label}
+            onEdit={this.editText}
+          />
         );
       } else {
         DOM = (
@@ -423,48 +498,76 @@ class View extends Component {
     const to = (fields.length / 2).toFixed(0);
     const from = fields.length - to;
     return (
-      <Segment color="black" className="View">
-        <div className="btn-row">
-          {currentItemId ?
+      <div>
+        {this.state.editText ? (
+          <Editor
+            element={this.state.editText}
+            upload={this.props.uploadFile}
+            path={
+              this.props.schema.uploadPath
+                ? this.fixPath(this.props.schema.uploadPath)
+                : this.props.schema.typeName
+            }
+          />
+        ) : null}
+        <Segment color="black" className="View">
+          <div className="btn-row">
+            {currentItemId ? (
+              <Button
+                type="submit"
+                color="black"
+                onClick={addNewItem}
+                disabled={
+                  !schema.resolvers.create || !schema.resolvers.create.allowed
+                }
+              >
+                add new
+              </Button>
+            ) : null}
             <Button
               type="submit"
               color="black"
-              onClick={addNewItem}
-              disabled={!schema.resolvers.create || !schema.resolvers.create.allowed}
+              onClick={!schema.resolvers.update ? null : this.update}
+              disabled={
+                !schema.resolvers.update || !schema.resolvers.update.allowed
+              }
             >
-              add new
-            </Button> : null}
-          <Button
-            type="submit"
-            color="black"
-            onClick={!schema.resolvers.update ? null : update}
-            disabled={!schema.resolvers.update || !schema.resolvers.update.allowed}
-          >
-            save
-          </Button>
-          <Button
-            type="submit"
-            color="black"
-            id={currentItemId}
-            onClick={!schema.resolvers.remove ? null : remove}
-            disabled={!schema.resolvers.remove || !schema.resolvers.remove.allowed}
-          >
-            remove
-          </Button>
-        </div>
-        <Grid as={Form}>
-          <Column computer={8} mobile={16}>
-            {fields.slice(0, to).map((field, idx) =>
-              generateFields(field, idx, data),
-            )}
-          </Column>
-          <Column computer={8} mobile={16}>
-            {fields.slice(-from).map((field, idx) =>
-              generateFields(field, idx, data),
-            )}
-          </Column>
-        </Grid>
-      </Segment>
+              save
+            </Button>
+            <Button
+              type="submit"
+              color="black"
+              id={currentItemId}
+              onClick={!schema.resolvers.remove ? null : remove}
+              disabled={
+                !schema.resolvers.remove || !schema.resolvers.remove.allowed
+              }
+            >
+              remove
+            </Button>
+          </div>
+          <Grid as={Form}>
+            <Grid.Row columns={2}>
+              <Column computer={8} mobile={16}>
+                {fields
+                  .slice(0, to)
+                  .map((field, idx) => generateFields(field, idx, data))}
+              </Column>
+              <Column computer={8} mobile={16}>
+                {fields
+                  .slice(-from)
+                  .map((field, idx) => generateFields(field, idx, data))}
+              </Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column>
+                <Container />
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row />
+          </Grid>
+        </Segment>
+      </div>
     );
   }
 }
