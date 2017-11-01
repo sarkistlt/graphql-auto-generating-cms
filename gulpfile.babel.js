@@ -39,6 +39,21 @@ gulp.task('build:component:View', () => {
     .pipe(gulp.dest('./lib/components'));
 });
 
+gulp.task('build:component:Editor', () => {
+  clean('/components/Editor.js');
+  return gulp.src('./src/components/Editor.jsx')
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(gulp.dest('./lib/components'));
+});
+gulp.task('build:component:Markdown', () => {
+  clean('/components/Markdown.js');
+  return gulp.src('./src/components/Markdown.jsx')
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(gulp.dest('./lib/components'));
+});
+
 gulp.task('build:component:Layout', () => {
   clean('/index.js');
   return gulp.src('./src/index.jsx')
@@ -89,6 +104,8 @@ gulp.task('watch', () => {
   gulp.watch('./src/components/SideMenu.jsx', gulp.parallel('build:component:SideMenu'));
   gulp.watch('./src/components/List.jsx', gulp.parallel('build:component:List'));
   gulp.watch('./src/components/View.jsx', gulp.parallel('build:component:View'));
+  gulp.watch('./src/components/Editor.jsx', gulp.parallel('build:component:Editor'));
+  gulp.watch('./src/components/Markdown.jsx', gulp.parallel('build:component:Markdown'));
   gulp.watch('./src/index.jsx', gulp.parallel('build:component:Layout'));
   gulp.watch('./src/middleware.js', gulp.parallel('build:middleware'));
 });
@@ -98,7 +115,8 @@ gulp.task('default', gulp.parallel(
   'build:component:SideMenu',
   'build:component:List',
   'build:component:View',
+  'build:component:Editor',
+  'build:component:Markdown',
   'build:component:Layout',
   'build:middleware',
 ));
-

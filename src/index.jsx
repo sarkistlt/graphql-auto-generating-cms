@@ -36,6 +36,7 @@ class Layout extends Component {
     this.routeToList = this.routeToList.bind(this);
     this.routeToView = this.routeToView.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
     this.previewsPage = this.previewsPage.bind(this);
     this.validateFields = this.validateFields.bind(this);
     this.getRequestString = this.getRequestString.bind(this);
@@ -77,20 +78,27 @@ class Layout extends Component {
       }
     });
     const h = obj.listHeader;
-    const tb1 = Array.isArray(h.id) ? h.id : Object.keys(h.id).map(key => h.id[key]);
-    const tb2 = Array.isArray(h.title) ? h.title : Object.keys(h.title).map(key => h.title[key]);
-    this.setState({
-      currentPathSchema: {
-        typeName: currentRout[0],
-        label: obj.label,
-        resolvers: obj.resolvers,
-        fields: array,
-        listHeader: { id: tb1, title: tb2 },
-        uploadPath: obj.uploadPath,
-        uploadRoot: obj.uploadRoot,
+    const tb1 = Array.isArray(h.id)
+      ? h.id
+      : Object.keys(h.id).map(key => h.id[key]);
+    const tb2 = Array.isArray(h.title)
+      ? h.title
+      : Object.keys(h.title).map(key => h.title[key]);
+    this.setState(
+      {
+        currentPathSchema: {
+          typeName: currentRout[0],
+          label: obj.label,
+          resolvers: obj.resolvers,
+          fields: array,
+          listHeader: { id: tb1, title: tb2 },
+          uploadPath: obj.uploadPath,
+          uploadRoot: obj.uploadRoot,
+        },
+        fields: this.objOfFieldsToArray(obj.fields),
       },
-      fields: this.objOfFieldsToArray(obj.fields),
-    }, this.getListData);
+      this.getListData,
+    );
   }
 
   getViewData(id) {
@@ -108,7 +116,9 @@ class Layout extends Component {
       types: { [queryId]: queryArgs[queryId] },
     };
     this.query('query', request, resolver, variables)
-      .then(res => this.setState({ viewData: res, viewMode: true, currentItemId: id }))
+      .then(res =>
+        this.setState({ viewData: res, viewMode: true, currentItemId: id }),
+      )
       .catch(err => console.log(`getViewData error: ${err}`));
   }
 
@@ -118,7 +128,9 @@ class Layout extends Component {
       if (!prop[Object.keys(prop)[0]].nestedFields) {
         request += `${Object.keys(prop)[0]} `;
       } else {
-        const nestedReqFields = this.getRequestString(prop[Object.keys(prop)[0]].nestedFields);
+        const nestedReqFields = this.getRequestString(
+          prop[Object.keys(prop)[0]].nestedFields,
+        );
         request += `${Object.keys(prop)[0]} {${nestedReqFields}} `;
       }
     });
@@ -135,14 +147,21 @@ class Layout extends Component {
       values: { offset, limit },
       types: { offset: 'Int!', limit: 'Int!' },
     };
-    const req = `${h.id.join(' ')} ${h.title.join(' ')} ${fields.find(key => key === '_id') ? '_id' : 'id'}`;
+    const req = `${h.id.join(' ')} ${h.title.join(' ')} ${fields.find(
+      key => key === '_id',
+    )
+      ? '_id'
+      : 'id'}`;
     this.query('query', req, resolver, data)
       .then((res) => {
         if (res.errors) throw new Error(res);
-        this.setState({
-          listData: res,
-          lastPage: res.data[resolver].length < 50,
-        }, this.forceUpdate);
+        this.setState(
+          {
+            listData: res,
+            lastPage: res.data[resolver].length < 50,
+          },
+          this.forceUpdate,
+        );
       })
       .catch((err) => {
         throw new Error(`error: ${err}`);
@@ -157,7 +176,9 @@ class Layout extends Component {
         array.push({ [key]: tmpFields[key] });
       } else if (!tmpFields[key].exclude && tmpFields[key].nestedFields) {
         const newObj = { ...tmpFields[key] };
-        newObj.nestedFields = this.objOfFieldsToArray(tmpFields[key].nestedFields);
+        newObj.nestedFields = this.objOfFieldsToArray(
+          tmpFields[key].nestedFields,
+        );
         array.push({ [key]: newObj });
       }
     });
@@ -166,7 +187,9 @@ class Layout extends Component {
 
   query(type, request, resolver, variables) {
     return new Promise((resolve, reject) => {
-      const graphql = this.props.graphql ? this.props.graphql : this.props.route.graphql;
+      const graphql = this.props.graphql
+        ? this.props.graphql
+        : this.props.route.graphql;
       const xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
       xhr.open('POST', graphql);
@@ -179,7 +202,9 @@ class Layout extends Component {
         reject(err.error);
       };
       if (!variables) {
-        xhr.send(JSON.stringify({ query: `${type} { ${resolver} {${request}} }` }));
+        xhr.send(
+          JSON.stringify({ query: `${type} { ${resolver} {${request}} }` }),
+        );
       } else {
         let varTypes = '';
         let varForRequest = '';
@@ -187,10 +212,12 @@ class Layout extends Component {
           varTypes += `$${[key]}: ${variables.types[key]} `;
           varForRequest += `${[key]}: $${[key]} `;
         });
-        xhr.send(JSON.stringify({
-          query: `${type} ${resolver}(${varTypes}) { ${resolver}(${varForRequest}) {${request}}}`,
-          variables: variables.values,
-        }));
+        xhr.send(
+          JSON.stringify({
+            query: `${type} ${resolver}(${varTypes}) { ${resolver}(${varForRequest}) {${request}}}`,
+            variables: variables.values,
+          }),
+        );
       }
     });
   }
@@ -207,7 +234,7 @@ class Layout extends Component {
         }
       });
       if (!data) {
-        throw new Error('data wasn\'t provided');
+        throw new Error("data wasn't provided");
       } else if (schema.resolvers.create) {
         this.query('mutation', req, resolver, data)
           .then(() => {
@@ -237,7 +264,10 @@ class Layout extends Component {
       } else if (data) {
         if (schema.resolvers.update) {
           this.query('mutation', req, resolver, data)
-            .then(this.showSuccessMs)
+            .then(() => {
+              this.showSuccessMs;
+              this.getViewData(id);
+            })
             .catch((err) => {
               this.showErrorMs();
               throw new Error(`update error: ${err}`);
@@ -258,7 +288,7 @@ class Layout extends Component {
       data.values[id.split(':')[0]] = id.split(':')[1];
       data.types[id.split(':')[0]] = id.split(':')[2];
       if (!id) {
-        throw new Error('id wasn\'t provided');
+        throw new Error("id wasn't provided");
       } else if (schema.resolvers.remove) {
         this.query('mutation', req, resolver, data)
           .then(() => {
@@ -275,7 +305,9 @@ class Layout extends Component {
   }
 
   initCMS() {
-    const endpoint = this.props.endpoint ? this.props.endpoint : this.props.route.endpoint;
+    const endpoint = this.props.endpoint
+      ? this.props.endpoint
+      : this.props.route.endpoint;
     fetch(endpoint, { method: 'GET' })
       .then(json => json.json())
       .then((res) => {
@@ -289,18 +321,22 @@ class Layout extends Component {
         Object.keys(res).forEach((type) => {
           menuItems.push({ label: res[type].label, typeName: type });
         });
-        this.setState({
-          schema: res,
-          SideMenuItems: menuItems,
-          newMenuItemSecret: newMenuItems && newMenuItems[0] ? newMenuItems[0].secret : false,
-        }, () => {
-          if (!this.state.newMenuItemSecret) {
-            const prop = this.state.SideMenuItems[0].typeName;
-            this.getCurrentViewFields(this.state.schema[prop], prop);
-          } else {
-            this.forceUpdate();
-          }
-        });
+        this.setState(
+          {
+            schema: res,
+            SideMenuItems: menuItems,
+            newMenuItemSecret:
+              newMenuItems && newMenuItems[0] ? newMenuItems[0].secret : false,
+          },
+          () => {
+            if (!this.state.newMenuItemSecret) {
+              const prop = this.state.SideMenuItems[0].typeName;
+              this.getCurrentViewFields(this.state.schema[prop], prop);
+            } else {
+              this.forceUpdate();
+            }
+          },
+        );
       })
       .catch((err) => {
         throw new Error(err);
@@ -329,7 +365,7 @@ class Layout extends Component {
     let response = true;
     Object.keys(data.types).forEach((arg) => {
       if (data.types[arg].slice(-1) === '!') {
-        if (typeof (data.values[arg]) !== 'boolean' && !data.values[arg]) {
+        if (typeof data.values[arg] !== 'boolean' && !data.values[arg]) {
           response = false;
           this.showErrorMs();
           document.getElementById(arg).classList.add('error');
@@ -349,46 +385,61 @@ class Layout extends Component {
   nextPage() {
     const { offset, lastPage } = this.state;
     if (!lastPage) {
-      this.setState({
-        offset: offset + 50,
-      }, this.getListData);
+      this.setState(
+        {
+          offset: offset + 50,
+        },
+        this.getListData,
+      );
     }
   }
 
   previewsPage() {
     const { offset } = this.state;
     if (offset) {
-      this.setState({
-        offset: offset - 50,
-      }, this.getListData);
+      this.setState(
+        {
+          offset: offset - 50,
+        },
+        this.getListData,
+      );
     }
   }
 
   addNewItem() {
     if (this.state.currentPathSchema.resolvers.create) {
-      this.setState({
-        viewMode: true,
-        viewData: false,
-        currentItemId: false,
-      }, this.forceUpdate);
+      this.setState(
+        {
+          viewMode: true,
+          viewData: false,
+          currentItemId: false,
+        },
+        this.forceUpdate,
+      );
     }
   }
 
   routeToList(path) {
-    this.setState({
-      currentPathName: path,
-      newMenuItemSecret: false,
-      viewData: false,
-      viewMode: false,
-      listData: false,
-      currentPathSchema: false,
-      currentItemId: false,
-      limit: 50,
-      fields: false,
-      offset: 0,
-    }, () => {
-      this.getCurrentViewFields(this.state.schema[this.state.currentPathName], [this.state.currentPathName]);
-    });
+    this.setState(
+      {
+        currentPathName: path,
+        newMenuItemSecret: false,
+        viewData: false,
+        viewMode: false,
+        listData: false,
+        currentPathSchema: false,
+        currentItemId: false,
+        limit: 50,
+        fields: false,
+        offset: 0,
+      },
+      () => {
+        this.getCurrentViewFields(
+          this.state.schema[this.state.currentPathName],
+          [this.state.currentPathName],
+        );
+      },
+    );
   }
 
   routeToView(e) {
@@ -413,7 +464,8 @@ class Layout extends Component {
         case 'file':
           return document.getElementById(`${pr}${id}-p`).innerHTML;
         case 'selection':
-          return document.getElementById(`${pr}${id}`).firstChild.selectedOptions;
+          return document.getElementById(`${pr}${id}`).firstChild
+            .selectedOptions;
         default:
           return document.getElementById(`${pr}${id}`).value;
       }
@@ -441,8 +493,12 @@ class Layout extends Component {
       const tmpData = {};
       nestedFields.forEach((field) => {
         if (!field.nestedFields) {
-          tmpData[Object.keys(field)[0]] =
-            getCurrentFieldData(Object.keys(field)[0], field[Object.keys(field)[0]].fieldType, propName, prefix);
+          tmpData[Object.keys(field)[0]] = getCurrentFieldData(
+            Object.keys(field)[0],
+            field[Object.keys(field)[0]].fieldType,
+            propName,
+            prefix,
+          );
         } else {
           const key = Object.keys(field)[0];
           tmpData[key] = getNestedFieldsData(field[key].nestedFields, key);
@@ -468,26 +524,42 @@ class Layout extends Component {
       fields.forEach((fieldObj) => {
         const propName = Object.keys(fieldObj)[0];
         const type = fieldObj[propName].fieldType;
-        if (fieldObj[propName].nestedFields &&
-          fieldObj[propName].inputControl !== 'selection') {
-          data[propName] = JSON.stringify(getNestedFieldsData(fieldObj[propName].nestedFields, propName));
+        if (
+          fieldObj[propName].nestedFields &&
+          fieldObj[propName].inputControl !== 'selection'
+        ) {
+          data[propName] = JSON.stringify(
+            getNestedFieldsData(fieldObj[propName].nestedFields, propName),
+          );
         } else if (!checkIfDisabled(fieldObj, propName)) {
-          if (propName !== 'id' &&
+          if (
+            propName !== 'id' &&
             propName !== '_id' &&
             propName !== 'offset' &&
             propName !== 'limit' &&
             fieldObj[propName].inputType !== 'file' &&
-            fieldObj[propName].inputControl !== 'selection') {
+            fieldObj[propName].inputControl !== 'selection'
+          ) {
             data[propName] = getCurrentFieldData(propName, type, prefix);
           } else if (fieldObj[propName].inputType === 'file') {
-            data.values[propName] = getCurrentFieldData(propName, 'file', prefix);
+            data.values[propName] = getCurrentFieldData(
+              propName,
+              'file',
+              prefix,
+            );
             data.types[propName] = 'String';
           } else if (fieldObj[propName].inputControl === 'selection') {
             const ref = this.refs.View;
-            const selectValue = getCurrentFieldData(propName, 'selection', prefix);
+            const selectValue = getCurrentFieldData(
+              propName,
+              'selection',
+              prefix,
+            );
             const valuesData = [];
             Object.keys(selectValue).forEach((node) => {
-              valuesData.push(ref.state[`${propName}Data`][selectValue[node].value]);
+              valuesData.push(
+                ref.state[`${propName}Data`][selectValue[node].value],
+              );
             });
             data[propName] = JSON.stringify(valuesData);
           }
@@ -497,27 +569,49 @@ class Layout extends Component {
       fields.forEach((fieldObj) => {
         const propName = Object.keys(fieldObj)[0];
         const type = fieldObj[propName].fieldType;
-        if (fieldObj[propName].nestedFields && fieldObj[propName].inputControl !== 'selection') {
-          data.values[propName] = JSON.stringify(getNestedFieldsData(fieldObj[propName].nestedFields, propName));
+        if (
+          fieldObj[propName].nestedFields &&
+          fieldObj[propName].inputControl !== 'selection'
+        ) {
+          data.values[propName] = JSON.stringify(
+            getNestedFieldsData(fieldObj[propName].nestedFields, propName),
+          );
           data.types[propName] = 'String';
         } else if (!checkIfDisabled(fieldObj, propName)) {
-          if (propName !== 'id' &&
+          if (
+            propName !== 'id' &&
             propName !== '_id' &&
             propName !== 'offset' &&
             propName !== 'limit' &&
             fieldObj[propName].inputType !== 'file' &&
-            fieldObj[propName].inputControl !== 'selection') {
+            fieldObj[propName].inputControl !== 'selection'
+          ) {
             data.values[propName] = getCurrentFieldData(propName, type, prefix);
-            data.types[propName] = getCurrentFieldMutationType(propName, schema, type, action);
+            data.types[propName] = getCurrentFieldMutationType(
+              propName,
+              schema,
+              type,
+              action,
+            );
           } else if (fieldObj[propName].inputType === 'file') {
-            data.values[propName] = getCurrentFieldData(propName, 'file', prefix);
+            data.values[propName] = getCurrentFieldData(
+              propName,
+              'file',
+              prefix,
+            );
             data.types[propName] = 'String';
           } else if (fieldObj[propName].inputControl === 'selection') {
             const ref = this.refs.View;
-            const selectValue = getCurrentFieldData(propName, 'selection', prefix);
+            const selectValue = getCurrentFieldData(
+              propName,
+              'selection',
+              prefix,
+            );
             const valuesData = [];
             Object.keys(selectValue).forEach((node) => {
-              valuesData.push(ref.state[`${propName}Data`][selectValue[node].value]);
+              valuesData.push(
+                ref.state[`${propName}Data`][selectValue[node].value],
+              );
             });
             data.values[propName] = JSON.stringify(valuesData);
             data.types[propName] = 'String';
@@ -527,7 +621,12 @@ class Layout extends Component {
               data.types[id.split(':')[0]] = id.split(':')[2];
             } else {
               data.values[propName] = getCurrentFieldData(propName, type);
-              data.types[propName] = getCurrentFieldMutationType(propName, schema, type, action);
+              data.types[propName] = getCurrentFieldMutationType(
+                propName,
+                schema,
+                type,
+                action,
+              );
             }
           }
         }
@@ -540,46 +639,86 @@ class Layout extends Component {
   }
 
   handleNewMenuClick(label) {
-    this.setState({
-      newMenuItemSecret: label,
-      viewData: false,
-      listData: false,
-      currentPathSchema: false,
-      currentPathName: false,
-      viewMode: false,
-      currentItemId: false,
-      limit: 50,
-      offset: 0,
-      lastPage: false,
-    }, this.forceUpdate);
+    this.setState(
+      {
+        newMenuItemSecret: label,
+        viewData: false,
+        listData: false,
+        currentPathSchema: false,
+        currentPathName: false,
+        viewMode: false,
+        currentItemId: false,
+        limit: 50,
+        offset: 0,
+        lastPage: false,
+      },
+      this.forceUpdate,
+    );
   }
 
   uploadImage(e) {
     e.preventDefault();
     if (e.currentTarget.files[0]) {
-      const endpoint = this.props.endpoint ? this.props.endpoint : this.props.route.endpoint;
+      const endpoint = this.props.endpoint
+        ? this.props.endpoint
+        : this.props.route.endpoint;
       const fileFromInput = e.currentTarget.files[0];
-      const folderPath = this.state.currentPathSchema.uploadPath ?
-        `/${this.state.currentPathSchema.uploadPath}` : `/${this.state.currentPathSchema.typeName}`;
+      const folderPath = this.state.currentPathSchema.uploadPath
+        ? `/${this.state.currentPathSchema.uploadPath}`
+        : `/${this.state.currentPathSchema.typeName}`;
       const massage = e.currentTarget.previousElementSibling;
       const fd = new FormData();
       fd.append('file', fileFromInput, [fileFromInput.name, folderPath]);
       massage.innerHTML = fileFromInput.name;
-      fetch(endpoint, { method: 'POST', body: fd })
-        .catch((err) => {
-          throw new Error(`error: ${err}`);
-        });
+      fetch(endpoint, { method: 'POST', body: fd }).catch((err) => {
+        throw new Error(`error: ${err}`);
+      });
     }
+  }
+
+  uploadFile(file) {
+    const endpoint = this.props.endpoint
+      ? this.props.endpoint
+      : this.props.route.endpoint;
+    const fileFromInput = file;
+    const folderPath = this.state.currentPathSchema.uploadPath
+      ? `/${this.state.currentPathSchema.uploadPath}`
+      : `/${this.state.currentPathSchema.typeName}`;
+    // const message = e.currentTarget.previousElementSibling;
+    const fd = new FormData();
+    fd.append('file', fileFromInput, [fileFromInput.name, folderPath]);
+    return fetch(endpoint, { method: 'POST', body: fd })
+
   }
 
   test() {
     const {
-      schema, currentPathSchema, fields, viewData, offset, lastPage,
-      listData, SideMenuItems, viewMode, currentItemId, newMenuItemSecret,
+      schema,
+      currentPathSchema,
+      fields,
+      viewData,
+      offset,
+      lastPage,
+      listData,
+      SideMenuItems,
+      viewMode,
+      currentItemId,
+      newMenuItemSecret,
     } = this.state;
     const {
-      routeToList, routeToView, routeToAdd, addNewItem, uploadImage, getRequestString,
-      nextPage, previewsPage, query, update, remove, handleNewMenuClick, collectFieldsData,
+      routeToList,
+      routeToView,
+      routeToAdd,
+      addNewItem,
+      uploadImage,
+      getRequestString,
+      nextPage,
+      previewsPage,
+      query,
+      update,
+      remove,
+      handleNewMenuClick,
+      collectFieldsData,
     } = this;
     let newMenuItems = false;
     if (this.props.newMenuItems) {
@@ -591,28 +730,59 @@ class Layout extends Component {
     let resolverForList = false;
     let NewMenuView = false;
     if (newMenuItemSecret && newMenuItems) {
-      NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret).view.component;
+      NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret)
+        .view.component;
     } else {
       resolverForList = currentPathSchema.resolvers.find.resolver;
     }
 
-    console.log(JSON.stringify({
-      state: this.state,
-      data: !viewData ? false : viewData.data[resolverForList][0] ?
-        viewData.data[resolverForList][0] : viewData.data[resolverForList],
-      listD: listData.data[resolverForList],
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          state: this.state,
+          data: !viewData
+            ? false
+            : viewData.data[resolverForList][0]
+              ? viewData.data[resolverForList][0]
+              : viewData.data[resolverForList],
+          listD: listData.data[resolverForList],
+        },
+        null,
+        2,
+      ),
+    );
   }
 
   render() {
     const { Column } = Grid;
     const {
-      schema, currentPathSchema, fields, viewData, offset, lastPage,
-      listData, SideMenuItems, viewMode, currentItemId, newMenuItemSecret,
+      schema,
+      currentPathSchema,
+      fields,
+      viewData,
+      offset,
+      lastPage,
+      listData,
+      SideMenuItems,
+      viewMode,
+      currentItemId,
+      newMenuItemSecret,
     } = this.state;
     const {
-      routeToList, routeToView, routeToAdd, addNewItem, uploadImage, getRequestString,
-      nextPage, previewsPage, query, update, remove, handleNewMenuClick, collectFieldsData,
+      routeToList,
+      routeToView,
+      routeToAdd,
+      addNewItem,
+      uploadImage,
+      uploadFile,
+      getRequestString,
+      nextPage,
+      previewsPage,
+      query,
+      update,
+      remove,
+      handleNewMenuClick,
+      collectFieldsData,
     } = this;
     let newMenuItems = false;
     if (this.props.newMenuItems) {
@@ -632,7 +802,8 @@ class Layout extends Component {
     let resolverForList = false;
     let NewMenuView = false;
     if (newMenuItemSecret && newMenuItems) {
-      NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret).view.component;
+      NewMenuView = newMenuItems.find(item => item.secret === newMenuItemSecret)
+        .view.component;
     } else {
       resolverForList = currentPathSchema.resolvers.find.resolver;
     }
@@ -648,21 +819,31 @@ class Layout extends Component {
             routeToList={routeToList}
           />
         </Column>
-        <Message color="green" id="ms-success">Success!</Message>
-        <Message color="red" id="ms-error">Error!</Message>
+        <Message color="green" id="ms-success">
+          Success!
+        </Message>
+        <Message color="red" id="ms-error">
+          Error!
+        </Message>
         <Column computer={13} mobile={16}>
-          {viewMode ?
-            (!viewData && currentItemId ?
+          {viewMode ? (
+            !viewData && currentItemId ? (
               <Segment className="loading-block">
                 <div className="ui active dimmer">
                   <Loader content="Loading" />
                 </div>
-              </Segment> :
+              </Segment>
+            ) : (
               <View
                 ref="View"
                 query={query}
-                data={!viewData ? false : viewData.data[resolverForList][0] ?
-                  viewData.data[resolverForList][0] : viewData.data[resolverForList]}
+                data={
+                  !viewData
+                    ? false
+                    : viewData.data[resolverForList][0]
+                      ? viewData.data[resolverForList][0]
+                      : viewData.data[resolverForList]
+                }
                 fields={fields}
                 update={update}
                 remove={remove}
@@ -670,31 +851,37 @@ class Layout extends Component {
                 addNewItem={addNewItem}
                 routeToAdd={routeToAdd}
                 uploadImage={uploadImage}
+                uploadFile={uploadFile}
                 collectFieldsData={collectFieldsData}
                 getRequestString={getRequestString}
                 schema={currentPathSchema}
-              />) :
-            (!listData ?
-              (!newMenuItemSecret ?
-                <Segment className="loading-block">
-                  <div className="ui active dimmer">
-                    <Loader content="Loading" />
-                  </div>
-                </Segment> :
-                <Segment color="black" className="View">
-                  <NewMenuView />
-                </Segment>) :
-              <List
-                  remove={remove}
-                  offset={offset}
-                  lastPage={lastPage}
-                  nextPage={nextPage}
-                  previewsPage={previewsPage}
-                  addNewItem={addNewItem}
-                  routeToView={routeToView}
-                  data={listData.data[resolverForList]}
-                  schema={currentPathSchema}
-                />)}
+              />
+            )
+          ) : !listData ? (
+            !newMenuItemSecret ? (
+              <Segment className="loading-block">
+                <div className="ui active dimmer">
+                  <Loader content="Loading" />
+                </div>
+              </Segment>
+            ) : (
+              <Segment color="black" className="View">
+                <NewMenuView />
+              </Segment>
+            )
+          ) : (
+            <List
+              remove={remove}
+              offset={offset}
+              lastPage={lastPage}
+              nextPage={nextPage}
+              previewsPage={previewsPage}
+              addNewItem={addNewItem}
+              routeToView={routeToView}
+              data={listData.data[resolverForList]}
+              schema={currentPathSchema}
+            />
+          )}
         </Column>
       </Grid>
     );

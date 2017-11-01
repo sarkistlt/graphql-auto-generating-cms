@@ -1,6 +1,6 @@
 {
   "name": "graphql-auto-generating-cms",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "This module will use your existed graphQL schema to generate simple for use CMS in a couple minutes!",
   "main": "lib/index.js",
   "scripts": {
@@ -44,7 +44,9 @@
     "cross-env": "^3.1.4",
     "formidable": "^1.0.17",
     "fs-extra": "^1.0.0",
+    "markdown-it": "^8.4.0",
     "promise-polyfill": "^6.0.2",
+    "@revall/react-markmirror": "^0.4.17",
     "react-test-renderer": "^15.6.1",
     "semantic-ui-react": "^0.61.1",
     "util": "^0.10.3",
@@ -92,6 +94,7 @@
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^2.4.1",
     "jest": "^20.0.4",
+    "json-loader": "^0.5.7",
     "mocha": "^3.1.2",
     "mocha-lcov-reporter": "^1.2.0",
     "nedb": "^1.8.0",
@@ -101,8 +104,8 @@
     "react-router": "^3.0.0",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack-dev-server": "^1.16.2",
-    "webpack": "^1.13.3"
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
   },
   "jest": {
     "verbose": true

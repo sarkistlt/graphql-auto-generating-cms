@@ -4,6 +4,8 @@ import { render } from 'react-dom';
 import GraphqlCMS from '../../lib';
 import '../../lib/styles.css';
 
+// import Editor from '../../lib/components/Editor';
+
 class firstComponent extends React.Component {
   render() {
     return (

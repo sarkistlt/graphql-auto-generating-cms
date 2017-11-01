@@ -27,6 +27,8 @@ const product = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     image: { type: GraphQLString },
     isPublished: { type: GraphQLBoolean },
+    longDescription: { type: GraphQLString },
+    notes: { type: GraphQLString },
   },
 });
 

@@ -7,6 +7,7 @@ export default {
   uploadRoot: path.resolve(__dirname, '../public'),
   rules: {
     product: {
+      uploadPath: 'product/img',
       fields: {
         _id: {},
         name: {},
@@ -23,6 +24,8 @@ export default {
           inputType: 'file',
         },
         isPublished: {},
+        longDescription: { inputType: 'markdown' },
+        notes: { inputType: 'markdown' },
       },
     },
     coupon: {

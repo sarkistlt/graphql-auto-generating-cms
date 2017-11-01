@@ -3,7 +3,7 @@
   margin: 14px !important;
 
   .dimmer {
-    background: #B33086 !important;
+    background: #b33086 !important;
   }
 }
 
@@ -51,11 +51,11 @@
     }
   }
 
-  [type="file"] {
+  [type='file'] {
     display: none;
   }
 
-  [type="checkbox"] {
+  [type='checkbox'] {
     margin-top: 3px !important;
   }
 
@@ -90,10 +90,11 @@
   }
 
   .button {
-    background: #B33086 !important;
+    background: #b33086 !important;
 
-    &:hover, &:focus {
-      background: #BE4F98 !important;
+    &:hover,
+    &:focus {
+      background: #be4f98 !important;
     }
   }
 
@@ -102,16 +103,16 @@
     margin: 0 !important;
 
     .dimmer {
-      background: #B33086 !important;
+      background: #b33086 !important;
     }
   }
 
   .icon {
-    color: #B33086 !important;
+    color: #fff !important;
   }
 
   .ui.inverted.pointing.menu .active.item:after {
-    background-color: #BE4F98 !important;
+    background-color: #be4f98 !important;
   }
 
   .loading-block {
@@ -124,7 +125,7 @@
     padding: 0 !important;
 
     .SideMenu {
-      background: #B33086 !important;
+      background: #b33086 !important;
       margin: 0 !important;
       padding: 0 !important;
     }
@@ -138,7 +139,7 @@
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
-    border-top: 2px solid #B33086 !important;
+    border-top: 2px solid #b33086 !important;
 
     .selection {
       margin-bottom: 14px !important;
@@ -184,9 +185,8 @@
     }
 
     .List {
-
       th {
-        color: #B33086 !important;
+        color: #b33086 !important;
       }
 
       tr {
@@ -278,4 +278,16 @@
   .form {
     margin: 0 !important;
   }
+}
+.markmirror {
+  height: fit-content;
+}
+.markmirror--fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: auto;
+  z-index: 9;
 }
