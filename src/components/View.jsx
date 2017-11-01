@@ -106,17 +106,20 @@ class View extends Component {
           this.props.query('query', request, resolver)
             .then((res) => {
               res.data[field[propName].list.resolvers.find.resolver].forEach((obj, idx) => {
+
                 dataForOptions.push(obj);
                 options.push({ text: obj[label], value: idx });
                 let statement;
+                if (data) {
                 data[propName].forEach((item) => {
                   if (Object.prototype.hasOwnProperty.call(item, 'id')) {
                     statement = item.id === obj.id;
                   } else if (Object.prototype.hasOwnProperty.call(item, '_id')) {
                     statement = item._id === obj._id;
                   }
+                  if (data && statement) defaultOptions.push(idx);
                 });
-                if (data && statement) defaultOptions.push(idx);
+              };
               });
               this.setState({
                 [`${propName}DefaultValue`]: defaultOptions,
